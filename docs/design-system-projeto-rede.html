@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Projeto REDE · Design System v1</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@200;300;400;500&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* ── SUPERFÍCIE ADMIN (a referência) ───────────────── */
+  --void:        #000000;
+  --surface:     #0C0C0C;
+  --surface-2:   #151515;
+  --surface-3:   #1D1D1D;
+  --line:        rgba(255,255,255,.09);
+  --line-2:      rgba(255,255,255,.18);
+  --line-3:      rgba(255,255,255,.32);
+  --ink:         #F4F4F4;
+  --ink-2:       #8E8E8E;
+  --ink-3:       #565656;
+
+  /* ── TERMÔMETRO (única cor saturada do sistema) ───── */
+  --t-aguardando:#6E6E6E;
+  --t-afastado:  #E04B4B;
+  --t-frio:      #4C7FB8;
+  --t-quente:    #D2892F;
+  --t-muito:     #EA6B26;
+  --t-engajado:  #42A868;
+
+  /* ── SUPERFÍCIE PÚBLICA ───────────────────────────── */
+  --paper:       #F5F6F6;
+  --paper-2:     #FFFFFF;
+  --paper-line:  rgba(0,0,0,.11);
+  --paper-ink:   #101010;
+  --paper-ink-2: #5C5C5C;
+  --campanha:    #1B4D3E; /* TOKEN ÚNICO. Trocar pela cor da campanha. */
+
+  /* ── TIPOGRAFIA ───────────────────────────────────── */
+  --display: 'Chakra Petch', system-ui, sans-serif;
+  --body:    'IBM Plex Sans', system-ui, sans-serif;
+  --data:    'IBM Plex Mono', ui-monospace, monospace;
+
+  /* ── ESPAÇO ───────────────────────────────────────── */
+  --s1:4px; --s2:8px; --s3:12px; --s4:16px; --s5:24px;
+  --s6:32px; --s7:48px; --s8:64px; --s9:96px;
+
+  --r-sm:6px; --r-md:10px; --r-lg:14px;
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  background:var(--void);color:var(--ink);
+  font-family:var(--body);font-weight:300;
+  font-size:15px;line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:1060px;margin:0 auto;padding:0 var(--s5)}
+
+/* ── TIPO ────────────────────────────────────────────── */
+.eyebrow{
+  font-family:var(--data);font-size:10px;font-weight:400;
+  letter-spacing:.22em;text-transform:uppercase;color:var(--ink-3);
+}
+.h-display{
+  font-family:var(--display);font-weight:500;
+  font-size:clamp(32px,5.5vw,54px);line-height:1.02;
+  letter-spacing:.055em;text-transform:uppercase;
+}
+.h-section{
+  font-family:var(--display);font-weight:500;
+  font-size:clamp(21px,3vw,29px);line-height:1.1;
+  letter-spacing:.075em;text-transform:uppercase;
+}
+.h-card{
+  font-family:var(--display);font-weight:500;font-size:14px;
+  letter-spacing:.12em;text-transform:uppercase;
+}
+.lede{color:var(--ink-2);font-size:15px;max-width:62ch}
+.small{font-size:13px;color:var(--ink-2)}
+.tiny{font-size:11.5px;color:var(--ink-3);line-height:1.5}
+.num-index{
+  font-family:var(--data);font-weight:200;
+  font-size:clamp(38px,6vw,60px);line-height:.9;
+  letter-spacing:-.02em;color:var(--ink);
+}
+.num-kpi{
+  font-family:var(--data);font-weight:300;
+  font-size:38px;line-height:1;letter-spacing:-.02em;
+  font-variant-numeric:tabular-nums;
+}
+.mono{font-family:var(--data);font-variant-numeric:tabular-nums}
+
+/* ── ESTRUTURA ───────────────────────────────────────── */
+.band{padding:var(--s9) 0;border-top:1px solid var(--line)}
+.band:first-of-type{border-top:none}
+.band-head{margin-bottom:var(--s7)}
+.band-head .eyebrow{display:block;margin-bottom:var(--s3)}
+.band-head .lede{margin-top:var(--s4)}
+
+.grid{display:grid;gap:var(--s4)}
+.g2{grid-template-columns:repeat(2,1fr)}
+.g3{grid-template-columns:repeat(3,1fr)}
+.g4{grid-template-columns:repeat(4,1fr)}
+@media(max-width:860px){.g3,.g4{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:560px){.g2,.g3,.g4{grid-template-columns:1fr}}
+
+/* ── CARD (o átomo da referência) ────────────────────── */
+.card{
+  background:linear-gradient(158deg,var(--surface-2) 0%,var(--surface) 62%);
+  border:1px solid var(--line);border-radius:var(--r-md);
+  padding:var(--s5);position:relative;
+}
+.card-quiet{background:var(--surface);}
+.card-index{min-height:168px;display:flex;flex-direction:column;justify-content:space-between}
+.card-index .h-card{color:var(--ink)}
+.idx-row{display:flex;align-items:flex-end;gap:var(--s5)}
+.bullets{list-style:none;display:flex;flex-direction:column;gap:6px}
+.bullets li{
+  font-size:12px;color:var(--ink-2);padding-left:14px;position:relative;
+}
+.bullets li::before{
+  content:'';position:absolute;left:0;top:8px;
+  width:3px;height:3px;border-radius:50%;background:var(--ink-3);
+}
+
+/* ── HERO ────────────────────────────────────────────── */
+.hero{
+  position:relative;padding:var(--s9) 0 var(--s8);
+  overflow:hidden;border-bottom:1px solid var(--line);
+}
+.hero::before{
+  content:'';position:absolute;left:50%;top:-58%;
+  width:min(1500px,180vw);aspect-ratio:1;transform:translateX(-50%);
+  border-radius:50%;
+  background:radial-gradient(circle at 50% 62%,rgba(255,255,255,.07) 0%,rgba(255,255,255,.02) 42%,transparent 58%);
+  border-bottom:1px solid var(--line-2);
+  pointer-events:none;
+}
+.hero .wrap{position:relative}
+.hero-meta{
+  display:flex;gap:var(--s6);flex-wrap:wrap;
+  margin-top:var(--s6);padding-top:var(--s5);
+  border-top:1px solid var(--line);
+}
+.hero-meta div{display:flex;flex-direction:column;gap:3px}
+
+/* ── SWATCHES ────────────────────────────────────────── */
+.sw{border:1px solid var(--line);border-radius:var(--r-sm);overflow:hidden}
+.sw-chip{height:74px;border-bottom:1px solid var(--line)}
+.sw-meta{padding:10px 12px;display:flex;flex-direction:column;gap:2px}
+.sw-name{font-family:var(--data);font-size:11px;letter-spacing:.06em}
+.sw-hex{font-family:var(--data);font-size:10px;color:var(--ink-3)}
+
+/* ── TIPO: espécimes ─────────────────────────────────── */
+.spec{
+  border:1px solid var(--line);border-radius:var(--r-md);
+  padding:var(--s5);background:var(--surface);
+}
+.spec-tag{
+  font-family:var(--data);font-size:10px;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--ink-3);
+  display:flex;justify-content:space-between;margin-bottom:var(--s4);
+}
+.scale-row{
+  display:flex;align-items:baseline;gap:var(--s5);
+  padding:14px 0;border-top:1px solid var(--line);
+}
+.scale-row:first-of-type{border-top:none}
+.scale-key{
+  font-family:var(--data);font-size:10px;color:var(--ink-3);
+  letter-spacing:.1em;min-width:104px;flex-shrink:0;
+}
+
+/* ── SIGNATURE: silhueta dos colégios ────────────────── */
+.skyline{
+  display:flex;align-items:flex-end;gap:3px;height:210px;
+  padding:var(--s5) var(--s5) 0;
+  border:1px solid var(--line);border-radius:var(--r-md);
+  background:linear-gradient(180deg,var(--surface-2),var(--void));
+  overflow:hidden;
+}
+.col{
+  flex:1;position:relative;min-width:0;
+  background:rgba(255,255,255,.055);
+  border-top:1px solid var(--line-2);
+  border-radius:2px 2px 0 0;
+  transition:background .18s ease;
+}
+.col:hover{background:rgba(255,255,255,.12)}
+.col .fill{
+  position:absolute;left:0;right:0;bottom:0;
+  background:var(--ink);opacity:.92;border-radius:1px 1px 0 0;
+  animation:rise .9s cubic-bezier(.2,.7,.3,1) both;
+}
+@keyframes rise{from{height:0 !important}}
+.col[data-empty="1"]{border-top:1px solid var(--t-afastado)}
+.skyline-legend{
+  display:flex;justify-content:space-between;
+  margin-top:var(--s3);
+}
+
+/* ── COBERTURA (barra do eleitorado) ─────────────────── */
+.cobertura{border:1px solid var(--line);border-radius:var(--r-md);padding:var(--s5);background:var(--surface)}
+.cob-bar{display:flex;height:38px;border-radius:var(--r-sm);overflow:hidden;border:1px solid var(--line)}
+.cob-seg{position:relative;display:flex;align-items:center;padding-left:10px;background:var(--surface-3)}
+.cob-seg + .cob-seg{border-left:1px solid var(--void)}
+.cob-seg .got{position:absolute;left:0;top:0;bottom:0;background:var(--ink);opacity:.9}
+.cob-seg span{position:relative;font-family:var(--data);font-size:10px;letter-spacing:.14em;color:var(--ink-2)}
+
+/* ── TERMÔMETRO ──────────────────────────────────────── */
+.thermo{display:flex;height:10px;border-radius:99px;overflow:hidden;border:1px solid var(--line)}
+.thermo i{display:block;height:100%}
+.thermo-key{display:grid;grid-template-columns:repeat(6,1fr);gap:var(--s2);margin-top:var(--s4)}
+@media(max-width:700px){.thermo-key{grid-template-columns:repeat(3,1fr)}}
+.key{
+  border:1px solid var(--line);border-radius:var(--r-sm);
+  padding:10px;display:flex;flex-direction:column;gap:5px;
+  background:var(--surface);cursor:default;transition:border-color .16s;
+}
+.key:hover{border-color:var(--line-2)}
+.key-top{display:flex;align-items:center;gap:6px}
+.dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.key-name{font-family:var(--display);font-size:10.5px;letter-spacing:.09em;text-transform:uppercase}
+.key-n{font-family:var(--data);font-size:20px;font-weight:300;line-height:1}
+.key-rule{font-size:10px;color:var(--ink-3);line-height:1.35}
+
+/* ── LINHA DE COBRANÇA ───────────────────────────────── */
+.rowlist{border:1px solid var(--line);border-radius:var(--r-md);overflow:hidden}
+.row{
+  display:grid;grid-template-columns:1fr auto auto;gap:var(--s4);
+  align-items:center;padding:14px var(--s4);
+  border-top:1px solid var(--line);background:var(--surface);
+  transition:background .16s;
+}
+.row:first-child{border-top:none}
+.row:hover{background:var(--surface-2)}
+.row-id{display:flex;flex-direction:column;gap:2px;min-width:0}
+.row-name{font-size:14px;color:var(--ink)}
+.row-sub{font-family:var(--data);font-size:10.5px;color:var(--ink-3);letter-spacing:.04em}
+.row-stat{font-family:var(--data);font-size:12px;color:var(--t-afastado);letter-spacing:.05em;white-space:nowrap}
+.btn-wa{
+  font-family:var(--data);font-size:10px;letter-spacing:.14em;text-transform:uppercase;
+  border:1px solid var(--line-2);background:transparent;color:var(--ink);
+  padding:7px 13px;border-radius:99px;cursor:pointer;white-space:nowrap;
+  transition:background .16s,border-color .16s;
+}
+.btn-wa:hover{background:var(--ink);color:var(--void);border-color:var(--ink)}
+
+/* ── TABELA ──────────────────────────────────────────── */
+table{width:100%;border-collapse:collapse;font-size:13px}
+thead th{
+  font-family:var(--data);font-size:9.5px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--ink-3);text-align:right;
+  padding:0 var(--s4) 12px;font-weight:400;
+}
+thead th:first-child{text-align:left}
+tbody td{
+  padding:13px var(--s4);border-top:1px solid var(--line);
+  text-align:right;font-family:var(--data);
+  font-variant-numeric:tabular-nums;color:var(--ink-2);
+}
+tbody td:first-child{text-align:left;font-family:var(--body);color:var(--ink)}
+tbody tr:hover td{background:var(--surface)}
+.pen{position:relative;color:var(--ink) !important}
+.pen-bar{
+  display:inline-block;height:3px;background:var(--ink);
+  vertical-align:middle;margin-right:9px;opacity:.55;border-radius:2px;
+}
+
+/* ── BOTÕES ──────────────────────────────────────────── */
+.btn{
+  font-family:var(--display);font-size:11.5px;font-weight:500;
+  letter-spacing:.16em;text-transform:uppercase;
+  padding:12px 22px;border-radius:99px;cursor:pointer;
+  border:1px solid transparent;transition:all .18s;
+  display:inline-flex;align-items:center;gap:10px;
+}
+.btn-primary{background:var(--ink);color:var(--void)}
+.btn-primary:hover{background:#fff}
+.btn-ghost{background:transparent;color:var(--ink);border-color:var(--line-2)}
+.btn-ghost:hover{border-color:var(--ink)}
+
+/* ── SUPERFÍCIE PÚBLICA ──────────────────────────────── */
+.paper{
+  background:var(--paper);color:var(--paper-ink);
+  border-radius:var(--r-lg);overflow:hidden;
+  border:1px solid var(--line);font-family:var(--body);
+}
+.paper-top{
+  background:var(--campanha);padding:var(--s5);
+  display:flex;align-items:center;justify-content:space-between;
+}
+.paper-top .mark{
+  font-family:var(--display);font-size:13px;font-weight:600;
+  letter-spacing:.2em;text-transform:uppercase;color:#fff;
+}
+.paper-body{padding:var(--s6) var(--s5) var(--s5)}
+.paper-h{
+  font-family:var(--display);font-size:26px;font-weight:600;
+  line-height:1.15;letter-spacing:.01em;margin-bottom:10px;
+}
+.paper-sub{color:var(--paper-ink-2);font-size:14.5px;margin-bottom:var(--s5)}
+.by{
+  display:inline-flex;align-items:center;gap:9px;
+  background:var(--paper-2);border:1px solid var(--paper-line);
+  border-radius:99px;padding:7px 15px 7px 8px;margin-bottom:var(--s5);
+}
+.by .av{
+  width:26px;height:26px;border-radius:50%;background:var(--campanha);
+  color:#fff;font-family:var(--display);font-size:11px;font-weight:600;
+  display:grid;place-items:center;
+}
+.by .txt{font-size:13px}
+.by .txt b{font-weight:600}
+.field{margin-bottom:var(--s4)}
+.field label{
+  display:block;font-size:12.5px;font-weight:500;
+  margin-bottom:7px;color:var(--paper-ink);
+}
+.field input,.field select{
+  width:100%;font-family:var(--body);font-size:16px;
+  padding:15px 14px;border-radius:var(--r-sm);
+  border:1px solid var(--paper-line);background:var(--paper-2);
+  color:var(--paper-ink);min-height:52px;appearance:none;
+}
+.field select{
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='7' viewBox='0 0 11 7'%3E%3Cpath d='M1 1l4.5 4.5L10 1' stroke='%235C5C5C' stroke-width='1.6' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 15px center;
+}
+.field input:focus,.field select:focus{
+  outline:2px solid var(--campanha);outline-offset:1px;border-color:transparent;
+}
+.btn-paper{
+  width:100%;background:var(--campanha);color:#fff;border:none;
+  font-family:var(--display);font-size:14px;font-weight:600;
+  letter-spacing:.09em;text-transform:uppercase;
+  padding:18px;border-radius:var(--r-sm);cursor:pointer;min-height:56px;
+}
+.paper-foot{font-size:11.5px;color:var(--paper-ink-2);text-align:center;margin-top:var(--s4)}
+
+/* ── VOZ ─────────────────────────────────────────────── */
+.voice{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--line);border-radius:var(--r-md);overflow:hidden}
+@media(max-width:640px){.voice{grid-template-columns:1fr}}
+.voice > div{padding:var(--s4) var(--s5)}
+.voice .no{border-right:1px solid var(--line);background:var(--surface)}
+.voice .yes{background:var(--surface-2)}
+.voice p{font-size:13.5px;margin-top:6px}
+.voice .no p{color:var(--ink-3);text-decoration:line-through;text-decoration-color:var(--t-afastado)}
+.mark-no{font-family:var(--data);font-size:9.5px;letter-spacing:.18em;color:var(--t-afastado)}
+.mark-yes{font-family:var(--data);font-size:9.5px;letter-spacing:.18em;color:var(--t-engajado)}
+
+.note{
+  border-left:2px solid var(--line-3);padding:2px 0 2px var(--s4);
+  color:var(--ink-2);font-size:13.5px;max-width:64ch;
+}
+.stack{display:flex;flex-direction:column;gap:var(--s5)}
+.rowflex{display:flex;gap:var(--s4);flex-wrap:wrap;align-items:center}
+footer{padding:var(--s7) 0 var(--s9);border-top:1px solid var(--line)}
+
+@media(prefers-reduced-motion:reduce){
+  *{animation:none !important;transition:none !important}
+}
+</style>
+</head>
+<body>
+
+<!-- ══ HERO ══════════════════════════════════════════ -->
+<header class="hero">
+  <div class="wrap">
+    <span class="eyebrow">Núcleo de Inteligência e Dados · Ver. Pedro Abreu</span>
+    <h1 class="h-display" style="margin-top:var(--s4)">Projeto Rede<br>Design System</h1>
+    <p class="lede" style="margin-top:var(--s5)">
+      Duas superfícies, um esqueleto. O painel de coordenação é uma sala de controle.
+      A página pública é um convite. Elas compartilham grid, escala e componentes, e
+      invertem a pele.
+    </p>
+    <div class="hero-meta">
+      <div><span class="eyebrow">Versão</span><span class="mono">v1.0</span></div>
+      <div><span class="eyebrow">Superfícies</span><span class="mono">02</span></div>
+      <div><span class="eyebrow">Território</span><span class="mono">75.083 eleitores</span></div>
+      <div><span class="eyebrow">Colégios</span><span class="mono">40</span></div>
+    </div>
+  </div>
+</header>
+
+<!-- ══ PRINCÍPIO ═════════════════════════════════════ -->
+<section class="band">
+  <div class="wrap">
+    <div class="band-head">
+      <span class="eyebrow">Princípio</span>
+      <h2 class="h-section">Duas superfícies</h2>
+      <p class="lede">
+        A mesma estética não serve os dois públicos. Quem opera o painel quer densidade
+        e hierarquia. Quem abre o link quer confiança e velocidade.
+      </p>
+    </div>
+
+    <div class="grid g2">
+      <div class="card card-index">
+        <div>
+          <div class="idx-row">
+            <span class="num-index">01</span>
+            <div>
+              <h3 class="h-card">Painel · Coordenação</h3>
+              <p class="tiny" style="margin-top:6px">Preto puro, hairline, dado denso</p>
+            </div>
+          </div>
+        </div>
+        <ul class="bullets">
+          <li>Autenticado, desktop-first, uso diário e repetido</li>
+          <li>Branco é o acento. Cor só onde carrega significado</li>
+          <li>Número tabular em tudo que se compara em coluna</li>
+        </ul>
+      </div>
+
+      <div class="card card-index">
+        <div>
+          <div class="idx-row">
+            <span class="num-index">02</span>
+            <div>
+              <h3 class="h-card">Cadastro · Público</h3>
+              <p class="tiny" style="margin-top:6px">Papel claro, alvo grande, uma tarefa</p>
+            </div>
+          </div>
+        </div>
+        <ul class="bullets">
+          <li>Anônimo, mobile-first, uso único de 40 segundos</li>
+          <li>Cor da campanha em um token só: topo e botão</li>
+          <li>Nenhum campo além dos quatro</li>
+        </ul>
+      </div>
+    </div>
+
+    <p class="note" style="margin-top:var(--s5)">
+      A superfície escura na página pública custa conversão. O eleitor mediano do
+      município tem ensino médio e recebeu o link de um conhecido no WhatsApp:
+      formulário preto pedindo nome e telefone lê como golpe. O esqueleto atravessa,
+      a pele não.
+    </p>
+  </div>
+</section>
+
+<!-- ══ COR ═══════════════════════════════════════════ -->
+<section class="band">
+  <div class="wrap">
+    <div class="band-head">
+      <span class="eyebrow">Fundação</span>
+      <h2 class="h-section">Cor</h2>
+      <p class="lede">
+        A base é monocromática por disciplina, não por falta de ideia. Como nada mais
+        na tela é saturado, as seis cores do termômetro são a única informação colorida
+        do sistema e não competem com nada.
+      </p>
+    </div>
+
+    <span class="eyebrow" style="display:block;margin-bottom:var(--s4)">Base · painel</span>
+    <div class="grid g4" style="margin-bottom:var(--s7)">
+      <div class="sw"><div class="sw-chip" style="background:#000"></div><div class="sw-meta"><span class="sw-name">void</span><span class="sw-hex">#000000 · página</span></div></div>
+      <div class="sw"><div class="sw-chip" style="background:#0C0C0C"></div><div class="sw-meta"><span class="sw-name">surface</span><span class="sw-hex">#0C0C0C · card</span></div></div>
+      <div class="sw"><div class="sw-chip" style="background:#151515"></div><div class="sw-meta"><span class="sw-name">surface-2</span><span class="sw-hex">#151515 · hover</span></div></div>
+      <div class="sw"><div class="sw-chip" style="background:#1D1D1D"></div><div class="sw-meta"><span class="sw-name">surface-3</span><span class="sw-hex">#1D1D1D · trilho</span></div></div>
+      <div class="sw"><div class="sw-chip" style="background:#F4F4F4"></div><div class="sw-meta"><span class="sw-name">ink</span><span class="sw-hex">#F4F4F4 · texto</span></div></div>
+      <div class="sw"><div class="sw-chip" style="background:#8E8E8E"></div><div class="sw-meta"><span class="sw-name">ink-2</span><span class="sw-hex">#8E8E8E · apoio</span></div></div>
+      <div class="sw"><div class="sw-chip" style="background:#565656"></div><div class="sw-meta"><span class="sw-name">ink-3</span><span class="sw-hex">#565656 · rótulo</span></div></div>
+      <div class="sw"><div class="sw-chip" style="background:#0C0C0C;border-bottom:1px solid rgba(255,255,255,.18)"></div><div class="sw-meta"><span class="sw-name">line</span><span class="sw-hex">#fff a 9% · fio</span></div></div>
+    </div>
+
+    <span class="eyebrow" style="display:block;margin-bottom:var(--s4)">Semântica · termômetro</span>
+    <div class="grid g3" style="margin-bottom:var(--s5)">
+      <div class="sw"><div class="sw-chip" style="background:#6E6E6E"></div><div class="sw-meta"><span class="sw-name">aguardando</span><span class="sw-hex">#6E6E6E · sem info ainda</span></div></div>
+      <div class="sw"><div class="sw-chip" style="background:#E04B4B"></div><div class="sw-meta"><span class="sw-name">afastado</span><span class="sw-hex">#E04B4B · aja hoje</span></div></div>
+      <div class="sw"><div class="sw-chip" style="background:#4C7FB8"></div><div class="sw-meta"><span class="sw-name">frio</span><span class="sw-hex">#4C7FB8 · abaixo</span></div></div>
+      <div class="sw"><div class="sw-chip" style="background:#D2892F"></div><div class="sw-meta"><span class="sw-name">quente</span><span class="sw-hex">#D2892F · no caminho</span></div></div>
+      <div class="sw"><div class="sw-chip" style="background:#EA6B26"></div><div class="sw-meta"><span class="sw-name">muito quente</span><span class="sw-hex">#EA6B26 · meta batida</span></div></div>
+      <div class="sw"><div class="sw-chip" style="background:#42A868"></div><div class="sw-meta"><span class="sw-name">engajado</span><span class="sw-hex">#42A868 · referência</span></div></div>
+    </div>
+
+    <p class="note">
+      A cor comunica <b style="color:var(--ink)">urgência de ação</b>, não temperatura
+      literal. Por isso afastado é vermelho, sendo o estado mais frio de todos. Num
+      painel operacional vermelho significa "abra e resolva", e é exatamente o que
+      esse estado exige. A metáfora térmica fica no rótulo.
+    </p>
+  </div>
+</section>
+
+<!-- ══ TIPOGRAFIA ════════════════════════════════════ -->
+<section class="band">
+  <div class="wrap">
+    <div class="band-head">
+      <span class="eyebrow">Fundação</span>
+      <h2 class="h-section">Tipografia</h2>
+      <p class="lede">
+        Três famílias técnicas, coerentes com um núcleo de inteligência e dados.
+        Todas com Latin Extended completo, porque metade dos bairros tem acento
+        no nome.
+      </p>
+    </div>
+
+    <div class="stack">
+      <div class="spec">
+        <div class="spec-tag"><span>Display · Chakra Petch</span><span>500 · caixa alta · tracking .075em</span></div>
+        <div class="h-section" style="font-size:34px">Balneário São Pedro</div>
+        <p class="tiny" style="margin-top:14px">
+          Grotesca angular de corte chanfrado. É a voz da referência: técnica, larga,
+          sempre em caixa alta e sempre travada. Usada em título de seção, rótulo de
+          card e botão. Nunca em texto corrido.
+        </p>
+      </div>
+
+      <div class="spec">
+        <div class="spec-tag"><span>Corpo · IBM Plex Sans</span><span>300 / 400 / 500</span></div>
+        <div style="font-size:19px;font-weight:300;line-height:1.5">
+          Liderança sem cadastro novo há 12 dias. Última atividade em Campo Redondo.
+        </div>
+        <p class="tiny" style="margin-top:14px">
+          Neutra com temperamento institucional. Peso 300 como padrão deixa a tela
+          leve mesmo densa. 500 só em nome próprio e rótulo de campo.
+        </p>
+      </div>
+
+      <div class="spec">
+        <div class="spec-tag"><span>Dado · IBM Plex Mono</span><span>200 / 300 / 400 · tabular</span></div>
+        <div class="rowflex" style="align-items:baseline;gap:var(--s6)">
+          <span class="num-index">04</span>
+          <span class="num-kpi">8.384</span>
+          <span class="mono" style="font-size:20px;color:var(--ink-2)">0,64 %</span>
+        </div>
+        <p class="tiny" style="margin-top:14px">
+          Todo número do sistema. Largura fixa alinha coluna sem esforço, e o peso 200
+          em corpo grande dá o numeral fino e largo da referência. Também nos rótulos
+          travados (eyebrow).
+        </p>
+      </div>
+    </div>
+
+    <div class="spec" style="margin-top:var(--s5)">
+      <div class="spec-tag"><span>Escala</span><span>Tudo o que existe. Nada além disso.</span></div>
+      <div class="scale-row"><span class="scale-key">display / 54</span><span class="h-display" style="font-size:38px">Cobertura</span></div>
+      <div class="scale-row"><span class="scale-key">section / 29</span><span class="h-section">Bloco de cobrança</span></div>
+      <div class="scale-row"><span class="scale-key">card / 14</span><span class="h-card">Penetração por bairro</span></div>
+      <div class="scale-row"><span class="scale-key">kpi / 38</span><span class="num-kpi">1.247</span></div>
+      <div class="scale-row"><span class="scale-key">corpo / 15</span><span>Registrar contato com a liderança</span></div>
+      <div class="scale-row"><span class="scale-key">apoio / 13</span><span class="small">Cadastrou 4 pessoas, parou há 12 dias</span></div>
+      <div class="scale-row"><span class="scale-key">eyebrow / 10</span><span class="eyebrow">Macro-região R2 · Leste</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ SIGNATURE ═════════════════════════════════════ -->
+<section class="band">
+  <div class="wrap">
+    <div class="band-head">
+      <span class="eyebrow">Elemento assinatura</span>
+      <h2 class="h-section">A silhueta dos 40 colégios</h2>
+      <p class="lede">
+        Uma coluna por local de votação, altura pelo eleitorado, preenchimento pela
+        penetração. Ordenado do maior para o menor. Não é gráfico decorativo: é a
+        cidade inteira em 210 pixels de altura, e o vazio à esquerda é o problema.
+      </p>
+    </div>
+
+    <div class="skyline" id="sky"></div>
+    <div class="skyline-legend">
+      <span class="tiny">← CIEP 272 São João · 4.047 eleitores</span>
+      <span class="tiny">Sapeatiba Mirim · 55 →</span>
+    </div>
+
+    <p class="note" style="margin-top:var(--s5)">
+      O topo em vermelho marca colégio acima de 2.000 eleitores sem nenhuma liderança
+      atribuída. É a única cor que aparece aqui, e ela aparece exatamente onde a
+      decisão custa mais caro.
+    </p>
+
+    <div class="cobertura" style="margin-top:var(--s5)">
+      <div class="rowflex" style="justify-content:space-between;margin-bottom:var(--s4)">
+        <h3 class="h-card">Cobertura do eleitorado</h3>
+        <span class="mono" style="font-size:12px;color:var(--ink-2)">1.247 / 75.083 · 1,66 %</span>
+      </div>
+      <div class="cob-bar">
+        <div class="cob-seg" style="flex:48.3"><i class="got" style="width:2.1%"></i><span>R1 · 36.252</span></div>
+        <div class="cob-seg" style="flex:35.1"><i class="got" style="width:1.4%"></i><span>R2 · 26.357</span></div>
+        <div class="cob-seg" style="flex:16.6"><i class="got" style="width:0.8%"></i><span>R3 · 12.474</span></div>
+      </div>
+      <p class="tiny" style="margin-top:12px">
+        A largura de cada faixa é a proporção real do eleitorado. O preenchimento é o
+        que você já tem. Desequilíbrio entre as três aparece sem precisar de tabela.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ══ COMPONENTES ═══════════════════════════════════ -->
+<section class="band">
+  <div class="wrap">
+    <div class="band-head">
+      <span class="eyebrow">Componentes · painel</span>
+      <h2 class="h-section">Indicadores</h2>
+    </div>
+
+    <div class="grid g4">
+      <div class="card">
+        <span class="eyebrow">Cadastrados</span>
+        <div class="num-kpi" style="margin:12px 0 4px">1.247</div>
+        <span class="tiny">+38 nas últimas 24h</span>
+      </div>
+      <div class="card">
+        <span class="eyebrow">Lideranças ativas</span>
+        <div class="num-kpi" style="margin:12px 0 4px">52<span style="font-size:20px;color:var(--ink-3)"> / 70</span></div>
+        <span class="tiny">18 sem cadastro novo</span>
+      </div>
+      <div class="card">
+        <span class="eyebrow">Meta agregada</span>
+        <div class="num-kpi" style="margin:12px 0 4px">178 %</div>
+        <span class="tiny">Piso de 700 batido</span>
+      </div>
+      <div class="card">
+        <span class="eyebrow">Penetração</span>
+        <div class="num-kpi" style="margin:12px 0 4px">1,66 %</div>
+        <span class="tiny">de 75.083 eleitores</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <div class="band-head">
+      <span class="eyebrow">Componentes · painel</span>
+      <h2 class="h-section">Termômetro da rede</h2>
+      <p class="lede">Escada ordenada de seis estados. Cada faixa filtra a lista.</p>
+    </div>
+
+    <div class="thermo">
+      <i style="flex:6;background:var(--t-aguardando)"></i>
+      <i style="flex:12;background:var(--t-afastado)"></i>
+      <i style="flex:19;background:var(--t-frio)"></i>
+      <i style="flex:16;background:var(--t-quente)"></i>
+      <i style="flex:11;background:var(--t-muito)"></i>
+      <i style="flex:6;background:var(--t-engajado)"></i>
+    </div>
+
+    <div class="thermo-key">
+      <div class="key"><div class="key-top"><i class="dot" style="background:var(--t-aguardando)"></i><span class="key-name">Aguardando</span></div><span class="key-n">06</span><span class="key-rule">Link há menos de 5 dias</span></div>
+      <div class="key"><div class="key-top"><i class="dot" style="background:var(--t-afastado)"></i><span class="key-name">Afastado</span></div><span class="key-n">12</span><span class="key-rule">Zero cadastros</span></div>
+      <div class="key"><div class="key-top"><i class="dot" style="background:var(--t-frio)"></i><span class="key-name">Frio</span></div><span class="key-n">19</span><span class="key-rule">1 a 4, ou parado 10d</span></div>
+      <div class="key"><div class="key-top"><i class="dot" style="background:var(--t-quente)"></i><span class="key-name">Quente</span></div><span class="key-n">16</span><span class="key-rule">5 a 9, ativa</span></div>
+      <div class="key"><div class="key-top"><i class="dot" style="background:var(--t-muito)"></i><span class="key-name">Muito quente</span></div><span class="key-n">11</span><span class="key-rule">10 ou mais, ativa</span></div>
+      <div class="key"><div class="key-top"><i class="dot" style="background:var(--t-engajado)"></i><span class="key-name">Engajado</span></div><span class="key-n">06</span><span class="key-rule">20+ em 3 semanas</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <div class="band-head">
+      <span class="eyebrow">Componentes · painel</span>
+      <h2 class="h-section">Bloco de cobrança</h2>
+      <p class="lede">
+        Não é relatório, é fila de trabalho. Toda linha tem uma ação, e a ação abre
+        o WhatsApp com a mensagem pronta.
+      </p>
+    </div>
+
+    <div class="rowlist">
+      <div class="row">
+        <div class="row-id"><span class="row-name">Marli Nascimento</span><span class="row-sub">CAMPO REDONDO · R2 · IGREJA</span></div>
+        <span class="row-stat">14 dias sem cadastro</span>
+        <button class="btn-wa">Cobrar</button>
+      </div>
+      <div class="row">
+        <div class="row-id"><span class="row-name">Josenildo Barbosa</span><span class="row-sub">BAIXO GRANDE · R2 · MOTOTÁXI</span></div>
+        <span class="row-stat">11 dias sem cadastro</span>
+        <button class="btn-wa">Cobrar</button>
+      </div>
+      <div class="row">
+        <div class="row-id"><span class="row-name">Cleusa Ramos de Lima</span><span class="row-sub">PRAIA LINDA · R3 · ASSOCIAÇÃO</span></div>
+        <span class="row-stat">9 dias sem cadastro</span>
+        <button class="btn-wa">Cobrar</button>
+      </div>
+      <div class="row">
+        <div class="row-id"><span class="row-name">Anderson Coutinho</span><span class="row-sub">PORTO DO CARRO · R2 · COMÉRCIO</span></div>
+        <span class="row-stat">7 dias sem cadastro</span>
+        <button class="btn-wa">Cobrar</button>
+      </div>
+    </div>
+
+    <p class="note" style="margin-top:var(--s5)">
+      Estado vazio deste bloco: <b style="color:var(--ink)">"Ninguém parado. Toda a rede
+      cadastrou nos últimos 5 dias."</b> Tela vazia aqui é vitória, e o texto precisa
+      dizer isso.
+    </p>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <div class="band-head">
+      <span class="eyebrow">Componentes · painel</span>
+      <h2 class="h-section">Penetração por bairro</h2>
+      <p class="lede">
+        Ordenada por penetração crescente. A tela existe para mostrar onde falta,
+        não onde já está bom.
+      </p>
+    </div>
+
+    <table>
+      <thead>
+        <tr><th>Bairro</th><th>Região</th><th>Eleitores</th><th>Cadastros</th><th>Penetração</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>São João</td><td>R2</td><td>8.384</td><td>54</td><td class="pen"><i class="pen-bar" style="width:8px"></i>0,64 %</td></tr>
+        <tr><td>Centro</td><td>R1</td><td>5.761</td><td>61</td><td class="pen"><i class="pen-bar" style="width:13px"></i>1,06 %</td></tr>
+        <tr><td>Campo Redondo</td><td>R2</td><td>5.314</td><td>72</td><td class="pen"><i class="pen-bar" style="width:17px"></i>1,36 %</td></tr>
+        <tr><td>Balneário São Pedro</td><td>R3</td><td>4.659</td><td>88</td><td class="pen"><i class="pen-bar" style="width:24px"></i>1,89 %</td></tr>
+        <tr><td>Fluminense</td><td>R1</td><td>3.747</td><td>119</td><td class="pen"><i class="pen-bar" style="width:40px"></i>3,18 %</td></tr>
+        <tr><td>Três Vendas</td><td>R3</td><td>136</td><td>27</td><td class="pen"><i class="pen-bar" style="width:100px"></i>19,85 %</td></tr>
+      </tbody>
+    </table>
+
+    <p class="note" style="margin-top:var(--s5)">
+      Nenhum número absoluto aparece sozinho quando existe um percentual que o
+      qualifica. 54 cadastros em São João e 27 em Três Vendas: o segundo é 31 vezes
+      mais penetração.
+    </p>
+  </div>
+</section>
+
+<!-- ══ SUPERFÍCIE PÚBLICA ════════════════════════════ -->
+<section class="band">
+  <div class="wrap">
+    <div class="band-head">
+      <span class="eyebrow">Superfície 02</span>
+      <h2 class="h-section">Página de cadastro</h2>
+      <p class="lede">
+        Mesmo grid, mesma escala tipográfica, mesma disciplina de fio. Pele invertida.
+        A cor da campanha entra por um token só, então trocar não exige redesenho.
+      </p>
+    </div>
+
+    <div style="max-width:430px">
+      <div class="paper">
+        <div class="paper-top">
+          <span class="mark">Nossa Cidade</span>
+          <span style="font-family:var(--data);font-size:9.5px;letter-spacing:.16em;color:rgba(255,255,255,.6)">2026</span>
+        </div>
+        <div class="paper-body">
+          <div class="by">
+            <span class="av">MN</span>
+            <span class="txt">Convite de <b>Marli Nascimento</b></span>
+          </div>
+          <h3 class="paper-h">Some com a gente</h3>
+          <p class="paper-sub">Leva menos de um minuto. Só precisamos de quatro coisas.</p>
+
+          <div class="field">
+            <label for="n">Seu nome completo</label>
+            <input id="n" type="text" placeholder="Maria da Silva Santos">
+          </div>
+          <div class="field">
+            <label for="w">WhatsApp</label>
+            <input id="w" type="tel" inputmode="numeric" placeholder="(22) 99999-9999">
+          </div>
+          <div class="field">
+            <label for="b">Bairro onde você mora</label>
+            <select id="b">
+              <option>Escolha o bairro</option>
+              <option>Campo Redondo</option>
+              <option>São João</option>
+              <option selected>Centro</option>
+              <option>Moro em outro município</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="l">Onde você vota</label>
+            <select id="l">
+              <option selected>C.E. Dr. Feliciano Sodré</option>
+              <option>Ver escolas de outros bairros</option>
+            </select>
+          </div>
+
+          <button class="btn-paper">Confirmar apoio</button>
+          <p class="paper-foot">Marli vai saber que foi você quem entrou.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid g3" style="margin-top:var(--s6)">
+      <div class="card card-quiet">
+        <h3 class="h-card">Alvo de 52px</h3>
+        <p class="tiny" style="margin-top:10px">Campo e botão acima do mínimo de toque. A pessoa preenche em pé, com uma mão, no meio da rua.</p>
+      </div>
+      <div class="card card-quiet">
+        <h3 class="h-card">Fonte de 16px</h3>
+        <p class="tiny" style="margin-top:10px">Abaixo disso o iOS dá zoom automático no foco e quebra o layout. Regra técnica, não estética.</p>
+      </div>
+      <div class="card card-quiet">
+        <h3 class="h-card">Zero digitação extra</h3>
+        <p class="tiny" style="margin-top:10px">Bairro e escola em select. Só nome e telefone abrem teclado. A escola do bairro escolhido já vem em primeiro.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ VOZ ═══════════════════════════════════════════ -->
+<section class="band">
+  <div class="wrap">
+    <div class="band-head">
+      <span class="eyebrow">Fundação</span>
+      <h2 class="h-section">Voz da interface</h2>
+      <p class="lede">
+        Verbo ativo, frase curta, palavra que a pessoa usa. Nada de sistema falando
+        de si mesmo.
+      </p>
+    </div>
+
+    <div class="stack">
+      <div class="voice">
+        <div class="no"><span class="mark-no">NÃO</span><p>Submeter cadastro</p></div>
+        <div class="yes"><span class="mark-yes">SIM</span><p>Confirmar apoio</p></div>
+      </div>
+      <div class="voice">
+        <div class="no"><span class="mark-no">NÃO</span><p>Registro já existente na base de dados</p></div>
+        <div class="yes"><span class="mark-yes">SIM</span><p>Esse contato já faz parte da rede. Obrigado!</p></div>
+      </div>
+      <div class="voice">
+        <div class="no"><span class="mark-no">NÃO</span><p>Nenhum registro encontrado</p></div>
+        <div class="yes"><span class="mark-yes">SIM</span><p>Ninguém parado. Toda a rede cadastrou nos últimos 5 dias.</p></div>
+      </div>
+      <div class="voice">
+        <div class="no"><span class="mark-no">NÃO</span><p>Liderança inativa há 14 dias</p></div>
+        <div class="yes"><span class="mark-yes">SIM</span><p>14 dias sem cadastro</p></div>
+      </div>
+    </div>
+
+    <p class="note" style="margin-top:var(--s5)">
+      Mensagem de duplicidade nunca revela a qual liderança a pessoa já está atribuída.
+      Duas lideranças descobrindo que disputam o mesmo contato viram atrito que chega
+      na coordenação no pior momento.
+    </p>
+  </div>
+</section>
+
+<!-- ══ BOTÕES ════════════════════════════════════════ -->
+<section class="band">
+  <div class="wrap">
+    <div class="band-head">
+      <span class="eyebrow">Componentes</span>
+      <h2 class="h-section">Ação</h2>
+      <p class="lede">
+        No painel, branco é o acento. Não existe botão colorido, porque cor é reservada
+        para estado.
+      </p>
+    </div>
+    <div class="rowflex">
+      <button class="btn btn-primary">Enviar link</button>
+      <button class="btn btn-ghost">Ver prontuário</button>
+      <button class="btn-wa">Cobrar</button>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <span class="eyebrow">Projeto REDE · Design System v1.0 · Agosto de 2026</span>
+    <p class="tiny" style="margin-top:12px;max-width:60ch">
+      Tokens em <span class="mono" style="color:var(--ink-2)">design-tokens.css</span>.
+      Dados de penetração nesta página são demonstrativos; o eleitorado, os bairros e
+      os colégios são reais (TSE, 59ª ZE, extração de 03/08/2026).
+    </p>
+  </div>
+</footer>
+
+<script>
+// Silhueta dos 40 colégios. Eleitorado real dos 33 confirmados + 7 estimados.
+const colegios = [
+  ['CIEP 272 · São João',4047,4],['C.E. Feliciano Sodré · Centro',3928,11],
+  ['E.M. Miriam Guimarães · Fluminense',3747,32],['CIEP 146 · Estação',3571,18],
+  ['E.M. José Guimarães · Porto da Aldeia',3365,26],['FAETEC · Nova São Pedro',3299,9],
+  ['E. Paineira · Balneário São Pedro',2875,21],['E.M. Manoel Moraes · Campo Redondo',2802,14],
+  ['E.M. Rubem Arruda · Jd. Soledade',2692,38],['E. Pequiá · Rua do Fogo',2654,7],
+  ['C.E. José Rascão · São José',2527,29],['E.M. Luiza Terra · Campo Redondo',2512,16],
+  ['E.M. Vinhateiro',2300,42],['E.M. Dulcinda Jotta · São João',2229,3],
+  ['E.M. Maria da Glória · Praia Linda',2217,24],['E.M. Dulce Jotta · São João',2108,0],
+  ['E.M. Flonete Alexandrino · Poço Fundo',2117,31],['C.E. Alm. Tamandaré · Baixo Grande',1847,12],
+  ['Centro · a levantar',1833,0],['E.M. Vidal de Negreiros · Alecrim',1795,22],
+  ['E.M. José Teixeira · Bal. das Conchas',1787,35],['Bal. São Pedro · a levantar',1784,0],
+  ['E.M. Antonio Rodrigues · Porto do Carro',1659,19],['E.M. Vital Brasil · Ponta do Ambrósio',1644,27],
+  ['São José · a levantar',1607,0],['Baixo Grande · a levantar',1548,0],
+  ['E.M. Francisco Paes · Boqueirão',1477,44],['E.M. Antônio Vaz · Recanto do Sol',1460,17],
+  ['Sementes do Amanhã · Mossoró',1447,39],['E.M. Capitão Costa · Cruz',966,52],
+  ['Porto do Carro · a levantar',955,0],['E. Paulo Roberto Marinho · São Mateus',880,33],
+  ['Nova São Pedro · a levantar',729,0],['E.M. Quilombola D. Rosa · Botafogo',703,46],
+  ['E. Retiro',635,28],['E.M. Elízio Rangel · Baleia',588,41],
+  ['E. Adalgisa Lobo · Morro do Milagre',282,58],['E.M. São Francisco · Parque Arruda',276,49],
+  ['E. Elízio Moreira · Três Vendas',136,71],['E.M. Sapeatiba Mirim',55,64]
+];
+const max = 4047;
+document.getElementById('sky').innerHTML = colegios
+  .sort((a,b)=>b[1]-a[1])
+  .map(([nome,eleitores,pct],i)=>{
+    const h = Math.max(6,(eleitores/max)*100);
+    const vazio = (eleitores>=2000 && pct===0) ? 1 : 0;
+    return `<div class="col" style="height:${h}%" data-empty="${vazio}" title="${nome} · ${eleitores.toLocaleString('pt-BR')} eleitores · ${pct===0?'sem liderança':pct+' cadastros'}">
+      <i class="fill" style="height:${Math.min(pct*1.4,88)}%;animation-delay:${i*14}ms"></i>
+    </div>`;
+  }).join('');
+</script>
+
+</body>
+</html>

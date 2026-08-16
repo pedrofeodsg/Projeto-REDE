@@ -1,0 +1,166 @@
+/* ═══════════════════════════════════════════════════════════
+   PROJETO REDE · DESIGN TOKENS v1.0
+   Hub de lideranças, monitoramento e mobilização política
+   Núcleo de Inteligência e Dados · Ver. Pedro Abreu
+
+   Duas superfícies, um esqueleto:
+   - .admin  → painel de coordenação (preto, denso, autenticado)
+   - .paper  → página pública de cadastro (claro, mobile, anônimo)
+
+   Fontes:
+   @import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@200;300;400;500&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap');
+   ═══════════════════════════════════════════════════════════ */
+
+:root {
+
+  /* ── SUPERFÍCIE ADMIN ───────────────────────────────── */
+  --void:         #000000;   /* fundo da página */
+  --surface:      #0C0C0C;   /* card base */
+  --surface-2:    #151515;   /* card hover, topo do gradiente */
+  --surface-3:    #1D1D1D;   /* trilho de barra, input */
+
+  --line:         rgba(255,255,255,.09);  /* fio padrão */
+  --line-2:       rgba(255,255,255,.18);  /* fio de ênfase, borda de botão */
+  --line-3:       rgba(255,255,255,.32);  /* fio de citação */
+
+  --ink:          #F4F4F4;   /* texto primário, também o acento do painel */
+  --ink-2:        #8E8E8E;   /* texto de apoio */
+  --ink-3:        #565656;   /* rótulo, eyebrow, metadado */
+
+  /* Gradiente do card (assinatura da referência) */
+  --card-bg: linear-gradient(158deg, var(--surface-2) 0%, var(--surface) 62%);
+
+  /* ── TERMÔMETRO ─────────────────────────────────────────
+     Única cor saturada do sistema. A cor comunica URGÊNCIA
+     DE AÇÃO, não temperatura literal: afastado é vermelho
+     por ser o estado que exige ação imediata, embora seja
+     o mais frio da escada. */
+  --t-aguardando: #6E6E6E;   /* link há menos de 5 dias */
+  --t-afastado:   #E04B4B;   /* zero cadastros, aja hoje */
+  --t-frio:       #4C7FB8;   /* 1 a 4, ou parado 10 dias */
+  --t-quente:     #D2892F;   /* 5 a 9, ativa */
+  --t-muito:      #EA6B26;   /* 10 ou mais, meta batida */
+  --t-engajado:   #42A868;   /* 20+ em 3 semanas distintas */
+
+  /* Temperatura digital (Instagram) */
+  --d-ativo:      #42A868;
+  --d-irregular:  #D2892F;
+  --d-ausente:    #E04B4B;
+
+  /* ── SUPERFÍCIE PÚBLICA ─────────────────────────────── */
+  --paper:        #F5F6F6;
+  --paper-2:      #FFFFFF;
+  --paper-line:   rgba(0,0,0,.11);
+  --paper-ink:    #101010;
+  --paper-ink-2:  #5C5C5C;
+
+  /* TOKEN ÚNICO DA CAMPANHA.
+     Colore apenas: barra superior, avatar do convite,
+     botão primário e anel de foco. Trocar aqui basta. */
+  --campanha:     #1B4D3E;
+  --campanha-ink: #FFFFFF;
+
+  /* ── TIPOGRAFIA ─────────────────────────────────────── */
+  --font-display: 'Chakra Petch', system-ui, sans-serif;
+  --font-body:    'IBM Plex Sans', system-ui, sans-serif;
+  --font-data:    'IBM Plex Mono', ui-monospace, monospace;
+
+  /* Display: SEMPRE caixa alta, SEMPRE travado, nunca em texto corrido */
+  --display-tracking:  .055em;  /* título de página */
+  --section-tracking:  .075em;  /* título de seção */
+  --card-tracking:     .12em;   /* rótulo de card */
+  --eyebrow-tracking:  .22em;   /* metadado */
+
+  --fs-display: clamp(32px, 5.5vw, 54px);
+  --fs-section: clamp(21px, 3vw, 29px);
+  --fs-index:   clamp(38px, 6vw, 60px);  /* numeral de índice, peso 200 */
+  --fs-kpi:     38px;
+  --fs-card:    14px;
+  --fs-body:    15px;
+  --fs-small:   13px;
+  --fs-tiny:    11.5px;
+  --fs-eyebrow: 10px;
+
+  /* Corpo do formulário público: 16px é regra técnica.
+     Abaixo disso o iOS dá zoom automático no foco. */
+  --fs-input:   16px;
+
+  /* ── ESPAÇO (escala de 4) ───────────────────────────── */
+  --s1: 4px;  --s2: 8px;  --s3: 12px; --s4: 16px; --s5: 24px;
+  --s6: 32px; --s7: 48px; --s8: 64px; --s9: 96px;
+
+  /* ── RAIO ───────────────────────────────────────────── */
+  --r-sm: 6px;    /* input, chip, swatch */
+  --r-md: 10px;   /* card, tabela, lista */
+  --r-lg: 14px;   /* container da página pública */
+  --r-full: 99px; /* botão, pill, termômetro */
+
+  /* ── ALVO DE TOQUE ──────────────────────────────────── */
+  --touch-min:   44px;  /* mínimo em qualquer lugar */
+  --touch-form:  52px;  /* campo do formulário público */
+  --touch-cta:   56px;  /* botão de confirmação */
+
+  /* ── MOVIMENTO ──────────────────────────────────────── */
+  --ease:        cubic-bezier(.2,.7,.3,1);
+  --dur-micro:   160ms;  /* hover, foco */
+  --dur-reveal:  900ms;  /* preenchimento da silhueta, uma vez no load */
+}
+
+/* ═══════════════════════════════════════════════════════════
+   REGRAS DE APLICAÇÃO
+   Não são sugestões. São o que mantém o sistema coerente.
+   ═══════════════════════════════════════════════════════════
+
+   COR
+   1. No painel, branco é o acento. Não existe botão colorido.
+      Cor saturada é reservada exclusivamente para estado.
+   2. As seis cores do termômetro nunca aparecem em outro
+      contexto. Vermelho no painel significa sempre "aja".
+   3. A cor da campanha existe só na superfície pública, e só
+      em quatro lugares: topo, avatar, botão e foco.
+
+   TIPOGRAFIA
+   4. Chakra Petch nunca em texto corrido. Só título, rótulo
+      e botão, sempre em caixa alta e travado.
+   5. Todo número usa IBM Plex Mono com font-variant-numeric:
+      tabular-nums. Coluna que não alinha é coluna que não
+      se compara.
+   6. Peso 300 é o padrão do corpo. 500 só em nome próprio
+      e rótulo de campo.
+
+   DADO
+   7. Nenhum número absoluto aparece sozinho quando existe um
+      percentual que o qualifica. 54 cadastros não significa
+      nada sem o eleitorado do território ao lado.
+   8. Toda tabela de território ordena por penetração
+      CRESCENTE. A tela existe para mostrar onde falta.
+
+   INTERAÇÃO
+   9. Nenhuma lista sem próxima ação. Toda linha de liderança
+      tem um botão que faz alguma coisa.
+   10. Filtro é navegação. Clicar numa faixa do termômetro ou
+       numa linha de bairro filtra a lista.
+
+   VOZ
+   11. Verbo ativo, frase curta. "Confirmar apoio", não
+       "Submeter cadastro".
+   12. Estado vazio é direção, não desculpa. O bloco de
+       cobrança vazio diz "Ninguém parado. Toda a rede
+       cadastrou nos últimos 5 dias."
+   13. A mensagem de duplicidade NUNCA revela a qual liderança
+       a pessoa já pertence.
+
+   ACESSIBILIDADE
+   14. Foco visível em tudo que recebe teclado.
+   15. prefers-reduced-motion desliga toda animação.
+   16. Contraste mínimo AA no corpo. --ink-3 só em metadado
+       de 10 a 12px, nunca em texto que precise ser lido.
+   ═══════════════════════════════════════════════════════════ */
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+  }
+}
