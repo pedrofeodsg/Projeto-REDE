@@ -81,6 +81,41 @@ A mensagem de duplicidade nunca revela a qual liderança a pessoa já pertence.
 - Nenhum dado territorial hardcoded em componente. Sempre do banco.
 - Comentário em português, só onde a intenção não é óbvia pelo código.
 
+## Next.js 16 — convenções que mudaram
+
+O projeto roda Next 16, que quebra hábitos de versões anteriores. `@AGENTS.md`
+aponta para os guias oficiais em `node_modules/next/dist/docs/`. Leia antes de
+escrever código de rota.
+
+- **`middleware.ts` não existe mais.** É `proxy.ts` na raiz, com a função
+  exportada chamada `proxy`. Runtime nodejs, não edge.
+- **`cookies()`, `headers()`, `params` e `searchParams` são assíncronos.**
+  Acesso síncrono foi removido de vez.
+- **Tailwind v4.** Não existe `tailwind.config.ts`. O tema mora em
+  `@theme inline` dentro de `app/globals.css`.
+- **Turbopack é o bundler padrão.**
+- Tipos de rota (`LayoutProps<"/">`, `PageProps<"/[slug]">`) são globais e vêm
+  de `npx next typegen`. Rode depois de criar rota nova.
+
+## Clientes Supabase
+
+Três arquivos em `/lib/supabase`, com fronteira nítida:
+
+- `server.ts` → `createServerClient()`, service role, **ignora RLS**. Só a
+  superfície pública usa. Nenhuma tela do admin.
+- `auth.ts` → `createAuthClient()`, sessão do operador. É o cliente do admin
+  inteiro, e é ele que faz a RLS valer de verdade.
+- `proxy.ts` → renova a sessão e protege as rotas de `/lib/auth/rotas.ts`.
+
+`SUPABASE_ANON_KEY` existe **sem** o prefixo `NEXT_PUBLIC_`. Ela é a `apikey`
+que o endpoint de auth exige, e todo o fluxo roda em Server Action, então
+nenhuma chave chega ao navegador. O role `anon` continua sem policy nenhuma.
+`NEXT_PUBLIC_SUPABASE_ANON_KEY` continua proibida.
+
+O grupo `(admin)` não tem prefixo na URL e `/[slug]` é dinâmico na raiz, então
+o proxy não deduz o que é admin. **Tela nova dentro de `(admin)` exige entrada
+em `PREFIXOS_ADMIN`**, em `/lib/auth/rotas.ts`. Sem isso ela nasce pública.
+
 ## O que não fazer sem perguntar
 
 - Adicionar campo ao formulário público (são quatro, e só quatro).
@@ -104,18 +139,39 @@ Guia de execução por bloco, com prompts e critérios de verificação:
 
 # Estado atual
 
-**Pré-voo ✅ concluído em 16/08/2026.**
+**Pré-voo ✅ concluído em 16/08/2026.** Pasta, git, `/docs`, `CLAUDE.md`,
+`.env.example`, `.gitignore` e Prompt 0 de calibragem.
 
-- [x] Pasta do projeto criada e repositório git inicializado
-- [x] `/docs` com PRD, escopo, design tokens, referência visual e guia de blocos
-- [x] `CLAUDE.md` na raiz
-- [x] `.env.example` e `.gitignore`
-- [x] Prompt 0 (calibragem) executado
-- [ ] Projeto Supabase criado e chaves em `.env.local`
+**Bloco 1 · Fundação (RF-02) — código concluído em 16/08/2026, aguardando
+verificação com o banco.**
+
+- [x] Next.js 16 + App Router + TypeScript estrito + Tailwind v4 + Shadcn/ui
+      (base radix, preset nova)
+- [x] Estrutura de pastas da Seção 5.4 do PRD
+- [x] `app/globals.css` importando `/docs/design-tokens.css` e expondo os tokens
+      como utilitários (`bg-void`, `text-ink-2`, `border-line`, `text-t-afastado`,
+      `font-display`, `text-kpi`, `tracking-eyebrow`…)
+- [x] Superfícies `.admin` e `.paper` remapeando os nomes semânticos do Shadcn,
+      então o mesmo `<Button>` nasce certo nos dois mundos
+- [x] Chakra Petch, IBM Plex Sans e IBM Plex Mono via `next/font`, self-hosted
+- [x] `lib/supabase/server.ts` (service role) e `lib/supabase/auth.ts` (sessão)
+- [x] `proxy.ts` na raiz protegendo `PREFIXOS_ADMIN` e renovando a sessão
+- [x] Migration `supabase/migrations/0001_operadores.sql` com enum
+      `papel_operador`, RLS ativa e policy de leitura só do próprio registro
+- [x] `/login` com e-mail e senha, sem cadastro público e sem recuperação
+- [x] `/(admin)/painel` vazia, com header e nome do operador logado
+- [x] Tela de "conta sem vínculo" para quando existir usuário no Auth sem linha
+      em `operadores` — evita o laço de redirecionamento com o proxy
+- [x] `npm run build` e `npm run typecheck` verdes
+- [x] Busca por `NEXT_PUBLIC_SUPABASE_ANON_KEY` retorna zero ocorrências
+- [ ] Migration aplicada no banco e primeiro operador criado
+- [ ] `SUPABASE_ANON_KEY` preenchida em `.env.local`
+- [ ] Login testado ponta a ponta
 - [ ] Repositório no GitHub
-- [ ] Projeto na Vercel
+- [ ] Deploy na Vercel
 
-**Próximo:** Bloco 1 · Fundação (RF-02). Depende das chaves do Supabase.
+**Próximo:** fechar a verificação do Bloco 1 e seguir para o Bloco 2 · Base
+Territorial (RF-01), que depende da decisão nº 1 abaixo.
 
 # Decisões pendentes do Pedro
 
@@ -129,20 +185,27 @@ Levantadas na leitura do PRD. Cada uma trava o bloco indicado.
    TSE; (b) segurar o Bloco 2 até levantar as seções na 59ª ZE. **Não inventar
    número** — a seção é a chave do cruzamento com o boletim de urna no Bloco 8.
 
-2. **Cliente Supabase no admin (trava o Bloco 1).** Se o admin usar service role,
-   a RLS é ignorada e a diferença entre `coordenacao` e `operador` deixa de ser
-   regra de banco. Proposta: público = service role no servidor; admin = cliente
-   de sessão do usuário, com RLS valendo de verdade (PRD 10.2).
-
-3. **Território conta por local de votação, não por moradia (trava o Bloco 4).**
+2. **Território conta por local de votação, não por moradia (trava o Bloco 4).**
    `bairro_moradia_id` é informativo e não entra na penetração. Falta definir o
    tratamento de quem tem `local_votacao_id` nulo sem ser `fora_do_municipio`.
 
-4. **FKs de autoria.** `interacoes.autor`, `demandas.responsavel` e
+3. **FKs de autoria.** `interacoes.autor`, `demandas.responsavel` e
    `envios.operador` apontam para `operadores`, não para `pessoas`.
 
-5. **Cor da campanha.** `--campanha` está em `#1B4D3E` (placeholder). Trocar em
+4. **Cor da campanha.** `--campanha` está em `#1B4D3E` (placeholder). Trocar em
    `/docs/design-tokens.css` quando a identidade for definida. Não bloqueia nada.
+
+# Decisões já tomadas
+
+- **Cliente Supabase no admin (Bloco 1).** Público usa service role no servidor;
+  admin usa cliente de sessão, com RLS valendo de verdade, como manda o PRD 10.2.
+  Se o admin usasse service role, a diferença entre `coordenacao` e `operador`
+  deixaria de ser regra de banco e viraria regra de tela.
+- **`SUPABASE_ANON_KEY` server-only (Bloco 1).** O endpoint de auth do Supabase
+  exige uma `apikey`, e usar a service role para isso cria um caminho em que uma
+  requisição sem sessão cai como service role. A chave `anon` sem prefixo
+  `NEXT_PUBLIC_` resolve sem furar o desenho: nada chega ao navegador e o role
+  `anon` segue sem policy.
 
 # Insumos que não são código
 

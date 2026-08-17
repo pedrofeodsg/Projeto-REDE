@@ -1,0 +1,200 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+/* Fonte única de verdade do design. Trocar --campanha lá troca em todo lugar. */
+@import "../docs/design-tokens.css";
+
+@custom-variant dark (&:is(.dark *));
+
+/* ═══════════════════════════════════════════════════════════
+   Tokens do REDE expostos como utilitários do Tailwind.
+   bg-void, text-ink-2, border-line, text-t-afastado, font-display…
+   ═══════════════════════════════════════════════════════════ */
+@theme inline {
+    /* nomes semânticos do Shadcn — o valor real vem da superfície ativa */
+    --color-background: var(--background);
+    --color-foreground: var(--foreground);
+    --color-card: var(--card);
+    --color-card-foreground: var(--card-foreground);
+    --color-popover: var(--popover);
+    --color-popover-foreground: var(--popover-foreground);
+    --color-primary: var(--primary);
+    --color-primary-foreground: var(--primary-foreground);
+    --color-secondary: var(--secondary);
+    --color-secondary-foreground: var(--secondary-foreground);
+    --color-muted: var(--muted);
+    --color-muted-foreground: var(--muted-foreground);
+    --color-accent: var(--accent);
+    --color-accent-foreground: var(--accent-foreground);
+    --color-destructive: var(--destructive);
+    --color-border: var(--border);
+    --color-input: var(--input);
+    --color-ring: var(--ring);
+
+    --radius-sm: calc(var(--radius) * 0.6);
+    --radius-md: calc(var(--radius) * 0.8);
+    --radius-lg: var(--radius);
+    --radius-xl: calc(var(--radius) * 1.4);
+    --radius-2xl: calc(var(--radius) * 1.8);
+
+    /* superfície admin */
+    --color-void: var(--void);
+    --color-surface: var(--surface);
+    --color-surface-2: var(--surface-2);
+    --color-surface-3: var(--surface-3);
+    --color-line: var(--line);
+    --color-line-2: var(--line-2);
+    --color-line-3: var(--line-3);
+    --color-ink: var(--ink);
+    --color-ink-2: var(--ink-2);
+    --color-ink-3: var(--ink-3);
+
+    /* termômetro de cadastro — única cor saturada do sistema */
+    --color-t-aguardando: var(--t-aguardando);
+    --color-t-afastado: var(--t-afastado);
+    --color-t-frio: var(--t-frio);
+    --color-t-quente: var(--t-quente);
+    --color-t-muito: var(--t-muito);
+    --color-t-engajado: var(--t-engajado);
+
+    /* termômetro digital */
+    --color-d-ativo: var(--d-ativo);
+    --color-d-irregular: var(--d-irregular);
+    --color-d-ausente: var(--d-ausente);
+
+    /* superfície pública */
+    --color-paper: var(--paper);
+    --color-paper-2: var(--paper-2);
+    --color-paper-line: var(--paper-line);
+    --color-paper-ink: var(--paper-ink);
+    --color-paper-ink-2: var(--paper-ink-2);
+    --color-campanha: var(--campanha);
+    --color-campanha-ink: var(--campanha-ink);
+
+    /* tipografia */
+    --font-display: var(--font-display);
+    --font-body: var(--font-body);
+    --font-data: var(--font-data);
+    --font-sans: var(--font-body);
+    --font-mono: var(--font-data);
+
+    --text-display: var(--fs-display);
+    --text-section: var(--fs-section);
+    --text-index: var(--fs-index);
+    --text-kpi: var(--fs-kpi);
+    --text-card: var(--fs-card);
+    --text-body: var(--fs-body);
+    --text-small: var(--fs-small);
+    --text-tiny: var(--fs-tiny);
+    --text-eyebrow: var(--fs-eyebrow);
+    --text-input: var(--fs-input);
+
+    --tracking-display: var(--display-tracking);
+    --tracking-section: var(--section-tracking);
+    --tracking-card: var(--card-tracking);
+    --tracking-eyebrow: var(--eyebrow-tracking);
+
+    /* alvo de toque */
+    --spacing-touch: var(--touch-min);
+    --spacing-touch-form: var(--touch-form);
+    --spacing-touch-cta: var(--touch-cta);
+
+    --ease-rede: var(--ease);
+}
+
+/* As três famílias entram por next/font, que gera os nomes reais em
+   --font-chakra / --font-plex-sans / --font-plex-mono. Esta redefinição vem
+   depois do import dos tokens de propósito: ela vence por ordem de origem. */
+:root {
+    --font-display: var(--font-chakra), system-ui, sans-serif;
+    --font-body: var(--font-plex-sans), system-ui, sans-serif;
+    --font-data: var(--font-plex-mono), ui-monospace, monospace;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   Duas superfícies, um esqueleto.
+   Os nomes semânticos do Shadcn são remapeados por superfície,
+   então o mesmo <Button> nasce certo nos dois mundos.
+   O padrão do documento é a superfície admin.
+   ═══════════════════════════════════════════════════════════ */
+:root,
+.admin {
+    --background: var(--void);
+    --foreground: var(--ink);
+    --card: var(--surface);
+    --card-foreground: var(--ink);
+    --popover: var(--surface-2);
+    --popover-foreground: var(--ink);
+    --primary: var(--ink);
+    --primary-foreground: var(--void);
+    --secondary: var(--surface-3);
+    --secondary-foreground: var(--ink);
+    --muted: var(--surface-3);
+    --muted-foreground: var(--ink-2);
+    --accent: var(--surface-2);
+    --accent-foreground: var(--ink);
+    --destructive: var(--t-afastado);
+    --border: var(--line);
+    --input: var(--line-2);
+    --ring: var(--line-3);
+    --radius: var(--r-md);
+}
+
+.paper {
+    --background: var(--paper);
+    --foreground: var(--paper-ink);
+    --card: var(--paper-2);
+    --card-foreground: var(--paper-ink);
+    --popover: var(--paper-2);
+    --popover-foreground: var(--paper-ink);
+    --primary: var(--campanha);
+    --primary-foreground: var(--campanha-ink);
+    --secondary: var(--paper-2);
+    --secondary-foreground: var(--paper-ink);
+    --muted: var(--paper-2);
+    --muted-foreground: var(--paper-ink-2);
+    --accent: var(--paper-2);
+    --accent-foreground: var(--paper-ink);
+    --destructive: #c0392b;
+    --border: var(--paper-line);
+    --input: var(--paper-line);
+    --ring: var(--campanha);
+    --radius: var(--r-lg);
+}
+
+@layer base {
+    * {
+        @apply border-border outline-ring/50;
+    }
+
+    html {
+        @apply font-body;
+        -webkit-text-size-adjust: 100%;
+    }
+
+    body {
+        @apply bg-background text-foreground;
+        font-weight: 300;
+        font-size: var(--fs-body);
+        -webkit-font-smoothing: antialiased;
+    }
+
+    /* Regra 5 dos tokens: coluna que não alinha é coluna que não se compara. */
+    .font-data,
+    [class*="font-data"] {
+        font-variant-numeric: tabular-nums;
+    }
+
+    /* Regra 4: display nunca em texto corrido. */
+    .font-display,
+    [class*="font-display"] {
+        text-transform: uppercase;
+    }
+
+    /* Regra 14: foco visível em tudo que recebe teclado. */
+    :focus-visible {
+        outline: 2px solid var(--ring);
+        outline-offset: 2px;
+    }
+}
