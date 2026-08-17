@@ -116,6 +116,18 @@ O grupo `(admin)` não tem prefixo na URL e `/[slug]` é dinâmico na raiz, ent�
 o proxy não deduz o que é admin. **Tela nova dentro de `(admin)` exige entrada
 em `PREFIXOS_ADMIN`**, em `/lib/auth/rotas.ts`. Sem isso ela nasce pública.
 
+## Acesso ao painel
+
+Não existe login por e-mail. A coordenação entra por **chave de acesso**, e a
+conversão para o endereço interno que o Supabase Auth exige mora em
+`/lib/auth/acesso.ts` (`painelsistema` → `painelsistema@rede.local`). O e-mail
+interno nunca aparece na tela e nunca recebe mensagem. Toda escrita e leitura de
+chave passa por `emailDaChave()` e `chaveDoEmail()`.
+
+Manter o Supabase Auth em vez de inventar sessão própria é o que permite a RLS
+continuar sendo regra de banco: o JWT do login é o que faz o Postgres resolver
+a role como `authenticated`.
+
 ## O que não fazer sem perguntar
 
 - Adicionar campo ao formulário público (são quatro, e só quatro).
@@ -158,14 +170,15 @@ verificação com o banco.**
 - [x] `proxy.ts` na raiz protegendo `PREFIXOS_ADMIN` e renovando a sessão
 - [x] Migration `supabase/migrations/0001_operadores.sql` com enum
       `papel_operador`, RLS ativa e policy de leitura só do próprio registro
-- [x] `/login` com e-mail e senha, sem cadastro público e sem recuperação
+- [x] `/login` por chave de acesso e senha, sem cadastro público e sem recuperação
 - [x] `/(admin)/painel` vazia, com header e nome do operador logado
 - [x] Tela de "conta sem vínculo" para quando existir usuário no Auth sem linha
       em `operadores` — evita o laço de redirecionamento com o proxy
 - [x] `npm run build` e `npm run typecheck` verdes
 - [x] Busca por `NEXT_PUBLIC_SUPABASE_ANON_KEY` retorna zero ocorrências
-- [ ] Migration aplicada no banco e primeiro operador criado
-- [ ] `SUPABASE_ANON_KEY` preenchida em `.env.local`
+- [x] `SUPABASE_ANON_KEY` preenchida e validada contra o Supabase
+- [x] `/painel` sem sessão devolve 307 para `/login`; `/` devolve 307 para `/painel`
+- [ ] Migration aplicada no banco e primeira chave de acesso criada
 - [ ] Login testado ponta a ponta
 - [ ] Repositório no GitHub
 - [ ] Deploy na Vercel

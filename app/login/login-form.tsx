@@ -17,16 +17,18 @@ export function LoginForm() {
     <form action={acao} className="flex flex-col gap-5">
       <div className="flex flex-col gap-2">
         <Label
-          htmlFor="email"
+          htmlFor="chave"
           className="font-display text-eyebrow tracking-eyebrow text-ink-3"
         >
-          E-mail
+          Chave de acesso
         </Label>
         <Input
-          id="email"
-          name="email"
-          type="email"
-          autoComplete="email"
+          id="chave"
+          name="chave"
+          type="text"
+          autoComplete="username"
+          autoCapitalize="none"
+          spellCheck={false}
           required
           autoFocus
           disabled={pendente}

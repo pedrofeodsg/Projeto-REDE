@@ -2,6 +2,7 @@
 
 import { redirect } from "next/navigation";
 
+import { emailDaChave } from "@/lib/auth/acesso";
 import { createAuthClient } from "@/lib/supabase/auth";
 
 export type EstadoLogin = {
@@ -12,23 +13,23 @@ export async function entrar(
   _estadoAnterior: EstadoLogin,
   formData: FormData,
 ): Promise<EstadoLogin> {
-  const email = String(formData.get("email") ?? "").trim();
+  const chave = String(formData.get("chave") ?? "").trim();
   const senha = String(formData.get("senha") ?? "");
 
-  if (!email || !senha) {
-    return { erro: "Preencha e-mail e senha." };
+  if (!chave || !senha) {
+    return { erro: "Preencha a chave de acesso e a senha." };
   }
 
   const supabase = await createAuthClient();
   const { error } = await supabase.auth.signInWithPassword({
-    email,
+    email: emailDaChave(chave),
     password: senha,
   });
 
   // Mensagem única de propósito: dizer qual dos dois está errado entrega
-  // quais e-mails existem na base.
+  // quais chaves existem.
   if (error) {
-    return { erro: "E-mail ou senha não conferem." };
+    return { erro: "Chave de acesso ou senha não conferem." };
   }
 
   redirect("/painel");

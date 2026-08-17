@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 
 import { sair } from "@/app/login/actions";
 import { Button } from "@/components/ui/button";
+import { chaveDoEmail } from "@/lib/auth/acesso";
 import { sessaoAdmin } from "@/lib/auth/operador";
 
 // Toda tela do admin depende da sessão do operador. Nenhuma é estática.
@@ -36,7 +37,7 @@ export default async function AdminLayout({
         <div className="flex items-center gap-4">
           <div className="text-right">
             <p className="text-small font-medium text-ink">
-              {sessao.operador?.nome ?? sessao.email}
+              {sessao.operador?.nome ?? chaveDoEmail(sessao.email)}
             </p>
             <p className="font-display text-eyebrow tracking-eyebrow text-ink-3">
               {sessao.operador
@@ -58,20 +59,24 @@ export default async function AdminLayout({
       </header>
 
       <main className="flex-1 px-5 py-8 sm:px-8">
-        {sessao.operador ? children : <ContaSemOperador email={sessao.email} />}
+        {sessao.operador ? (
+          children
+        ) : (
+          <ContaSemOperador chave={chaveDoEmail(sessao.email)} />
+        )}
       </main>
     </div>
   );
 }
 
-function ContaSemOperador({ email }: { email: string | null }) {
+function ContaSemOperador({ chave }: { chave: string | null }) {
   return (
     <div className="mx-auto max-w-xl">
       <h1 className="font-display tracking-display text-section text-ink">
         Conta sem vínculo
       </h1>
       <p className="mt-4 text-body text-ink-2">
-        A conta {email ? <strong className="text-ink">{email}</strong> : "atual"}{" "}
+        A chave {chave ? <strong className="text-ink">{chave}</strong> : "atual"}{" "}
         existe no Supabase Auth, mas não tem linha correspondente na tabela{" "}
         <code className="font-data text-small text-ink">operadores</code>. Sem
         ela o sistema não sabe qual é o papel dessa pessoa, e por segurança não
