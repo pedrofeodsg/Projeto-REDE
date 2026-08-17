@@ -116,6 +116,20 @@ O grupo `(admin)` não tem prefixo na URL e `/[slug]` é dinâmico na raiz, ent�
 o proxy não deduz o que é admin. **Tela nova dentro de `(admin)` exige entrada
 em `PREFIXOS_ADMIN`**, em `/lib/auth/rotas.ts`. Sem isso ela nasce pública.
 
+## Comandos
+
+```bash
+npm run dev          # http://localhost:3000
+npm run build        # produção
+npm run typecheck    # tsc --noEmit
+npm run verifica -- painelsistema '<senha>'   # RLS e login contra o banco real
+```
+
+`npm run verifica` é o teste que o item 5 dos Critérios de Pronto (PRD 11.4)
+exige: provar que a leitura sem sessão falha, em vez de confiar em que o
+frontend não pede. Sem os argumentos, roda só as checagens que não precisam de
+senha. A senha nunca entra no repositório.
+
 ## Acesso ao painel
 
 Não existe login por e-mail. A coordenação entra por **chave de acesso**, e a
@@ -178,8 +192,10 @@ verificação com o banco.**
 - [x] Busca por `NEXT_PUBLIC_SUPABASE_ANON_KEY` retorna zero ocorrências
 - [x] `SUPABASE_ANON_KEY` preenchida e validada contra o Supabase
 - [x] `/painel` sem sessão devolve 307 para `/login`; `/` devolve 307 para `/painel`
-- [ ] Migration aplicada no banco e primeira chave de acesso criada
-- [ ] Login testado ponta a ponta
+- [x] Migration aplicada no banco (`operadores`, enum, RLS, 1 policy)
+- [x] Chave de acesso `painelsistema` criada e vinculada a `coordenacao`
+- [x] `npm run verifica` verde: login autentica, sessão vê só o próprio
+      registro, leitura sem sessão devolve zero linhas
 - [ ] Repositório no GitHub
 - [ ] Deploy na Vercel
 
