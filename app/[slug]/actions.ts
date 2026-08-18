@@ -7,16 +7,20 @@ import {
   COOKIE_OBRIGADO,
   getLiderancaPorSlug,
   primeiroNome,
+  registrarApoiador,
 } from "@/lib/pessoas/publico";
 import { normalizarTelefone } from "@/lib/pessoas/telefone";
 import { permitirCadastro } from "@/lib/rate-limit";
-import { createServerClient } from "@/lib/supabase/server";
 
 export type EstadoCadastro = {
   erro: string | null;
   campo?: "nome" | "telefone" | "bairro" | "local";
 };
 
+/**
+ * Cola de entrada e saída: valida o formulário, chama a regra e decide para
+ * onde a pessoa vai. A regra de duplicidade mora em registrarApoiador().
+ */
 export async function confirmarApoio(
   slug: string,
   _anterior: EstadoCadastro,
@@ -27,7 +31,9 @@ export async function confirmarApoio(
     return { erro: "Este convite não está mais disponível." };
   }
 
-  const nome = String(formData.get("nome") ?? "").trim().replace(/\s+/g, " ");
+  const nome = String(formData.get("nome") ?? "")
+    .trim()
+    .replace(/\s+/g, " ");
   if (nome.length < 3 || !nome.includes(" ")) {
     return { erro: "Escreva seu nome completo.", campo: "nome" };
   }
@@ -52,53 +58,20 @@ export async function confirmarApoio(
     };
   }
 
-  const supabase = createServerClient();
-
-  // Telefone é chave única global. Duplicidade é resolvida AQUI, no servidor —
-  // nunca no formulário, e nunca revelando de quem a pessoa é.
-  const { data: existente } = await supabase
-    .from("pessoas")
-    .select("id")
-    .eq("telefone", telefone.telefone)
-    .maybeSingle();
-
-  if (existente) {
-    // Não cria registro. Não altera a atribuição existente. O primeiro
-    // cadastro prevalece, e a tentativa vira fila de arbitragem privada.
-    await supabase.from("conflitos_cadastro").insert({
-      telefone: telefone.telefone,
-      nome_tentado: nome,
-      lideranca_tentou_id: lideranca.id,
-      pessoa_existente_id: existente.id,
-    });
-
-    await gravarCookieDeObrigado(nome, true);
-    redirect(`/${slug}/obrigado`);
-  }
-
-  const { error } = await supabase.from("pessoas").insert({
+  const resultado = await registrarApoiador({
+    liderancaId: lideranca.id,
     nome,
     telefone: telefone.telefone,
-    nivel: "apoiador",
-    origem: "link",
-    indicado_por: lideranca.id,
-    bairro_moradia_id: bairroId || null,
-    local_votacao_id: localId || null,
-    fora_do_municipio: foraDoMunicipio,
+    bairroId: bairroId || null,
+    localId: localId || null,
+    foraDoMunicipio,
   });
 
-  if (error) {
-    // Corrida entre dois envios do mesmo número: o banco recusou pela unique.
-    // Do ponto de vista de quem preencheu, o resultado é o mesmo.
-    if (error.message.includes("pessoas_telefone_key")) {
-      await gravarCookieDeObrigado(nome, true);
-      redirect(`/${slug}/obrigado`);
-    }
-
+  if (resultado.situacao === "erro") {
     return { erro: "Não conseguimos registrar agora. Tente de novo em instantes." };
   }
 
-  await gravarCookieDeObrigado(nome, false);
+  await gravarCookieDeObrigado(nome, resultado.situacao === "ja_estava");
   redirect(`/${slug}/obrigado`);
 }
 

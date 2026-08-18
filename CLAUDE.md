@@ -130,6 +130,7 @@ node scripts/extrai-tse.mjs <csv>   # refaz a fonte a partir do arquivo oficial
 
 npm test               # funções canônicas (telefone, handle, slug)
 npm run verifica -- painelsistema '<senha>'   # RLS e login contra o banco real
+npm run testa:captura  # a regra de captura pública contra o banco real
 ```
 
 `npm run verifica` é o teste que o item 5 dos Critérios de Pronto (PRD 11.4)
@@ -243,9 +244,46 @@ verificação com o banco.**
 - [x] 14 verificações contra o banco real: duplicidade, formato de telefone,
       slug de apoiador, trava do link e RLS de `pessoas` sem sessão
 
-**Próximo:** Bloco 3B · Página pública `/[slug]`. **É o componente crítico do
-sistema inteiro** — cada dia fora do ar é conversa que a liderança teve e não
-ficou registrada.
+**Bloco 3B · Página Pública (RF-08 a RF-12) ✅ concluído em 17/08/2026.**
+
+- [x] Migration `0004_captura_publica.sql`: `conflitos_cadastro` e
+      `tentativas_cadastro`, ambas sem policy de escrita
+- [x] `/[slug]` Server Component por service role; slug inexistente ou
+      liderança inativa devolve 404
+- [x] Quatro campos, e só quatro. Cascata de colégio com os do bairro no topo
+      e "Ver escolas de outros bairros" abrindo o resto
+- [x] "Moro em outro município" esconde o local e grava `fora_do_municipio`
+- [x] Duplicidade resolvida no servidor: não cria, não altera atribuição, grava
+      conflito e devolve sucesso neutro
+- [x] Rate limit por IP em HMAC, 30 por 15 minutos, contado em TypeScript
+- [x] `/[slug]/obrigado` com Web Share API compartilhando o link DA LIDERANÇA e
+      "Cadastrar mais um"; primeiro nome viaja por cookie de 10 min
+- [x] Open Graph com imagem 1200×630 gerada por liderança, lendo a cor da
+      campanha de `docs/design-tokens.css`
+- [x] Proxy não valida sessão em rota pública — era uma ida ao Supabase por
+      visita no componente com meta de LCP
+- [x] **189 KB comprimidos**, medido em produção (limite RNF-05: 300 KB)
+- [x] Zero chaves nos bundles do cliente e no HTML servido
+- [x] `npm run testa:captura` com 22 verificações contra o banco real
+
+**Próximo:** Bloco 3C · Mensagens e painel mínimo (RF-17 a RF-19, RF-28 a
+RF-31). Fecha o bloco urgente. Critério de saída: 70 lideranças com link
+enviado e envio registrado.
+
+# Onde a regra mora
+
+A regra de captura mora em `lib/pessoas/publico.ts#registrarApoiador`, e não
+dentro da Server Action. A ação é só validação de formulário, cookie e
+redirecionamento.
+
+O motivo é testabilidade: `npm run testa:captura` exercita a função de verdade
+contra o banco, sem simular navegador. Roda com `--conditions=react-server`,
+que é a condição que faz o pacote `server-only` resolver para o módulo vazio,
+como acontece dentro do Next.
+
+Pelo mesmo motivo, **módulos em `/lib` importam por caminho relativo com
+extensão `.ts`**, não pelo alias `@/` — o alias só existe dentro do bundler, e
+sem ele o teste não alcança o código real.
 
 # Decisões pendentes do Pedro
 

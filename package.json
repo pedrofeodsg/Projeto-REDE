@@ -12,7 +12,8 @@
     "validate:seed": "node scripts/valida-seed.mjs",
     "seed:gerar": "node scripts/gera-seed.mjs",
     "seed:aplicar": "node scripts/aplica-seed.mjs",
-    "test": "node --test \"lib/**/*.test.ts\""
+    "test": "node --test \"lib/**/*.test.ts\"",
+    "testa:captura": "node --conditions=react-server scripts/testa-captura.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.4",
