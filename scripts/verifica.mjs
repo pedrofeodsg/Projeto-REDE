@@ -74,6 +74,21 @@ if (erroAnon) {
   falha(`operadores VAZOU ${anon.length} linha(s) sem sessão`);
 }
 
+// A rota pública circula em milhares de conversas de WhatsApp. Se `pessoas`
+// vazar sem sessão, a URL vira vetor de leitura da base inteira — nome,
+// telefone e a quem cada apoiador está atribuído.
+const { data: pessoasAnon, error: erroPessoas } = await semSessao()
+  .from("pessoas")
+  .select("id, nome, telefone");
+
+if (erroPessoas) {
+  ok(`pessoas bloqueada sem sessão (${erroPessoas.message})`);
+} else if (pessoasAnon.length === 0) {
+  ok("pessoas devolve zero linhas sem sessão");
+} else {
+  falha(`pessoas VAZOU ${pessoasAnon.length} linha(s) com telefone`);
+}
+
 if (chave && senha) {
   console.log("\nLogin ponta a ponta\n");
 

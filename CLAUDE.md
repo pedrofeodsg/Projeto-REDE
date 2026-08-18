@@ -128,7 +128,9 @@ npm run seed:aplicar   # (re)carrega bairros e locais no banco, idempotente
 npm run seed:gerar     # regrava os .sql a partir da fonte do TSE
 node scripts/extrai-tse.mjs <csv>   # refaz a fonte a partir do arquivo oficial
 
+npm test             # funções canônicas (telefone, handle, slug)
 npm run verifica -- painelsistema '<senha>'   # RLS e login contra o banco real
+npm run seed:aplicar # recarrega a base territorial (idempotente)
 ```
 
 `npm run verifica` é o teste que o item 5 dos Critérios de Pronto (PRD 11.4)
@@ -223,9 +225,28 @@ verificação com o banco.**
       macro-regiões e as duas tabelas com somas no rodapé
 - [x] Navegação no header do admin
 
-**Próximo:** Bloco 3 · Captura (RF-03, RF-04, RF-08 a RF-13, RF-17 a RF-19,
-RF-28 a RF-31). **É o único urgente.** Dividido em 3A pessoas e lideranças,
-3B página pública e 3C mensagens e painel mínimo.
+**Bloco 3A · Pessoas e Lideranças (RF-03, RF-04) ✅ concluído em 17/08/2026.**
+
+- [x] Migration `0003_pessoas.sql`: `pessoas` única e autorreferente, `tags`,
+      `pessoa_tags`, enums `nivel_pessoa` e `origem_pessoa`, `papel_atual()`
+- [x] Invariantes travadas no banco: `CHECK` de telefone `^55[0-9]{10,11}$`,
+      slug só para liderança, fora do município sem colégio daqui, ninguém
+      indica a si mesma
+- [x] Trigger bloqueia edição de `meta` por operador (RF-02) — RLS não
+      distingue coluna
+- [x] Trigger trava o `slug` depois do primeiro cadastro recebido (RF-04)
+- [x] `lib/pessoas`: `normalizarTelefone`, `normalizarHandle`, `gerarSlugUnico`
+      com lista de rotas reservadas. **33 testes** em `node:test`, sem
+      dependência nova — o Node 24 roda TypeScript direto (`npm test`)
+- [x] `/liderancas` com filtros combinados de bairro, macro-região e tag
+- [x] `/liderancas/nova` e `/liderancas/[id]` com cascata de colégio, região
+      derivada do âncora, tags e o link travando sozinho
+- [x] 14 verificações contra o banco real: duplicidade, formato de telefone,
+      slug de apoiador, trava do link e RLS de `pessoas` sem sessão
+
+**Próximo:** Bloco 3B · Página pública `/[slug]`. **É o componente crítico do
+sistema inteiro** — cada dia fora do ar é conversa que a liderança teve e não
+ficou registrada.
 
 # Decisões pendentes do Pedro
 
