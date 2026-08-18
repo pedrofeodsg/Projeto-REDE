@@ -15,7 +15,21 @@ import { createServerClient } from "@/lib/supabase/server";
  * A chave do HMAC é RATE_LIMIT_SALT quando existir; na falta dela, a service
  * role, que já é server-only e está sempre presente. Nos dois casos o segredo
  * nunca sai do servidor.
+ *
+ * A contagem é feita aqui, e não numa função SQL: duas requisições simultâneas
+ * do mesmo IP poderiam passar juntas, e isso não muda nada — o objetivo é
+ * conter flood, não contar com exatidão transacional.
  */
+
+/**
+ * Limite generoso de propósito. Quem precisa passar é a liderança cadastrando
+ * dez pessoas seguidas no próprio celular, numa caminhada — o comportamento
+ * que o sistema mais quer. Quem precisa parar é script, e script não preenche
+ * quatro campos em vinte segundos.
+ */
+const LIMITE = 30;
+const JANELA_MINUTOS = 15;
+const RETENCAO_HORAS = 2;
 
 function chaveHmac(): string {
   return (
@@ -38,21 +52,31 @@ export async function ipHash(): Promise<string> {
   return createHmac("sha256", chaveHmac()).update(ip).digest("hex");
 }
 
-/**
- * Conta, decide e registra numa transação só, no banco — porque em serverless
- * cada requisição pode cair numa instância diferente, e contador em memória
- * não limita nada.
- */
 export async function permitirCadastro(): Promise<boolean> {
   const supabase = createServerClient();
+  const hash = await ipHash();
+  const desde = new Date(Date.now() - JANELA_MINUTOS * 60_000).toISOString();
 
-  const { data, error } = await supabase.rpc("registrar_tentativa_cadastro", {
-    p_ip_hash: await ipHash(),
-  });
+  const { count, error } = await supabase
+    .from("tentativas_cadastro")
+    .select("id", { count: "exact", head: true })
+    .eq("ip_hash", hash)
+    .gt("criado_em", desde);
 
   // Falha de infraestrutura não pode derrubar captação: o custo de deixar
   // passar é um cadastro a mais, o de barrar é um apoiador perdido.
   if (error) return true;
 
-  return data !== false;
+  if ((count ?? 0) >= LIMITE) return false;
+
+  await supabase.from("tentativas_cadastro").insert({ ip_hash: hash });
+
+  // Faxina oportunista, para a tabela nunca crescer sem limite. Uma vez a cada
+  // vinte cadastros é suficiente e não pesa no caminho crítico.
+  if (Math.random() < 0.05) {
+    const limite = new Date(Date.now() - RETENCAO_HORAS * 3_600_000).toISOString();
+    await supabase.from("tentativas_cadastro").delete().lt("criado_em", limite);
+  }
+
+  return true;
 }

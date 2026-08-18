@@ -1,7 +1,9 @@
 -- Bloco 3B · Captura Pública · RF-10 e RNF-17
 --
 -- Duas tabelas que só a superfície pública alimenta, e que nenhum apoiador
--- jamais enxerga.
+-- jamais enxerga. Nenhuma função: a contagem do rate limit mora no TypeScript,
+-- em lib/rate-limit.ts, porque a garantia não precisa ser transacional e um
+-- objeto a menos é um passo manual a menos.
 --
 -- Idempotente: a aplicação ainda é manual, pelo SQL Editor.
 
@@ -56,49 +58,8 @@ create table if not exists public.tentativas_cadastro (
 create index if not exists tentativas_cadastro_ip_idx
   on public.tentativas_cadastro (ip_hash, criado_em desc);
 
-alter table public.tentativas_cadastro enable row level security;
--- Nenhuma policy: só service role toca nesta tabela.
-
 comment on table public.tentativas_cadastro is
   'Janela deslizante do rate limit da página pública. Guarda HMAC do IP, nunca o IP.';
 
-/*
- * Conta, decide e registra em uma transação só.
- *
- * O limite é generoso de propósito: a liderança que cadastra dez pessoas
- * seguidas no próprio celular, numa caminhada, é o comportamento que o sistema
- * mais quer. Quem o limite precisa parar é script, e script não preenche
- * quatro campos em vinte segundos.
- */
-create or replace function public.registrar_tentativa_cadastro(
-  p_ip_hash text,
-  p_limite  integer  default 30,
-  p_janela  interval default '15 minutes'
-)
-returns boolean
-language plpgsql
-security definer
-set search_path = public
-as $$
-declare
-  v_tentativas integer;
-begin
-  -- Faxina oportunista: a tabela nunca cresce sem limite.
-  delete from public.tentativas_cadastro
-   where criado_em < now() - interval '2 hours';
-
-  select count(*) into v_tentativas
-    from public.tentativas_cadastro
-   where ip_hash = p_ip_hash
-     and criado_em > now() - p_janela;
-
-  if v_tentativas >= p_limite then
-    return false;
-  end if;
-
-  insert into public.tentativas_cadastro (ip_hash) values (p_ip_hash);
-  return true;
-end;
-$$;
-
-revoke execute on function public.registrar_tentativa_cadastro(text, integer, interval) from anon, authenticated;
+alter table public.tentativas_cadastro enable row level security;
+-- Nenhuma policy: só a service role toca nesta tabela.

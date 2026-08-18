@@ -143,6 +143,12 @@ export type Database = {
         };
         Relationships: [];
       };
+      tentativas_cadastro: {
+        Row: { id: number; ip_hash: string; criado_em: string };
+        Insert: { ip_hash: string; criado_em?: string };
+        Update: { ip_hash?: string };
+        Relationships: [];
+      };
       tags: {
         Row: { id: string; nome: string; cor: string | null };
         Insert: { id?: string; nome: string; cor?: string | null };
@@ -184,10 +190,6 @@ export type Database = {
       papel_atual: {
         Args: Record<PropertyKey, never>;
         Returns: PapelOperador;
-      };
-      registrar_tentativa_cadastro: {
-        Args: { p_ip_hash: string };
-        Returns: boolean;
       };
     };
     Enums: {
