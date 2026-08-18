@@ -128,9 +128,8 @@ npm run seed:aplicar   # (re)carrega bairros e locais no banco, idempotente
 npm run seed:gerar     # regrava os .sql a partir da fonte do TSE
 node scripts/extrai-tse.mjs <csv>   # refaz a fonte a partir do arquivo oficial
 
-npm test             # funções canônicas (telefone, handle, slug)
+npm test               # funções canônicas (telefone, handle, slug)
 npm run verifica -- painelsistema '<senha>'   # RLS e login contra o banco real
-npm run seed:aplicar # recarrega a base territorial (idempotente)
 ```
 
 `npm run verifica` é o teste que o item 5 dos Critérios de Pronto (PRD 11.4)
