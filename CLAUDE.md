@@ -119,9 +119,15 @@ em `PREFIXOS_ADMIN`**, em `/lib/auth/rotas.ts`. Sem isso ela nasce pública.
 ## Comandos
 
 ```bash
-npm run dev          # http://localhost:3000
-npm run build        # produção
-npm run typecheck    # tsc --noEmit
+npm run dev            # http://localhost:3000
+npm run build          # valida o seed e só então compila
+npm run typecheck      # tsc --noEmit
+
+npm run validate:seed  # os checks de integridade territorial
+npm run seed:aplicar   # (re)carrega bairros e locais no banco, idempotente
+npm run seed:gerar     # regrava os .sql a partir da fonte do TSE
+node scripts/extrai-tse.mjs <csv>   # refaz a fonte a partir do arquivo oficial
+
 npm run verifica -- painelsistema '<senha>'   # RLS e login contra o banco real
 ```
 
@@ -199,32 +205,59 @@ verificação com o banco.**
 - [ ] Repositório no GitHub
 - [ ] Deploy na Vercel
 
-**Próximo:** fechar a verificação do Bloco 1 e seguir para o Bloco 2 · Base
-Territorial (RF-01), que depende da decisão nº 1 abaixo.
+**Bloco 2 · Base Territorial (RF-01) ✅ concluído em 17/08/2026.**
+
+- [x] Migration `0002_territorio.sql`: `bairros`, `locais_votacao`, enum
+      `macro_regiao`, RLS ativa e leitura só para autenticado. Nenhuma policy de
+      escrita: o seed entra por service role e não existe tela de edição.
+- [x] Fonte extraída do arquivo oficial do TSE
+      (`supabase/seed/fonte/territorio-tse.json`) e seed gerado a partir dela
+- [x] 31 bairros · 40 locais · 252 seções · 75.083 eleitores, todos conferidos
+- [x] `validar_seed()` em SQL com 5 checks, chamada tanto pelo build quanto pela
+      tela — regra escrita uma vez só
+- [x] `npm run validate:seed` roda **antes** do `next build`; provado que o build
+      aborta quando um check falha
+- [x] `lib/territorio` com `getBairros`, `getLocais`, `getLocaisPorBairro`
+      (local do próprio bairro primeiro) e `getRegioes`
+- [x] Tela `/territorio` só de leitura, com indicadores, estado dos checks,
+      macro-regiões e as duas tabelas com somas no rodapé
+- [x] Navegação no header do admin
+
+**Próximo:** Bloco 3 · Captura (RF-03, RF-04, RF-08 a RF-13, RF-17 a RF-19,
+RF-28 a RF-31). **É o único urgente.** Dividido em 3A pessoas e lideranças,
+3B página pública e 3C mensagens e painel mínimo.
 
 # Decisões pendentes do Pedro
 
 Levantadas na leitura do PRD. Cada uma trava o bloco indicado.
 
-1. **Seções eleitorais (trava o Bloco 2).** O check nº 4 do seed exige
-   `SUM(secoes) = 252`, mas o PRD só traz seções para 15 dos 40 locais,
-   somando 147. Faltam 105 seções em 25 locais sem dado. Os outros três checks
-   fecham exatos com os 7 locais provisórios. Opções: (a) gravar `secoes` como
-   nulo onde não há dado e tornar o check 4 informativo até chegar o dado do
-   TSE; (b) segurar o Bloco 2 até levantar as seções na 59ª ZE. **Não inventar
-   número** — a seção é a chave do cruzamento com o boletim de urna no Bloco 8.
-
-2. **Território conta por local de votação, não por moradia (trava o Bloco 4).**
+1. **Território conta por local de votação, não por moradia (trava o Bloco 4).**
    `bairro_moradia_id` é informativo e não entra na penetração. Falta definir o
    tratamento de quem tem `local_votacao_id` nulo sem ser `fora_do_municipio`.
 
-3. **FKs de autoria.** `interacoes.autor`, `demandas.responsavel` e
+2. **FKs de autoria.** `interacoes.autor`, `demandas.responsavel` e
    `envios.operador` apontam para `operadores`, não para `pessoas`.
 
-4. **Cor da campanha.** `--campanha` está em `#1B4D3E` (placeholder). Trocar em
+3. **Cor da campanha.** `--campanha` está em `#1B4D3E` (placeholder). Trocar em
    `/docs/design-tokens.css` quando a identidade for definida. Não bloqueia nada.
 
 # Decisões já tomadas
+
+- **Base territorial vem da fonte oficial, não do PDF (Bloco 2).** O PRD listava
+  7 locais "a levantar" e só tinha seções de 15 dos 40. O arquivo
+  `eleitorado_local_votacao_ATUAL.csv` dos Dados Abertos do TSE, gerado em
+  03/08/2026, traz uma linha por seção e fechou as duas lacunas: 40 locais, 252
+  seções, 75.083 eleitores, 31 bairros conferidos um a um. Não existe local
+  provisório e a coluna `provisorio` que o guia mandava criar não foi criada.
+  Detalhes e proveniência em `/docs/base-territorial-tse.md`.
+- **Os checks do seed moram em SQL (Bloco 2).** `public.validar_seed()` é
+  chamada pelo build e pela tela `/territorio`. Duplicar a regra em JS criaria
+  a chance de as duas divergirem, que é a classe de erro que faz painel mentir.
+- **Scripts de banco não usam `process.exit()` (Bloco 2).** O cliente do
+  Supabase mantém socket keep-alive aberto e o libuv aborta no Windows com
+  código 127, o que derrubaria o build com o seed íntegro. Usa-se
+  `process.exitCode`. Falha de rede tem retentativa (`comRetentativa`); erro de
+  dado ou de permissão não repete.
 
 - **Cliente Supabase no admin (Bloco 1).** Público usa service role no servidor;
   admin usa cliente de sessão, com RLS valendo de verdade, como manda o PRD 10.2.
@@ -238,11 +271,9 @@ Levantadas na leitura do PRD. Cada uma trava o bloco indicado.
 
 # Insumos que não são código
 
-Gargalo real, correm em paralelo aos Blocos 1 e 2. Travam o Bloco 3.
+Gargalo real. Travam o Bloco 3.
 
-- [ ] Os **7 locais de votação faltantes** (PRD 6.3). Lista fechada:
-      São João 2.108 · Centro 1.833 · Balneário São Pedro 1.784 · São José 1.607 ·
-      Baixo Grande 1.548 · Porto do Carro 955 · Nova São Pedro 729.
+- [x] ~~Os 7 locais de votação faltantes~~ — resolvido pela fonte do TSE.
 - [ ] Planilha das **70 lideranças**: nome, WhatsApp, bairro de atuação, local
       âncora, @ do Instagram, tags.
 - [ ] **Metas individuais**.

@@ -4,11 +4,14 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "npm run validate:seed && next build",
     "start": "next start",
     "lint": "eslint",
     "typecheck": "tsc --noEmit",
-    "verifica": "node scripts/verifica.mjs"
+    "verifica": "node scripts/verifica.mjs",
+    "validate:seed": "node scripts/valida-seed.mjs",
+    "seed:gerar": "node scripts/gera-seed.mjs",
+    "seed:aplicar": "node scripts/aplica-seed.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.4",

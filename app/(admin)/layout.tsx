@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 
 import { sair } from "@/app/login/actions";
+import { Nav } from "@/components/admin/nav";
 import { Button } from "@/components/ui/button";
 import { chaveDoEmail } from "@/lib/auth/acesso";
 import { sessaoAdmin } from "@/lib/auth/operador";
@@ -25,13 +26,16 @@ export default async function AdminLayout({
   return (
     <div className="admin flex min-h-dvh flex-col bg-background">
       <header className="flex items-center justify-between gap-4 border-b border-line px-5 py-4 sm:px-8">
-        <div>
-          <p className="font-display text-eyebrow tracking-eyebrow text-ink-3">
-            Núcleo de Inteligência e Dados
-          </p>
-          <p className="font-display tracking-card text-card text-ink">
-            Projeto REDE
-          </p>
+        <div className="flex items-center gap-6">
+          <div>
+            <p className="font-display text-eyebrow tracking-eyebrow text-ink-3">
+              Núcleo de Inteligência e Dados
+            </p>
+            <p className="font-display tracking-card text-card text-ink">
+              Projeto REDE
+            </p>
+          </div>
+          <Nav />
         </div>
 
         <div className="flex items-center gap-4">

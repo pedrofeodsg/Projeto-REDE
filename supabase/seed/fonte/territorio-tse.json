@@ -1,0 +1,683 @@
+{
+  "gerado_em": "2026-08-17T15:51:28.084Z",
+  "origem": "TSE · Dados Abertos · Eleitorado Atual · eleitorado_local_votacao_ATUAL.csv",
+  "municipio": "São Pedro da Aldeia",
+  "uf": "RJ",
+  "zona": 59,
+  "totais": {
+    "bairros": 31,
+    "locais": 40,
+    "secoes": 252,
+    "eleitores": 75083
+  },
+  "bairros": [
+    {
+      "nome": "São João",
+      "regiao": "R2",
+      "eleitores": 8384,
+      "secoes": 26
+    },
+    {
+      "nome": "Centro",
+      "regiao": "R1",
+      "eleitores": 5761,
+      "secoes": 22
+    },
+    {
+      "nome": "Campo Redondo",
+      "regiao": "R2",
+      "eleitores": 5314,
+      "secoes": 16
+    },
+    {
+      "nome": "Balneário São Pedro",
+      "regiao": "R3",
+      "eleitores": 4659,
+      "secoes": 14
+    },
+    {
+      "nome": "São José",
+      "regiao": "R1",
+      "eleitores": 4134,
+      "secoes": 12
+    },
+    {
+      "nome": "Nova São Pedro",
+      "regiao": "R1",
+      "eleitores": 4028,
+      "secoes": 13
+    },
+    {
+      "nome": "Fluminense",
+      "regiao": "R1",
+      "eleitores": 3747,
+      "secoes": 11
+    },
+    {
+      "nome": "Estação",
+      "regiao": "R1",
+      "eleitores": 3571,
+      "secoes": 18
+    },
+    {
+      "nome": "Baixo Grande",
+      "regiao": "R2",
+      "eleitores": 3395,
+      "secoes": 15
+    },
+    {
+      "nome": "Porto da Aldeia",
+      "regiao": "R1",
+      "eleitores": 3365,
+      "secoes": 10
+    },
+    {
+      "nome": "Jardim Soledade",
+      "regiao": "R1",
+      "eleitores": 2692,
+      "secoes": 8
+    },
+    {
+      "nome": "Rua do Fogo",
+      "regiao": "R3",
+      "eleitores": 2654,
+      "secoes": 8
+    },
+    {
+      "nome": "Porto do Carro",
+      "regiao": "R2",
+      "eleitores": 2614,
+      "secoes": 9
+    },
+    {
+      "nome": "Vinhateiro",
+      "regiao": "R2",
+      "eleitores": 2300,
+      "secoes": 7
+    },
+    {
+      "nome": "Praia Linda",
+      "regiao": "R3",
+      "eleitores": 2217,
+      "secoes": 7
+    },
+    {
+      "nome": "Poço Fundo",
+      "regiao": "R1",
+      "eleitores": 2117,
+      "secoes": 7
+    },
+    {
+      "nome": "Alecrim",
+      "regiao": "R2",
+      "eleitores": 1795,
+      "secoes": 5
+    },
+    {
+      "nome": "Balneário das Conchas",
+      "regiao": "R3",
+      "eleitores": 1787,
+      "secoes": 5
+    },
+    {
+      "nome": "Ponta do Ambrósio",
+      "regiao": "R2",
+      "eleitores": 1644,
+      "secoes": 5
+    },
+    {
+      "nome": "Boqueirão",
+      "regiao": "R1",
+      "eleitores": 1477,
+      "secoes": 5
+    },
+    {
+      "nome": "Recanto do Sol",
+      "regiao": "R1",
+      "eleitores": 1460,
+      "secoes": 5
+    },
+    {
+      "nome": "Mossoró",
+      "regiao": "R1",
+      "eleitores": 1447,
+      "secoes": 5
+    },
+    {
+      "nome": "Cruz",
+      "regiao": "R3",
+      "eleitores": 966,
+      "secoes": 3
+    },
+    {
+      "nome": "São Mateus",
+      "regiao": "R1",
+      "eleitores": 880,
+      "secoes": 3
+    },
+    {
+      "nome": "Botafogo",
+      "regiao": "R1",
+      "eleitores": 703,
+      "secoes": 3
+    },
+    {
+      "nome": "Retiro",
+      "regiao": "R2",
+      "eleitores": 635,
+      "secoes": 3
+    },
+    {
+      "nome": "Baleia",
+      "regiao": "R1",
+      "eleitores": 588,
+      "secoes": 2
+    },
+    {
+      "nome": "Morro do Milagre",
+      "regiao": "R1",
+      "eleitores": 282,
+      "secoes": 1
+    },
+    {
+      "nome": "Parque Arruda",
+      "regiao": "R2",
+      "eleitores": 276,
+      "secoes": 2
+    },
+    {
+      "nome": "Três Vendas",
+      "regiao": "R3",
+      "eleitores": 136,
+      "secoes": 1
+    },
+    {
+      "nome": "Sapeatiba Mirim",
+      "regiao": "R3",
+      "eleitores": 55,
+      "secoes": 1
+    }
+  ],
+  "locais": [
+    {
+      "zona": 59,
+      "numero": 1333,
+      "nome": "CIEP 272 - Gabriel Joaquim dos Santos (São João)",
+      "bairro": "São João",
+      "regiao": "R2",
+      "endereco": "Estrada dos Passageiros, S/N",
+      "latitude": "-22,8471023",
+      "longitude": "-42,0641612",
+      "eleitores": 4047,
+      "secoes": 12
+    },
+    {
+      "zona": 59,
+      "numero": 1090,
+      "nome": "Colégio Estadual Dr. Feliciano Sodré",
+      "bairro": "Centro",
+      "regiao": "R1",
+      "endereco": "Rua Duque de Caxias, 78",
+      "latitude": "-22,8364074",
+      "longitude": "-42,1027701",
+      "eleitores": 3928,
+      "secoes": 17
+    },
+    {
+      "zona": 59,
+      "numero": 1139,
+      "nome": "Escola Municipal Prof.ª Miriam Alves de Macedo Guimarães",
+      "bairro": "Fluminense",
+      "regiao": "R1",
+      "endereco": "Rodovia RJ 140, Km 21",
+      "latitude": "-22,8316278",
+      "longitude": "-42,0946157",
+      "eleitores": 3747,
+      "secoes": 11
+    },
+    {
+      "zona": 59,
+      "numero": 1198,
+      "nome": "CIEP 146 - Cordelino Teixeira Paulo (Estação)",
+      "bairro": "Estação",
+      "regiao": "R1",
+      "endereco": "Rua Doze de Outubro, S/N",
+      "latitude": "-22,8339879",
+      "longitude": "-42,1005519",
+      "eleitores": 3571,
+      "secoes": 18
+    },
+    {
+      "zona": 59,
+      "numero": 1066,
+      "nome": "Escola Municipalizada José Guimarães",
+      "bairro": "Porto da Aldeia",
+      "regiao": "R1",
+      "endereco": "Rua Henrique Pinto Monteiro, S/N",
+      "latitude": "-22,8520159",
+      "longitude": "-42,1013982",
+      "eleitores": 3365,
+      "secoes": 10
+    },
+    {
+      "zona": 59,
+      "numero": 1147,
+      "nome": "FAETEC",
+      "bairro": "Nova São Pedro",
+      "regiao": "R1",
+      "endereco": "Rua A, S/N",
+      "latitude": "-22,8380689",
+      "longitude": "-42,0964772",
+      "eleitores": 3299,
+      "secoes": 10
+    },
+    {
+      "zona": 59,
+      "numero": 1384,
+      "nome": "Escola Municipalizada Paineira",
+      "bairro": "Balneário São Pedro",
+      "regiao": "R3",
+      "endereco": "Rua Leci Pereira de Souza, S/N",
+      "latitude": "-22,8348713",
+      "longitude": "-42,1361698",
+      "eleitores": 2875,
+      "secoes": 9
+    },
+    {
+      "zona": 59,
+      "numero": 1023,
+      "nome": "Escola Municipal Manoel Moraes da Silva",
+      "bairro": "Campo Redondo",
+      "regiao": "R2",
+      "endereco": "Estrada dos Passageiros, S/N",
+      "latitude": "-22,839985",
+      "longitude": "-42,0695045",
+      "eleitores": 2802,
+      "secoes": 9
+    },
+    {
+      "zona": 59,
+      "numero": 1341,
+      "nome": "Escola Municipal Rubem Arruda Câmara",
+      "bairro": "Jardim Soledade",
+      "regiao": "R1",
+      "endereco": "Rua das Violetas, S/N",
+      "latitude": "-22,8241109",
+      "longitude": "-42,0883498",
+      "eleitores": 2692,
+      "secoes": 8
+    },
+    {
+      "zona": 59,
+      "numero": 1376,
+      "nome": "Escola Municipalizada Pequiá",
+      "bairro": "Rua do Fogo",
+      "regiao": "R3",
+      "endereco": "Rua Fausto Ferreira Leite, S/N",
+      "latitude": "-22,8068341",
+      "longitude": "-42,119568",
+      "eleitores": 2654,
+      "secoes": 8
+    },
+    {
+      "zona": 59,
+      "numero": 1104,
+      "nome": "Colégio Estadual José Rascão",
+      "bairro": "São José",
+      "regiao": "R1",
+      "endereco": "Rua Professor Renato Fernandes, 40",
+      "latitude": "-22,8317542",
+      "longitude": "-42,0970744",
+      "eleitores": 2527,
+      "secoes": 7
+    },
+    {
+      "zona": 59,
+      "numero": 1031,
+      "nome": "Escola Municipal Luiza Terra de Andrade",
+      "bairro": "Campo Redondo",
+      "regiao": "R2",
+      "endereco": "Rua Luiza Terra de Andrade, S/N",
+      "latitude": "-22,8399057",
+      "longitude": "-42,0709631",
+      "eleitores": 2512,
+      "secoes": 7
+    },
+    {
+      "zona": 59,
+      "numero": 1414,
+      "nome": "Escola Municipal Vinhateiro",
+      "bairro": "Vinhateiro",
+      "regiao": "R2",
+      "endereco": "Estrada dos Passageiros, S/N",
+      "latitude": "-22,8533366",
+      "longitude": "-42,0489593",
+      "eleitores": 2300,
+      "secoes": 7
+    },
+    {
+      "zona": 59,
+      "numero": 1457,
+      "nome": "Escola Municipal Profª. Dulcinda Jotta Mendes",
+      "bairro": "São João",
+      "regiao": "R2",
+      "endereco": "Rua Carlinda, S/N",
+      "latitude": "-22,8421181",
+      "longitude": "-42,0612434",
+      "eleitores": 2229,
+      "secoes": 7
+    },
+    {
+      "zona": 59,
+      "numero": 1112,
+      "nome": "Escola Municipal Prof.ª Maria da Glória dos Santos Motta",
+      "bairro": "Praia Linda",
+      "regiao": "R3",
+      "endereco": "Alameda Maria Dulce, Qd C - Lote 8",
+      "latitude": "-22,8440647",
+      "longitude": "-42,1677055",
+      "eleitores": 2217,
+      "secoes": 7
+    },
+    {
+      "zona": 59,
+      "numero": 1244,
+      "nome": "Escola Municipal Flonete Alexandrino da Silva",
+      "bairro": "Poço Fundo",
+      "regiao": "R1",
+      "endereco": "Estrada do Boqueirão, S/N",
+      "latitude": "-22,8601517",
+      "longitude": "-42,1076632",
+      "eleitores": 2117,
+      "secoes": 7
+    },
+    {
+      "zona": 59,
+      "numero": 1236,
+      "nome": "Escola Municipal Dulce Jotta de Souza",
+      "bairro": "São João",
+      "regiao": "R2",
+      "endereco": "Rua Euclides da Cunha, 181",
+      "latitude": "-22,8451345",
+      "longitude": "-42,0605964",
+      "eleitores": 2108,
+      "secoes": 7
+    },
+    {
+      "zona": 59,
+      "numero": 1015,
+      "nome": "Colégio Estadual Almirante Tamandaré",
+      "bairro": "Baixo Grande",
+      "regiao": "R2",
+      "endereco": "Rua Júlio Soares Macedo, 154",
+      "latitude": "-22,8594863",
+      "longitude": "-42,0575537",
+      "eleitores": 1847,
+      "secoes": 10
+    },
+    {
+      "zona": 59,
+      "numero": 1171,
+      "nome": "Centro Educacional Missão de São Pedro",
+      "bairro": "Centro",
+      "regiao": "R1",
+      "endereco": "Rua João Martins, 39",
+      "latitude": "-22,8385753",
+      "longitude": "-42,1023051",
+      "eleitores": 1833,
+      "secoes": 5
+    },
+    {
+      "zona": 59,
+      "numero": 1287,
+      "nome": "Escola Municipal Vidal de Negreiros",
+      "bairro": "Alecrim",
+      "regiao": "R2",
+      "endereco": "Rua Quaresma, 30",
+      "latitude": "-22,8292352",
+      "longitude": "-42,0392677",
+      "eleitores": 1795,
+      "secoes": 5
+    },
+    {
+      "zona": 59,
+      "numero": 1473,
+      "nome": "Escola Municipal José Teixeira Paulo",
+      "bairro": "Balneário das Conchas",
+      "regiao": "R3",
+      "endereco": "Rua Francisco Orlando, 740",
+      "latitude": "-22,8337023",
+      "longitude": "-42,1464883",
+      "eleitores": 1787,
+      "secoes": 5
+    },
+    {
+      "zona": 59,
+      "numero": 1490,
+      "nome": "Horto-Escola Artesanal",
+      "bairro": "Balneário São Pedro",
+      "regiao": "R3",
+      "endereco": "Rodovia Amaral Peixoto Km 107, S/N",
+      "latitude": "-22,828016",
+      "longitude": "-42,1257483",
+      "eleitores": 1784,
+      "secoes": 5
+    },
+    {
+      "zona": 59,
+      "numero": 1317,
+      "nome": "Escola Municipal Antonio Rodrigues dos Santos",
+      "bairro": "Porto do Carro",
+      "regiao": "R2",
+      "endereco": "Rua Silvino Pereira Damasceno, S/N",
+      "latitude": "-22,8458026",
+      "longitude": "-42,03737",
+      "eleitores": 1659,
+      "secoes": 5
+    },
+    {
+      "zona": 59,
+      "numero": 1040,
+      "nome": "Escola Municipal Vital Brasil",
+      "bairro": "Ponta do Ambrósio",
+      "regiao": "R2",
+      "endereco": "Rua Antonio Araujo Mendonça, 704",
+      "latitude": "-22,8617248",
+      "longitude": "-42,044767",
+      "eleitores": 1644,
+      "secoes": 5
+    },
+    {
+      "zona": 59,
+      "numero": 1511,
+      "nome": "Escola Municipal Prof.ª Carolina Nazareth Teixeira Pinheiro",
+      "bairro": "São José",
+      "regiao": "R1",
+      "endereco": "Rua Santa Amélia, S/N",
+      "latitude": "-22,8301844",
+      "longitude": "-42,0998535",
+      "eleitores": 1607,
+      "secoes": 5
+    },
+    {
+      "zona": 59,
+      "numero": 1449,
+      "nome": "Escola Municipal Prof.ª Maria Celeste de Campos",
+      "bairro": "Baixo Grande",
+      "regiao": "R2",
+      "endereco": "Avenida Maracanã, 366",
+      "latitude": "-22,8562994",
+      "longitude": "-42,0604887",
+      "eleitores": 1548,
+      "secoes": 5
+    },
+    {
+      "zona": 59,
+      "numero": 1252,
+      "nome": "Escola Municipal Francisco Paes de Carvalho Filho",
+      "bairro": "Boqueirão",
+      "regiao": "R1",
+      "endereco": "Rua Apolinário Rodrigues Soares, S/N",
+      "latitude": "-22,8686489",
+      "longitude": "-42,1120405",
+      "eleitores": 1477,
+      "secoes": 5
+    },
+    {
+      "zona": 59,
+      "numero": 1481,
+      "nome": "Escola Municipal Antônio Vaz da Silva",
+      "bairro": "Recanto do Sol",
+      "regiao": "R1",
+      "endereco": "Rua Honório Sampaio, S/N",
+      "latitude": "-22,8110412",
+      "longitude": "-42,1026931",
+      "eleitores": 1460,
+      "secoes": 5
+    },
+    {
+      "zona": 59,
+      "numero": 1520,
+      "nome": "Casa de Apoio Sementes do Amanhã",
+      "bairro": "Mossoró",
+      "regiao": "R1",
+      "endereco": "Rua Laércio Francisco da Silva, 50",
+      "latitude": "-22,848966",
+      "longitude": "-42,0972978",
+      "eleitores": 1447,
+      "secoes": 5
+    },
+    {
+      "zona": 59,
+      "numero": 1350,
+      "nome": "Escola Municipal Capitão Costa",
+      "bairro": "Cruz",
+      "regiao": "R3",
+      "endereco": "Estrada da Cruz, S/N",
+      "latitude": "-22,7928679",
+      "longitude": "-42,1444158",
+      "eleitores": 966,
+      "secoes": 3
+    },
+    {
+      "zona": 59,
+      "numero": 1074,
+      "nome": "Escola Municipalizada Lucinda Franciscone Medeiros",
+      "bairro": "Porto do Carro",
+      "regiao": "R2",
+      "endereco": "Estrada do Alecrim, 51",
+      "latitude": "-22,8536537",
+      "longitude": "-42,0402657",
+      "eleitores": 955,
+      "secoes": 4
+    },
+    {
+      "zona": 59,
+      "numero": 1422,
+      "nome": "Escola Municipalizada Paulo Roberto Marinho",
+      "bairro": "São Mateus",
+      "regiao": "R1",
+      "endereco": "Rodovia Amaral Peixoto Km 115, S/N",
+      "latitude": "-22,7799176",
+      "longitude": "-42,0859337",
+      "eleitores": 880,
+      "secoes": 3
+    },
+    {
+      "zona": 59,
+      "numero": 1538,
+      "nome": "Polo CEDERJ - São Pedro da Aldeia",
+      "bairro": "Nova São Pedro",
+      "regiao": "R1",
+      "endereco": "Rua A, S/N",
+      "latitude": "-22,8380689",
+      "longitude": "-42,0964772",
+      "eleitores": 729,
+      "secoes": 3
+    },
+    {
+      "zona": 59,
+      "numero": 1546,
+      "nome": "Escola Municipal Quilombola Dona Rosa Geralda da Silveira",
+      "bairro": "Botafogo",
+      "regiao": "R1",
+      "endereco": "Estrada da Caveira. S/N",
+      "latitude": "-22,74311",
+      "longitude": "-42,06352",
+      "eleitores": 703,
+      "secoes": 3
+    },
+    {
+      "zona": 59,
+      "numero": 1392,
+      "nome": "Escola Municipalizada Retiro",
+      "bairro": "Retiro",
+      "regiao": "R2",
+      "endereco": "Estrada do Retiro, 199",
+      "latitude": "-22,7815967",
+      "longitude": "-42,0511517",
+      "eleitores": 635,
+      "secoes": 3
+    },
+    {
+      "zona": 59,
+      "numero": 1082,
+      "nome": "Escola Municipal Elízio Ignácio Rangel",
+      "bairro": "Baleia",
+      "regiao": "R1",
+      "endereco": "Praia da Baleia, S/N",
+      "latitude": "-22,8813458",
+      "longitude": "-42,1198157",
+      "eleitores": 588,
+      "secoes": 2
+    },
+    {
+      "zona": 59,
+      "numero": 1554,
+      "nome": "Escola Municipalizada Adalgisa da Silva Lobo",
+      "bairro": "Morro do Milagre",
+      "regiao": "R1",
+      "endereco": "Estrada do Morro dos Milagres, 1614",
+      "latitude": "-22,8286226",
+      "longitude": "-42,0877067",
+      "eleitores": 282,
+      "secoes": 1
+    },
+    {
+      "zona": 59,
+      "numero": 1406,
+      "nome": "Escola Municipal São Francisco de Assis",
+      "bairro": "Parque Arruda",
+      "regiao": "R2",
+      "endereco": "Avenida Brasil, S/N",
+      "latitude": "-22,8113219",
+      "longitude": "-42,0290114",
+      "eleitores": 276,
+      "secoes": 2
+    },
+    {
+      "zona": 59,
+      "numero": 1309,
+      "nome": "Escola Municipalizada Elízio da Costa Moreira",
+      "bairro": "Três Vendas",
+      "regiao": "R3",
+      "endereco": "Estrada das Três Vendas",
+      "latitude": "-22,681165",
+      "longitude": "-42,16677",
+      "eleitores": 136,
+      "secoes": 1
+    },
+    {
+      "zona": 59,
+      "numero": 1430,
+      "nome": "Escola Municipal Sapeatiba Mirim",
+      "bairro": "Sapeatiba Mirim",
+      "regiao": "R3",
+      "endereco": "Estrada de Sapeatiba Mirim, 2",
+      "latitude": "-22,8123519",
+      "longitude": "-42,1907584",
+      "eleitores": 55,
+      "secoes": 1
+    }
+  ]
+}
