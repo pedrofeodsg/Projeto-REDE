@@ -11,7 +11,8 @@
     "verifica": "node scripts/verifica.mjs",
     "validate:seed": "node scripts/valida-seed.mjs",
     "seed:gerar": "node scripts/gera-seed.mjs",
-    "seed:aplicar": "node scripts/aplica-seed.mjs"
+    "seed:aplicar": "node scripts/aplica-seed.mjs",
+    "test": "node --test \"lib/**/*.test.ts\""
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.4",
