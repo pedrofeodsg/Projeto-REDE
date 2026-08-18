@@ -119,6 +119,30 @@ export type Database = {
           },
         ];
       };
+      conflitos_cadastro: {
+        Row: {
+          id: string;
+          telefone: string;
+          nome_tentado: string;
+          lideranca_tentou_id: string | null;
+          pessoa_existente_id: string | null;
+          resolvido: boolean;
+          criado_em: string;
+        };
+        Insert: {
+          id?: string;
+          telefone: string;
+          nome_tentado: string;
+          lideranca_tentou_id?: string | null;
+          pessoa_existente_id?: string | null;
+          resolvido?: boolean;
+          criado_em?: string;
+        };
+        Update: {
+          resolvido?: boolean;
+        };
+        Relationships: [];
+      };
       tags: {
         Row: { id: string; nome: string; cor: string | null };
         Insert: { id?: string; nome: string; cor?: string | null };
@@ -160,6 +184,10 @@ export type Database = {
       papel_atual: {
         Args: Record<PropertyKey, never>;
         Returns: PapelOperador;
+      };
+      registrar_tentativa_cadastro: {
+        Args: { p_ip_hash: string };
+        Returns: boolean;
       };
     };
     Enums: {

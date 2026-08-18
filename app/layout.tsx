@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Chakra_Petch, IBM_Plex_Mono, IBM_Plex_Sans } from "next/font/google";
+import { urlPublicaBase } from "@/lib/url";
 import "./globals.css";
 
 const chakra = Chakra_Petch({
@@ -24,6 +25,10 @@ const plexMono = IBM_Plex_Mono({
 });
 
 export const metadata: Metadata = {
+  // Ancora as meta tags de Open Graph. Sem isto o preview do WhatsApp aponta
+  // para o host da requisição, que em produção pode ser o domínio interno da
+  // Vercel em vez do domínio da campanha.
+  metadataBase: new URL(urlPublicaBase()),
   title: {
     default: "Projeto REDE",
     template: "%s · Projeto REDE",

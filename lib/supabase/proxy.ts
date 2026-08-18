@@ -11,6 +11,17 @@ import type { Database } from "@/types/database";
  * proxy e roda em runtime nodejs.
  */
 export async function atualizarSessao(request: NextRequest) {
+  const { pathname } = request.nextUrl;
+  const precisaDeSessao = ehRotaAdmin(pathname) || pathname === "/login";
+
+  // A página pública é o componente crítico do sistema: precisa carregar em
+  // menos de 2s em 4G. Validar sessão nela custaria uma ida ao Supabase em
+  // toda visita, para descobrir que não há sessão nenhuma — quem abre o
+  // convite nunca está logado.
+  if (!precisaDeSessao) {
+    return NextResponse.next({ request });
+  }
+
   let resposta = NextResponse.next({ request });
 
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -44,8 +55,6 @@ export async function atualizarSessao(request: NextRequest) {
   const {
     data: { user },
   } = await supabase.auth.getUser();
-
-  const { pathname } = request.nextUrl;
 
   if (!user && ehRotaAdmin(pathname)) {
     const destino = request.nextUrl.clone();
