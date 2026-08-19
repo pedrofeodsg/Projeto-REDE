@@ -19,6 +19,13 @@ export type PapelOperador = "coordenacao" | "operador";
 export type MacroRegiao = "R1" | "R2" | "R3";
 export type NivelPessoa = "coordenacao" | "lideranca" | "apoiador";
 export type OrigemPessoa = "link" | "admin";
+export type TemperaturaCadastro =
+  | "aguardando"
+  | "afastado"
+  | "frio"
+  | "quente"
+  | "muito_quente"
+  | "engajado";
 
 type LinhaPessoa = {
   id: string;
@@ -143,6 +150,52 @@ export type Database = {
         };
         Relationships: [];
       };
+      templates_mensagem: {
+        Row: {
+          id: string;
+          chave: string | null;
+          nome: string;
+          corpo: string;
+          ativo: boolean;
+          ordem: number;
+        };
+        Insert: {
+          id?: string;
+          chave?: string | null;
+          nome: string;
+          corpo: string;
+          ativo?: boolean;
+          ordem?: number;
+        };
+        Update: {
+          chave?: string | null;
+          nome?: string;
+          corpo?: string;
+          ativo?: boolean;
+          ordem?: number;
+        };
+        Relationships: [];
+      };
+      envios: {
+        Row: {
+          id: string;
+          pessoa_id: string;
+          template_id: string | null;
+          operador: string | null;
+          enviado_em: string;
+          confirmado: boolean;
+        };
+        Insert: {
+          id?: string;
+          pessoa_id: string;
+          template_id?: string | null;
+          operador?: string | null;
+          enviado_em?: string;
+          confirmado?: boolean;
+        };
+        Update: { confirmado?: boolean };
+        Relationships: [];
+      };
       tentativas_cadastro: {
         Row: { id: number; ip_hash: string; criado_em: string };
         Insert: { ip_hash: string; criado_em?: string };
@@ -175,7 +228,32 @@ export type Database = {
         ];
       };
     };
-    Views: { [_ in never]: never };
+    Views: {
+      v_liderancas: {
+        Row: {
+          id: string;
+          nome: string;
+          telefone: string;
+          slug: string | null;
+          meta: number;
+          ativo: boolean;
+          linha_pessoal: string | null;
+          instagram_handle: string | null;
+          local_votacao_id: string | null;
+          local_nome: string | null;
+          regiao: MacroRegiao | null;
+          bairro_id: string | null;
+          bairro_nome: string | null;
+          cadastros: number;
+          ultimo_cadastro: string | null;
+          enviado_em: string | null;
+          faltam: number;
+          dias_parada: number | null;
+          estado: TemperaturaCadastro;
+        };
+        Relationships: [];
+      };
+    };
     Functions: {
       validar_seed: {
         Args: Record<PropertyKey, never>;
@@ -191,12 +269,17 @@ export type Database = {
         Args: Record<PropertyKey, never>;
         Returns: PapelOperador;
       };
+      calcular_temperatura: {
+        Args: { p_pessoa_id: string };
+        Returns: TemperaturaCadastro;
+      };
     };
     Enums: {
       papel_operador: PapelOperador;
       macro_regiao: MacroRegiao;
       nivel_pessoa: NivelPessoa;
       origem_pessoa: OrigemPessoa;
+      temperatura_cadastro: TemperaturaCadastro;
     };
     CompositeTypes: { [_ in never]: never };
   };
@@ -207,5 +290,9 @@ export type Bairro = Database["public"]["Tables"]["bairros"]["Row"];
 export type LocalVotacao = Database["public"]["Tables"]["locais_votacao"]["Row"];
 export type Pessoa = Database["public"]["Tables"]["pessoas"]["Row"];
 export type Tag = Database["public"]["Tables"]["tags"]["Row"];
+export type TemplateMensagem =
+  Database["public"]["Tables"]["templates_mensagem"]["Row"];
+export type Envio = Database["public"]["Tables"]["envios"]["Row"];
+export type LiderancaNaLista = Database["public"]["Views"]["v_liderancas"]["Row"];
 export type CheckSeed =
   Database["public"]["Functions"]["validar_seed"]["Returns"][number];

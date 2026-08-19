@@ -3,6 +3,7 @@
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useTransition } from "react";
 
+import { ORDEM_TEMPERATURA, TEMPERATURA } from "@/lib/temperatura";
 import type { Bairro, MacroRegiao, Tag } from "@/types/database";
 
 /**
@@ -18,7 +19,13 @@ export function Filtros({
   bairros: Bairro[];
   tags: Tag[];
   regioes: { codigo: MacroRegiao; nome: string }[];
-  valores: { busca: string; bairroId: string; regiao: string; tagId: string };
+  valores: {
+    busca: string;
+    bairroId: string;
+    regiao: string;
+    tagId: string;
+    estado: string;
+  };
 }) {
   const router = useRouter();
   const pathname = usePathname();
@@ -36,7 +43,11 @@ export function Filtros({
   }
 
   const temFiltro = Boolean(
-    valores.busca || valores.bairroId || valores.regiao || valores.tagId,
+    valores.busca ||
+      valores.bairroId ||
+      valores.regiao ||
+      valores.tagId ||
+      valores.estado,
   );
 
   return (
@@ -67,6 +78,16 @@ export function Filtros({
         valor={valores.regiao}
         onChange={(v) => aplicar("regiao", v)}
         opcoes={regioes.map((r) => ({ valor: r.codigo, texto: `${r.codigo} · ${r.nome}` }))}
+      />
+
+      <Seletor
+        rotulo="Temperatura"
+        valor={valores.estado}
+        onChange={(v) => aplicar("estado", v)}
+        opcoes={ORDEM_TEMPERATURA.map((e) => ({
+          valor: e,
+          texto: TEMPERATURA[e].rotulo,
+        }))}
       />
 
       <Seletor

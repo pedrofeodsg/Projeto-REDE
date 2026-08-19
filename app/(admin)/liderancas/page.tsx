@@ -1,23 +1,28 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
-import { listarLiderancas, listarTags } from "@/lib/pessoas/queries";
+import { BotaoEnvio } from "@/components/admin/botao-envio";
+import {
+  listarLiderancasComEstado,
+  listarTemplates,
+  tagsPorPessoa,
+} from "@/lib/mensagens/queries";
+import { listarTags } from "@/lib/pessoas/queries";
 import { formatarTelefone } from "@/lib/pessoas/telefone";
 import { createAuthClient } from "@/lib/supabase/auth";
+import { TEMPERATURA, ehTemperatura } from "@/lib/temperatura";
 import { REGIAO_LABEL, getBairros } from "@/lib/territorio";
 import { hostPublico } from "@/lib/url";
 import type { MacroRegiao } from "@/types/database";
 
 import { Filtros } from "./filtros";
 
-export const metadata: Metadata = {
-  title: "Lideranças",
-};
+export const metadata: Metadata = { title: "Lideranças" };
 
 const REGIOES: MacroRegiao[] = ["R1", "R2", "R3"];
 
-function ehRegiao(v: string | undefined): v is MacroRegiao {
-  return v === "R1" || v === "R2" || v === "R3";
+function ehRegiao(v: string): v is MacroRegiao {
+  return (REGIOES as string[]).includes(v);
 }
 
 export default async function LiderancasPage(props: PageProps<"/liderancas">) {
@@ -27,27 +32,36 @@ export default async function LiderancasPage(props: PageProps<"/liderancas">) {
 
   const busca = primeiro(params.busca) ?? "";
   const bairroId = primeiro(params.bairro) ?? "";
-  const regiaoParam = primeiro(params.regiao);
+  const regiao = primeiro(params.regiao) ?? "";
   const tagId = primeiro(params.tag) ?? "";
+  const estadoParam = primeiro(params.estado);
 
   const supabase = await createAuthClient();
 
-  const [bairros, tags, liderancas] = await Promise.all([
+  const [bairros, tags, templates, mapaTags, listaBruta] = await Promise.all([
     getBairros(supabase),
     listarTags(supabase),
-    listarLiderancas(supabase, {
+    listarTemplates(supabase, true),
+    tagsPorPessoa(supabase),
+    listarLiderancasComEstado(supabase, {
       busca,
       bairroId: bairroId || undefined,
-      regiao: ehRegiao(regiaoParam) ? regiaoParam : undefined,
-      tagId: tagId || undefined,
+      regiao: ehRegiao(regiao) ? regiao : undefined,
+      estado: ehTemperatura(estadoParam) ? estadoParam : undefined,
     }),
   ]);
 
+  // Tag filtra em memória: são 70 lideranças, e cruzar no banco exigiria um
+  // inner join que a view não expõe.
+  const liderancas = tagId
+    ? listaBruta.filter((l) => (mapaTags.get(l.id) ?? []).some((t) => t.id === tagId))
+    : listaBruta;
+
   const host = hostPublico();
-  const filtrando = Boolean(busca || bairroId || regiaoParam || tagId);
+  const filtrando = Boolean(busca || bairroId || regiao || tagId || estadoParam);
 
   return (
-    <div className="mx-auto max-w-[1400px]">
+    <div className="mx-auto max-w-[1600px]">
       <header className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <p className="font-display text-eyebrow tracking-eyebrow text-ink-3">
@@ -72,7 +86,7 @@ export default async function LiderancasPage(props: PageProps<"/liderancas">) {
         bairros={bairros}
         tags={tags}
         regioes={REGIOES.map((r) => ({ codigo: r, nome: REGIAO_LABEL[r] }))}
-        valores={{ busca, bairroId, regiao: regiaoParam ?? "", tagId }}
+        valores={{ busca, bairroId, regiao, tagId, estado: estadoParam ?? "" }}
       />
 
       {liderancas.length === 0 ? (
@@ -81,9 +95,7 @@ export default async function LiderancasPage(props: PageProps<"/liderancas">) {
           style={{ background: "var(--card-bg)" }}
         >
           <p className="text-body text-ink">
-            {filtrando
-              ? "Nenhuma liderança nesse recorte."
-              : "A rede começa aqui."}
+            {filtrando ? "Nenhuma liderança nesse recorte." : "A rede começa aqui."}
           </p>
           <p className="mx-auto mt-2 max-w-md text-small text-ink-2">
             {filtrando
@@ -110,69 +122,111 @@ export default async function LiderancasPage(props: PageProps<"/liderancas">) {
                 <tr className="border-b border-line text-left">
                   <Th>Liderança</Th>
                   <Th>Colégio âncora</Th>
-                  <Th>R</Th>
                   <Th>Tags</Th>
-                  <Th className="text-right">Meta</Th>
-                  <Th>Link</Th>
+                  <Th className="text-right">Cadastros</Th>
+                  <Th>Estado</Th>
+                  <Th className="text-right">Parada</Th>
+                  <Th>Ação</Th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-[var(--line)]">
-                {liderancas.map((l) => (
-                  <tr key={l.id} className="align-top">
-                    <td className="px-5 py-3">
-                      <Link
-                        href={`/liderancas/${l.id}`}
-                        className="font-medium text-ink hover:underline"
-                      >
-                        {l.nome}
-                      </Link>
-                      <p className="font-data text-tiny text-ink-3">
-                        {formatarTelefone(l.telefone)}
-                        {l.instagram_handle ? ` · @${l.instagram_handle}` : ""}
-                      </p>
-                      {!l.ativo && (
-                        <p className="font-display tracking-eyebrow mt-1 text-eyebrow text-ink-3">
-                          Inativa
+                {liderancas.map((l) => {
+                  const progresso =
+                    l.meta > 0 ? Math.min(100, (100 * l.cadastros) / l.meta) : 0;
+                  const cor = TEMPERATURA[l.estado];
+
+                  return (
+                    <tr key={l.id} className="align-top">
+                      <td className="px-5 py-3">
+                        <Link
+                          href={`/liderancas/${l.id}`}
+                          className="font-medium text-ink hover:underline"
+                        >
+                          {l.nome}
+                        </Link>
+                        <p className="font-data text-tiny text-ink-3">
+                          {formatarTelefone(l.telefone)}
+                          {l.instagram_handle ? ` · @${l.instagram_handle}` : ""}
                         </p>
-                      )}
-                    </td>
-                    <td className="px-2 py-3 text-ink-2">
-                      {l.local?.nome ?? (
-                        <span className="text-t-afastado">sem colégio âncora</span>
-                      )}
-                    </td>
-                    <td className="font-data px-2 py-3 text-tiny text-ink-3">
-                      {l.local?.regiao ?? "—"}
-                    </td>
-                    <td className="px-2 py-3">
-                      <div className="flex flex-wrap gap-1">
-                        {l.tags.map(
-                          (t) =>
-                            t.tag && (
-                              <span
-                                key={t.tag.id}
-                                className="font-display tracking-card rounded-full border border-line px-2 py-0.5 text-eyebrow text-ink-3"
-                              >
-                                {t.tag.nome}
-                              </span>
-                            ),
+                        {l.slug && (
+                          <p className="font-data text-tiny text-ink-3">
+                            {host}/{l.slug}
+                          </p>
                         )}
-                      </div>
-                    </td>
-                    <td className="font-data px-2 py-3 text-right text-ink-2">
-                      {l.meta}
-                    </td>
-                    <td className="px-5 py-3">
-                      {l.slug ? (
-                        <span className="font-data text-tiny text-ink-2">
-                          {host}/{l.slug}
+                        {!l.ativo && (
+                          <p className="font-display tracking-eyebrow mt-1 text-eyebrow text-ink-3">
+                            Inativa
+                          </p>
+                        )}
+                      </td>
+
+                      <td className="px-2 py-3 text-ink-2">
+                        {l.local_nome ?? (
+                          <span className="text-t-afastado">sem colégio âncora</span>
+                        )}
+                        <p className="font-data text-tiny text-ink-3">
+                          {l.bairro_nome ?? "—"}
+                          {l.regiao ? ` · ${l.regiao}` : ""}
+                        </p>
+                      </td>
+
+                      <td className="px-2 py-3">
+                        <div className="flex flex-wrap gap-1">
+                          {(mapaTags.get(l.id) ?? []).map((t) => (
+                            <span
+                              key={t.id}
+                              className="font-display tracking-card rounded-full border border-line px-2 py-0.5 text-eyebrow text-ink-3"
+                            >
+                              {t.nome}
+                            </span>
+                          ))}
+                        </div>
+                      </td>
+
+                      <td className="px-2 py-3 text-right">
+                        <p className="font-data text-ink">
+                          {l.cadastros}
+                          <span className="text-ink-3">/{l.meta}</span>
+                        </p>
+                        <div className="mt-1.5 ml-auto h-1 w-20 overflow-hidden rounded-full bg-surface-3">
+                          <div
+                            className="h-full"
+                            style={{ width: `${progresso}%`, background: cor.cor }}
+                          />
+                        </div>
+                      </td>
+
+                      <td className="px-2 py-3">
+                        <span className="flex items-center gap-1.5">
+                          <span
+                            aria-hidden
+                            className="size-2 shrink-0 rounded-full"
+                            style={{ background: cor.cor }}
+                          />
+                          <span className="text-ink-2">{cor.rotulo}</span>
                         </span>
-                      ) : (
-                        <span className="text-tiny text-t-afastado">sem link</span>
-                      )}
-                    </td>
-                  </tr>
-                ))}
+                        {l.enviado_em === null && (
+                          <p className="text-tiny text-ink-3">link não enviado</p>
+                        )}
+                      </td>
+
+                      <td className="font-data px-2 py-3 text-right text-ink-2">
+                        {l.dias_parada === null ? "—" : `${l.dias_parada}d`}
+                      </td>
+
+                      <td className="px-5 py-3">
+                        <BotaoEnvio
+                          destino={l}
+                          templates={templates}
+                          templatePadrao={
+                            l.enviado_em === null ? "boas_vindas" : "cutucada"
+                          }
+                          urlBase={host}
+                        />
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
@@ -191,7 +245,7 @@ function Th({
 }) {
   return (
     <th
-      className={`font-display tracking-eyebrow px-5 py-2 text-eyebrow font-normal text-ink-3 first:px-5 [&:not(:first-child):not(:last-child)]:px-2 ${className}`}
+      className={`font-display tracking-eyebrow px-5 py-2 text-eyebrow font-normal text-ink-3 [&:not(:first-child):not(:last-child)]:px-2 ${className}`}
     >
       {children}
     </th>
