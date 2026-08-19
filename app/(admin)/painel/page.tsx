@@ -9,8 +9,20 @@ import {
 } from "@/lib/mensagens/queries";
 import { createAuthClient } from "@/lib/supabase/auth";
 import { ORDEM_TEMPERATURA, TEMPERATURA } from "@/lib/temperatura";
+import { REGIAO_LABEL } from "@/lib/territorio";
+import {
+  LIMITE_DESVIO_PP,
+  getCoberturaRegiao,
+  getPenetracaoBairro,
+  getRankingSemanal,
+} from "@/lib/territorio/penetracao";
 import { hostPublico } from "@/lib/url";
-import type { LiderancaNaLista } from "@/types/database";
+import type {
+  CoberturaRegiao,
+  LiderancaNaLista,
+  PenetracaoBairro,
+  RankingSemanal,
+} from "@/types/database";
 
 export const metadata: Metadata = { title: "Painel" };
 
@@ -21,10 +33,14 @@ const pct = (v: number) =>
 export default async function PainelPage() {
   const supabase = await createAuthClient();
 
-  const [liderancas, templates] = await Promise.all([
-    listarLiderancasComEstado(supabase),
-    listarTemplates(supabase, true),
-  ]);
+  const [liderancas, templates, ranking, penetracao, cobertura] =
+    await Promise.all([
+      listarLiderancasComEstado(supabase),
+      listarTemplates(supabase, true),
+      getRankingSemanal(supabase),
+      getPenetracaoBairro(supabase),
+      getCoberturaRegiao(supabase),
+    ]);
 
   const resumo = await getResumoDaRede(supabase, liderancas);
 
@@ -146,7 +162,203 @@ export default async function PainelPage() {
           </ul>
         )}
       </section>
+
+      {/* Bloco 4 · onde investir o próximo passo */}
+      <div className="mt-4 grid gap-4 xl:grid-cols-2">
+        <RankingSemana ranking={ranking} />
+        <CoberturaRegional cobertura={cobertura} />
+      </div>
+
+      <PenetracaoPorBairro bairros={penetracao} />
     </div>
+  );
+}
+
+function RankingSemana({ ranking }: { ranking: RankingSemanal[] }) {
+  const maior = Math.max(...ranking.map((r) => r.novos_na_semana), 1);
+
+  return (
+    <section
+      className="rounded-lg border border-line p-5"
+      style={{ background: "var(--card-bg)" }}
+    >
+      <div className="flex flex-wrap items-baseline justify-between gap-2">
+        <h2 className="font-display tracking-card text-card text-ink">
+          Quem está trabalhando agora
+        </h2>
+        <p className="text-tiny text-ink-3">Novos nos últimos 7 dias</p>
+      </div>
+
+      {ranking.length === 0 ? (
+        <p className="mt-4 text-small text-ink-2">
+          Nenhum cadastro novo nesta semana. O ranking recomeça toda segunda.
+        </p>
+      ) : (
+        <ol className="mt-4 flex flex-col gap-2.5">
+          {ranking.map((r, i) => (
+            <li key={r.id} className="flex items-center gap-3">
+              <span className="font-data w-5 shrink-0 text-tiny text-ink-3">
+                {i + 1}
+              </span>
+              <Link
+                href={`/liderancas/${r.id}`}
+                className="min-w-0 flex-1 truncate text-small text-ink hover:underline"
+              >
+                {r.nome}
+              </Link>
+              <div className="h-1 w-24 shrink-0 overflow-hidden rounded-full bg-surface-3">
+                <div
+                  className="h-full bg-ink"
+                  style={{ width: `${(100 * r.novos_na_semana) / maior}%` }}
+                />
+              </div>
+              <span className="font-data w-8 shrink-0 text-right text-small text-ink">
+                {r.novos_na_semana}
+              </span>
+              <span className="font-data w-14 shrink-0 text-right text-tiny text-ink-3">
+                {r.cadastros} no total
+              </span>
+            </li>
+          ))}
+        </ol>
+      )}
+
+      <p className="mt-4 text-tiny text-ink-3">
+        Ordenado por novos na semana, não por total acumulado: o total premia
+        quem tem agenda grande e cristaliza o ranking em duas semanas.
+      </p>
+    </section>
+  );
+}
+
+function CoberturaRegional({ cobertura }: { cobertura: CoberturaRegiao[] }) {
+  return (
+    <section
+      className="rounded-lg border border-line p-5"
+      style={{ background: "var(--card-bg)" }}
+    >
+      <div className="flex flex-wrap items-baseline justify-between gap-2">
+        <h2 className="font-display tracking-card text-card text-ink">
+          Cobertura por macro-região
+        </h2>
+        <p className="text-tiny text-ink-3">Realizado contra o eleitorado</p>
+      </div>
+
+      <div className="mt-5 flex flex-col gap-4">
+        {cobertura.map((r) => {
+          const desvio = Number(r.desvio_pp ?? 0);
+          const fora = Math.abs(desvio) > LIMITE_DESVIO_PP;
+
+          return (
+            <div key={r.regiao}>
+              <div className="flex items-baseline justify-between gap-3">
+                <p className="text-small text-ink">
+                  {r.regiao}{" "}
+                  <span className="text-ink-3">· {REGIAO_LABEL[r.regiao]}</span>
+                </p>
+                <p
+                  className={`font-data text-tiny ${fora ? "text-t-afastado" : "text-ink-3"}`}
+                >
+                  {desvio > 0 ? "+" : ""}
+                  {desvio.toLocaleString("pt-BR", { maximumFractionDigits: 1 })} pp
+                </p>
+              </div>
+              {/* Trilho = proporção do eleitorado. Preenchimento = realizado. */}
+              <div className="relative mt-1.5 h-7 overflow-hidden rounded-sm border border-line bg-surface-3">
+                <div
+                  className="absolute inset-y-0 left-0 bg-ink opacity-90"
+                  style={{ width: `${Number(r.cadastros_pct ?? 0)}%` }}
+                />
+                <div className="relative flex h-full items-center justify-between px-2.5">
+                  <span className="font-data text-tiny text-ink-2">
+                    eleitorado{" "}
+                    {Number(r.eleitorado_pct ?? 0).toLocaleString("pt-BR")}%
+                  </span>
+                  <span className="font-data text-tiny text-ink-2">
+                    cadastros{" "}
+                    {Number(r.cadastros_pct ?? 0).toLocaleString("pt-BR")}%
+                  </span>
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </section>
+  );
+}
+
+function PenetracaoPorBairro({ bairros }: { bairros: PenetracaoBairro[] }) {
+  // Só os oito mais descobertos: o painel é fila de trabalho, e a tabela
+  // inteira mora em /territorio.
+  const primeiros = bairros.slice(0, 8);
+
+  return (
+    <section
+      className="mt-4 overflow-hidden rounded-lg border border-line"
+      style={{ background: "var(--card-bg)" }}
+    >
+      <div className="flex flex-wrap items-baseline justify-between gap-2 border-b border-line px-5 py-3">
+        <h2 className="font-display tracking-card text-card text-ink">
+          Onde falta
+        </h2>
+        <Link href="/territorio" className="text-tiny text-ink-3 hover:text-ink">
+          Ver os 31 bairros e os 40 colégios →
+        </Link>
+      </div>
+
+      <div className="overflow-x-auto">
+        <table className="w-full text-small">
+          <thead>
+            <tr className="border-b border-line text-left">
+              <th className="font-display tracking-eyebrow px-5 py-2 text-eyebrow font-normal text-ink-3">
+                Bairro
+              </th>
+              <th className="font-display tracking-eyebrow px-2 py-2 text-right text-eyebrow font-normal text-ink-3">
+                Eleitores
+              </th>
+              <th className="font-display tracking-eyebrow px-2 py-2 text-right text-eyebrow font-normal text-ink-3">
+                Cadastros
+              </th>
+              <th className="font-display tracking-eyebrow px-2 py-2 text-right text-eyebrow font-normal text-ink-3">
+                Penetração
+              </th>
+              <th className="font-display tracking-eyebrow px-5 py-2 text-right text-eyebrow font-normal text-ink-3">
+                Lideranças
+              </th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-[var(--line)]">
+            {primeiros.map((b) => (
+              <tr key={b.id}>
+                <td className="px-5 py-2 text-ink">
+                  {b.nome}
+                  <span className="font-data ml-2 text-tiny text-ink-3">
+                    {b.regiao}
+                  </span>
+                </td>
+                <td className="font-data px-2 py-2 text-right text-ink-2">
+                  {num(b.eleitores)}
+                </td>
+                <td className="font-data px-2 py-2 text-right text-ink">
+                  {b.cadastros}
+                </td>
+                <td className="font-data px-2 py-2 text-right text-ink">
+                  {b.penetracao_pct === null
+                    ? "—"
+                    : `${Number(b.penetracao_pct).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}%`}
+                </td>
+                <td
+                  className={`font-data px-5 py-2 text-right ${b.liderancas === 0 ? "text-t-afastado" : "text-ink-2"}`}
+                >
+                  {b.liderancas}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </section>
   );
 }
 

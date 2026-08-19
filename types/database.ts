@@ -196,6 +196,24 @@ export type Database = {
         Update: { confirmado?: boolean };
         Relationships: [];
       };
+      temperatura_historico: {
+        Row: {
+          id: string;
+          pessoa_id: string;
+          estado: TemperaturaCadastro;
+          cadastros: number;
+          calculado_em: string;
+        };
+        Insert: {
+          id?: string;
+          pessoa_id: string;
+          estado: TemperaturaCadastro;
+          cadastros?: number;
+          calculado_em?: string;
+        };
+        Update: { cadastros?: number };
+        Relationships: [];
+      };
       tentativas_cadastro: {
         Row: { id: number; ip_hash: string; criado_em: string };
         Insert: { ip_hash: string; criado_em?: string };
@@ -250,6 +268,58 @@ export type Database = {
           faltam: number;
           dias_parada: number | null;
           estado: TemperaturaCadastro;
+          selo: number;
+        };
+        Relationships: [];
+      };
+      v_penetracao_bairro: {
+        Row: {
+          id: string;
+          nome: string;
+          regiao: MacroRegiao;
+          eleitores: number;
+          cadastros: number;
+          penetracao_pct: number | null;
+          liderancas: number;
+          locais: number;
+        };
+        Relationships: [];
+      };
+      v_penetracao_local: {
+        Row: {
+          id: string;
+          nome: string;
+          endereco: string | null;
+          regiao: MacroRegiao;
+          eleitores: number;
+          secoes: number;
+          bairro_id: string;
+          bairro_nome: string;
+          cadastros: number;
+          penetracao_pct: number | null;
+          liderancas_ancora: number;
+          buraco: boolean;
+          sobreposicao: boolean;
+        };
+        Relationships: [];
+      };
+      v_cobertura_regiao: {
+        Row: {
+          regiao: MacroRegiao;
+          eleitores: number;
+          eleitorado_pct: number | null;
+          cadastros: number;
+          cadastros_pct: number | null;
+          desvio_pp: number | null;
+        };
+        Relationships: [];
+      };
+      v_ranking_semanal: {
+        Row: {
+          id: string;
+          nome: string;
+          novos_na_semana: number;
+          cadastros: number;
         };
         Relationships: [];
       };
@@ -273,6 +343,10 @@ export type Database = {
         Args: { p_pessoa_id: string };
         Returns: TemperaturaCadastro;
       };
+      gravar_snapshot_temperatura: {
+        Args: Record<PropertyKey, never>;
+        Returns: number;
+      };
     };
     Enums: {
       papel_operador: PapelOperador;
@@ -294,5 +368,13 @@ export type TemplateMensagem =
   Database["public"]["Tables"]["templates_mensagem"]["Row"];
 export type Envio = Database["public"]["Tables"]["envios"]["Row"];
 export type LiderancaNaLista = Database["public"]["Views"]["v_liderancas"]["Row"];
+export type PenetracaoBairro =
+  Database["public"]["Views"]["v_penetracao_bairro"]["Row"];
+export type PenetracaoLocal =
+  Database["public"]["Views"]["v_penetracao_local"]["Row"];
+export type CoberturaRegiao =
+  Database["public"]["Views"]["v_cobertura_regiao"]["Row"];
+export type RankingSemanal =
+  Database["public"]["Views"]["v_ranking_semanal"]["Row"];
 export type CheckSeed =
   Database["public"]["Functions"]["validar_seed"]["Returns"][number];
