@@ -8,7 +8,7 @@ import type {
   Database,
   LocalVotacao,
   MacroRegiao,
-} from "@/types/database";
+} from "../../types/database.ts";
 
 type Cliente = SupabaseClient<Database>;
 

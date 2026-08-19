@@ -17,7 +17,8 @@
     "testa:temperatura": "node scripts/testa-temperatura.mjs",
     "testa:territorio": "node scripts/testa-territorio.mjs",
     "testa:relacionamento": "node scripts/testa-relacionamento.mjs",
-    "testa:instagram": "node scripts/testa-instagram.mjs"
+    "testa:instagram": "node scripts/testa-instagram.mjs",
+    "testa:exportacao": "node --conditions=react-server scripts/testa-exportacao.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.4",

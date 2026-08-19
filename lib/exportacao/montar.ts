@@ -2,8 +2,8 @@ import "server-only";
 
 import type { SupabaseClient } from "@supabase/supabase-js";
 
-import { REGIAO_LABEL } from "@/lib/territorio";
-import type { Database } from "@/types/database";
+import { REGIAO_LABEL } from "../territorio/index.ts";
+import type { Database } from "../../types/database.ts";
 
 import {
   scanearVazamento,
@@ -16,7 +16,7 @@ import {
   type RelatorioCandidato,
   type RelatorioInterno,
   type RelatorioPublico,
-} from "./perfis";
+} from "./perfis.ts";
 
 type Cliente = SupabaseClient<Database>;
 

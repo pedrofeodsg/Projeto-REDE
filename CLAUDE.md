@@ -135,6 +135,7 @@ npm run testa:temperatura   # os seis estados do termômetro contra o banco
 npm run testa:territorio    # penetração, buracos, cobertura e selos
 npm run testa:relacionamento # promoção, reatribuição, demandas e interações
 npm run testa:instagram     # roster congelado, handle_cru e temperatura digital
+npm run testa:exportacao    # a invariante 8: o que nunca sai da organização
 ```
 
 `npm run verifica` é o teste que o item 5 dos Critérios de Pronto (PRD 11.4)
@@ -341,8 +342,20 @@ em 18/08/2026.**
 - [x] Coluna digital independente na lista de lideranças
 - [x] `npm run testa:instagram` com 14 verificações contra o banco
 
-**Próximo:** Bloco 7 · Prestação de Contas (RF-39 a RF-41). Perfis de
-exportação, snapshot datado e link com token revogável.
+**Bloco 7 · Prestação de Contas (RF-39 a RF-41) ✅ concluído em 18/08/2026.**
+
+- [x] Migration `0009_exportacao.sql`: `exportacoes` com token revogável e a
+      view `v_curva_semanal`
+- [x] Três perfis em `lib/exportacao/perfis.ts`, num lugar só
+- [x] `RelatorioCandidato` sem campo de contato — travado no tipo
+- [x] `scanearVazamento()` varre o payload antes de sair; achou, lança
+- [x] `/exportar` com prévia por perfil e gestão de links
+- [x] `/r/[token]` sem login, limitada ao perfil do link, revogável
+- [x] `npm run testa:exportacao` com 20 verificações contra o banco real,
+      inclusive com apoiador de telefone conhecido plantado na base
+
+**Próximo:** Bloco 8 · Pós-eleição, que só faz sentido depois de 4 de outubro.
+Do lado do código o roadmap está cumprido; o que falta é operacional.
 
 # Regras do módulo digital
 
