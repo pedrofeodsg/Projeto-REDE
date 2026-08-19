@@ -62,7 +62,7 @@ export async function getPessoa(
       `*,
        bairro:bairros ( id, nome ),
        local:locais_votacao ( id, nome, regiao, bairro_id ),
-       quem_indicou:pessoas!pessoas_indicado_por_fkey ( id, nome, nivel )`,
+       quem_indicou:pessoas!indicado_por ( id, nome, nivel )`,
     )
     .eq("id", id)
     .maybeSingle<PessoaCompleta>();

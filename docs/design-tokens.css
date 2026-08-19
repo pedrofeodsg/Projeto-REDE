@@ -24,8 +24,15 @@
   --line-3:       rgba(255,255,255,.32);  /* fio de citação */
 
   --ink:          #F4F4F4;   /* texto primário, também o acento do painel */
-  --ink-2:        #8E8E8E;   /* texto de apoio */
-  --ink-3:        #565656;   /* rótulo, eyebrow, metadado */
+  --ink-2:        #A5A5A5;   /* texto de apoio · 8,5:1 sobre preto */
+  --ink-3:        #808080;   /* rótulo, eyebrow, metadado · 5,3:1 sobre preto */
+
+  /* Revisão de 18/08/2026: os valores originais eram #8E8E8E e #565656. O
+     segundo tinha contraste de 2,86:1 sobre preto puro, o que falha o mínimo
+     AA até para texto grande — e a regra 16 abaixo já dizia que ele não
+     servia para texto que precisa ser lido. Na prática ele acabou usado em
+     apoio e metadado por toda parte, então o valor subiu em vez de a regra
+     virar letra morta. */
 
   /* Gradiente do card (assinatura da referência) */
   --card-bg: linear-gradient(158deg, var(--surface-2) 0%, var(--surface) 62%);
@@ -74,12 +81,17 @@
   --fs-display: clamp(32px, 5.5vw, 54px);
   --fs-section: clamp(21px, 3vw, 29px);
   --fs-index:   clamp(38px, 6vw, 60px);  /* numeral de índice, peso 200 */
-  --fs-kpi:     38px;
-  --fs-card:    14px;
-  --fs-body:    15px;
-  --fs-small:   13px;
-  --fs-tiny:    11.5px;
-  --fs-eyebrow: 10px;
+  --fs-kpi:     40px;
+  --fs-card:    15px;
+  --fs-body:    16px;
+  --fs-small:   14.5px;
+  --fs-tiny:    13px;
+  --fs-eyebrow: 11px;
+
+  /* Revisão de 18/08/2026: a escala subiu um degrau inteiro. A original
+     (15/13/11.5/10) foi desenhada olhando maquete; em uso, num painel de
+     fundo preto e sessão longa, o corpo de 13px e o metadado de 11,5px
+     cansam antes de a tarefa terminar. */
 
   /* Corpo do formulário público: 16px é regra técnica.
      Abaixo disso o iOS dá zoom automático no foco. */
@@ -125,8 +137,10 @@
    5. Todo número usa IBM Plex Mono com font-variant-numeric:
       tabular-nums. Coluna que não alinha é coluna que não
       se compara.
-   6. Peso 300 é o padrão do corpo. 500 só em nome próprio
+   6. Peso 400 é o padrão do corpo. 500 só em nome próprio
       e rótulo de campo.
+      (Era 300. Em fundo preto puro, o traço fino da IBM Plex
+      Light é comido pelo contraste e o texto perde definição.)
 
    DADO
    7. Nenhum número absoluto aparece sozinho quando existe um

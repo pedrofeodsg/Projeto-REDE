@@ -44,7 +44,7 @@ export default async function PessoasPage(props: PageProps<"/pessoas">) {
     .select(
       `id, nome, telefone, nivel, origem, criado_em, fora_do_municipio,
        local:locais_votacao ( nome ),
-       quem_indicou:pessoas!pessoas_indicado_por_fkey ( id, nome )`,
+       quem_indicou:pessoas!indicado_por ( id, nome )`,
       { count: "exact" },
     )
     .eq("ativo", true)

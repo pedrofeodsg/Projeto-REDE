@@ -175,9 +175,16 @@
 
     body {
         @apply bg-background text-foreground;
-        font-weight: 300;
+        font-weight: 400;
         font-size: var(--fs-body);
+        line-height: 1.55;
         -webkit-font-smoothing: antialiased;
+        text-rendering: optimizeLegibility;
+    }
+
+    /* Tabela densa respira menos que texto corrido, mas não pode colar. */
+    table {
+        line-height: 1.4;
     }
 
     /* Regra 5 dos tokens: coluna que não alinha é coluna que não se compara. */
