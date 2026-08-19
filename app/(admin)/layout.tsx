@@ -1,18 +1,38 @@
 import { redirect } from "next/navigation";
 
-import { sair } from "@/app/login/actions";
-import { Nav } from "@/components/admin/nav";
-import { Button } from "@/components/ui/button";
+import { Sidebar, type Contagens } from "@/components/admin/sidebar";
 import { chaveDoEmail } from "@/lib/auth/acesso";
 import { sessaoAdmin } from "@/lib/auth/operador";
+import { createAuthClient } from "@/lib/supabase/auth";
 
 // Toda tela do admin depende da sessão do operador. Nenhuma é estática.
 export const dynamic = "force-dynamic";
 
-const PAPEL_LABEL = {
-  coordenacao: "Coordenação",
-  operador: "Operador",
-} as const;
+/**
+ * Conta o que está esperando alguém.
+ *
+ * Vira número ao lado do item no menu: a navegação também é fila de trabalho.
+ * Falha aqui não pode derrubar o painel inteiro — na dúvida, mostra zero.
+ */
+async function contarPendencias(
+  supabase: Awaited<ReturnType<typeof createAuthClient>>,
+): Promise<Contagens> {
+  const [demandas, conflitos] = await Promise.all([
+    supabase
+      .from("demandas")
+      .select("id", { count: "exact", head: true })
+      .in("status", ["aberta", "em_andamento"]),
+    supabase
+      .from("conflitos_cadastro")
+      .select("id", { count: "exact", head: true })
+      .eq("resolvido", false),
+  ]);
+
+  return {
+    demandas: demandas.count ?? 0,
+    conflitos: conflitos.count ?? 0,
+  };
+}
 
 export default async function AdminLayout({
   children,
@@ -20,55 +40,30 @@ export default async function AdminLayout({
   children: React.ReactNode;
 }) {
   const sessao = await sessaoAdmin();
-
   if (!sessao) redirect("/login");
 
+  const supabase = await createAuthClient();
+  const contagens = sessao.operador
+    ? await contarPendencias(supabase)
+    : { demandas: 0, conflitos: 0 };
+
   return (
-    <div className="admin flex min-h-dvh flex-col bg-background">
-      <header className="flex items-center justify-between gap-4 border-b border-line px-5 py-4 sm:px-8">
-        <div className="flex items-center gap-6">
-          <div>
-            <p className="font-display text-eyebrow tracking-eyebrow text-ink-3">
-              Núcleo de Inteligência e Dados
-            </p>
-            <p className="font-display tracking-card text-card text-ink">
-              Projeto REDE
-            </p>
-          </div>
-          <Nav />
-        </div>
+    <div className="admin min-h-dvh bg-background">
+      <Sidebar
+        nome={sessao.operador?.nome ?? chaveDoEmail(sessao.email) ?? "—"}
+        papel={sessao.operador?.papel ?? null}
+        contagens={contagens}
+      />
 
-        <div className="flex items-center gap-4">
-          <div className="text-right">
-            <p className="text-small font-medium text-ink">
-              {sessao.operador?.nome ?? chaveDoEmail(sessao.email)}
-            </p>
-            <p className="font-display text-eyebrow tracking-eyebrow text-ink-3">
-              {sessao.operador
-                ? PAPEL_LABEL[sessao.operador.papel]
-                : "Sem vínculo"}
-            </p>
-          </div>
-
-          <form action={sair}>
-            <Button
-              type="submit"
-              variant="outline"
-              className="font-display tracking-card h-9 border-line-2 bg-transparent text-tiny text-ink-2 hover:text-ink"
-            >
-              Sair
-            </Button>
-          </form>
-        </div>
-      </header>
-
-      <main className="flex-1 px-5 py-8 sm:px-8">
-        {sessao.operador ? (
-          children
-        ) : (
-          <ContaSemOperador chave={chaveDoEmail(sessao.email)} />
-        )}
-      </main>
+      <div className="lg:pl-[240px]">
+        <main className="px-5 py-8 sm:px-8 lg:py-10">
+          {sessao.operador ? (
+            children
+          ) : (
+            <ContaSemOperador chave={chaveDoEmail(sessao.email)} />
+          )}
+        </main>
+      </div>
     </div>
   );
 }
