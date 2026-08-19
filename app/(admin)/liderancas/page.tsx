@@ -3,6 +3,7 @@ import Link from "next/link";
 
 import { BotaoEnvio } from "@/components/admin/botao-envio";
 import { FilaDeEnvio } from "@/components/admin/fila-de-envio";
+import { DIGITAL, getDigitalDasLiderancas } from "@/lib/instagram/queries";
 import {
   listarLiderancasComEstado,
   listarTemplates,
@@ -39,11 +40,12 @@ export default async function LiderancasPage(props: PageProps<"/liderancas">) {
 
   const supabase = await createAuthClient();
 
-  const [bairros, tags, templates, mapaTags, listaBruta] = await Promise.all([
+  const [bairros, tags, templates, mapaTags, digital, listaBruta] = await Promise.all([
     getBairros(supabase),
     listarTags(supabase),
     listarTemplates(supabase, true),
     tagsPorPessoa(supabase),
+    getDigitalDasLiderancas(supabase),
     listarLiderancasComEstado(supabase, {
       busca,
       bairroId: bairroId || undefined,
@@ -57,6 +59,10 @@ export default async function LiderancasPage(props: PageProps<"/liderancas">) {
   const liderancas = tagId
     ? listaBruta.filter((l) => (mapaTags.get(l.id) ?? []).some((t) => t.id === tagId))
     : listaBruta;
+
+  // Dois termômetros, nunca combinados num número só: quem cadastra 20 e não
+  // comenta é um problema diferente de quem comenta em tudo e cadastra zero.
+  const porPessoa = new Map(digital.map((d) => [d.pessoa_id, d]));
 
   const host = hostPublico();
   const filtrando = Boolean(busca || bairroId || regiao || tagId || estadoParam);
@@ -134,6 +140,7 @@ export default async function LiderancasPage(props: PageProps<"/liderancas">) {
                   <Th>Tags</Th>
                   <Th className="text-right">Cadastros</Th>
                   <Th>Estado</Th>
+                  <Th>Digital</Th>
                   <Th className="text-right">Parada</Th>
                   <Th>Ação</Th>
                 </tr>
@@ -217,6 +224,32 @@ export default async function LiderancasPage(props: PageProps<"/liderancas">) {
                         {l.enviado_em === null && (
                           <p className="text-tiny text-ink-3">link não enviado</p>
                         )}
+                      </td>
+
+                      <td className="px-2 py-3">
+                        {(() => {
+                          const d = porPessoa.get(l.id);
+                          if (!d || !d.estado_digital) {
+                            return <span className="text-tiny text-ink-3">—</span>;
+                          }
+                          return (
+                            <>
+                              <span className="flex items-center gap-1.5">
+                                <span
+                                  aria-hidden
+                                  className="size-2 shrink-0 rounded-full"
+                                  style={{ background: DIGITAL[d.estado_digital].cor }}
+                                />
+                                <span className="text-ink-2">
+                                  {DIGITAL[d.estado_digital].rotulo}
+                                </span>
+                              </span>
+                              <p className="font-data text-tiny text-ink-3">
+                                {d.presencas}/{d.janela} posts
+                              </p>
+                            </>
+                          );
+                        })()}
                       </td>
 
                       <td className="font-data px-2 py-3 text-right text-ink-2">

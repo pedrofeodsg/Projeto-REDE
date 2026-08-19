@@ -19,6 +19,9 @@ export type PapelOperador = "coordenacao" | "operador";
 export type MacroRegiao = "R1" | "R2" | "R3";
 export type NivelPessoa = "coordenacao" | "lideranca" | "apoiador";
 export type OrigemPessoa = "link" | "admin";
+export type TipoEngajamento = "comentario" | "curtida" | "story_mention";
+export type OrigemEngajamento = "api" | "importacao_manual";
+export type TemperaturaDigital = "ativo" | "irregular" | "ausente";
 export type TipoInteracao = "ligacao" | "visita" | "conversa" | "mensagem";
 export type StatusDemanda =
   | "aberta"
@@ -283,6 +286,70 @@ export type Database = {
         Update: { motivo?: string | null };
         Relationships: [];
       };
+      posts: {
+        Row: {
+          id: string;
+          url: string;
+          publicado_em: string;
+          legenda: string | null;
+          curtidas_total: number | null;
+          comentarios_total: number | null;
+          criado_em: string;
+        };
+        Insert: {
+          id?: string;
+          url: string;
+          publicado_em?: string;
+          legenda?: string | null;
+          curtidas_total?: number | null;
+          comentarios_total?: number | null;
+        };
+        Update: {
+          url?: string;
+          publicado_em?: string;
+          legenda?: string | null;
+          curtidas_total?: number | null;
+          comentarios_total?: number | null;
+        };
+        Relationships: [];
+      };
+      post_roster: {
+        Row: { post_id: string; pessoa_id: string };
+        Insert: { post_id: string; pessoa_id: string };
+        Update: never;
+        Relationships: [];
+      };
+      engajamentos: {
+        Row: {
+          id: string;
+          post_id: string;
+          handle_cru: string;
+          pessoa_id: string | null;
+          tipo: TipoEngajamento;
+          texto: string | null;
+          origem: OrigemEngajamento;
+          capturado_em: string;
+        };
+        Insert: {
+          id?: string;
+          post_id: string;
+          handle_cru: string;
+          pessoa_id?: string | null;
+          tipo: TipoEngajamento;
+          texto?: string | null;
+          origem?: OrigemEngajamento;
+          capturado_em?: string;
+        };
+        // handle_cru fora do Update de propósito: o trigger recusa a troca.
+        Update: { pessoa_id?: string | null; texto?: string | null };
+        Relationships: [];
+      };
+      recrutamento: {
+        Row: { handle: string; operador: string | null; criado_em: string };
+        Insert: { handle: string; operador?: string | null };
+        Update: never;
+        Relationships: [];
+      };
       temperatura_historico: {
         Row: {
           id: string;
@@ -421,6 +488,30 @@ export type Database = {
         };
         Relationships: [];
       };
+      v_lideranca_digital: {
+        Row: {
+          pessoa_id: string;
+          nome: string;
+          telefone: string;
+          slug: string | null;
+          instagram_handle: string | null;
+          janela: number;
+          presencas: number;
+          faltas: number;
+          estado_digital: TemperaturaDigital | null;
+        };
+        Relationships: [];
+      };
+      v_handles_sem_vinculo: {
+        Row: {
+          handle_cru: string;
+          engajamentos: number;
+          posts: number;
+          ultimo: string;
+          marcado: boolean;
+        };
+        Relationships: [];
+      };
       v_ranking_semanal: {
         Row: {
           id: string;
@@ -450,6 +541,10 @@ export type Database = {
         Args: { p_pessoa_id: string };
         Returns: TemperaturaCadastro;
       };
+      calcular_temperatura_digital: {
+        Args: { p_pessoa_id: string };
+        Returns: TemperaturaDigital | null;
+      };
       gravar_snapshot_temperatura: {
         Args: Record<PropertyKey, never>;
         Returns: number;
@@ -463,6 +558,9 @@ export type Database = {
       temperatura_cadastro: TemperaturaCadastro;
       tipo_interacao: TipoInteracao;
       status_demanda: StatusDemanda;
+      tipo_engajamento: TipoEngajamento;
+      origem_engajamento: OrigemEngajamento;
+      temperatura_digital: TemperaturaDigital;
     };
     CompositeTypes: { [_ in never]: never };
   };
@@ -486,6 +584,12 @@ export type CoberturaRegiao =
 export type Interacao = Database["public"]["Tables"]["interacoes"]["Row"];
 export type Demanda = Database["public"]["Tables"]["demandas"]["Row"];
 export type DemandaNaFila = Database["public"]["Views"]["v_demandas"]["Row"];
+export type Post = Database["public"]["Tables"]["posts"]["Row"];
+export type Engajamento = Database["public"]["Tables"]["engajamentos"]["Row"];
+export type LiderancaDigital =
+  Database["public"]["Views"]["v_lideranca_digital"]["Row"];
+export type HandleSemVinculo =
+  Database["public"]["Views"]["v_handles_sem_vinculo"]["Row"];
 export type Reatribuicao = Database["public"]["Tables"]["reatribuicoes"]["Row"];
 export type RankingSemanal =
   Database["public"]["Views"]["v_ranking_semanal"]["Row"];

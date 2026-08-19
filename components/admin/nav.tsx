@@ -8,6 +8,7 @@ const ITENS = [
   { href: "/liderancas", rotulo: "Lideranças" },
   { href: "/pessoas", rotulo: "Pessoas" },
   { href: "/demandas", rotulo: "Demandas" },
+  { href: "/instagram", rotulo: "Instagram" },
   { href: "/mensagens", rotulo: "Mensagens" },
   { href: "/territorio", rotulo: "Território" },
 ] as const;

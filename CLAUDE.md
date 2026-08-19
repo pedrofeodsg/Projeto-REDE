@@ -134,6 +134,7 @@ npm run testa:captura  # a regra de captura pública contra o banco real
 npm run testa:temperatura   # os seis estados do termômetro contra o banco
 npm run testa:territorio    # penetração, buracos, cobertura e selos
 npm run testa:relacionamento # promoção, reatribuição, demandas e interações
+npm run testa:instagram     # roster congelado, handle_cru e temperatura digital
 ```
 
 `npm run verifica` é o teste que o item 5 dos Critérios de Pronto (PRD 11.4)
@@ -328,8 +329,34 @@ em 18/08/2026.**
 - [x] Fila de envio em lote com avanço manual (RF-32)
 - [x] `npm run testa:relacionamento` com 17 verificações contra o banco
 
-**Próximo:** Bloco 6 · Digital (RF-16, RF-33 a RF-38). Depende do extrator de
-Instagram, que é sistema separado — o hub só recebe importação.
+**Bloco 6 · Digital (RF-16, RF-33 a RF-38) ✅ concluído em 18/08/2026.**
+
+- [x] Migration `0008_instagram.sql`: `posts`, `post_roster`, `engajamentos`,
+      `recrutamento`, `calcular_temperatura_digital()`, `v_lideranca_digital` e
+      `v_handles_sem_vinculo`
+- [x] Roster congela em trigger no cadastro do post — nunca recalculado
+- [x] `handle_cru` protegido por trigger contra sobrescrita
+- [x] `/instagram/posts`, `/importar`, `/ausencias`, `/vincular`
+- [x] Parser de colagem e CSV com 15 testes
+- [x] Coluna digital independente na lista de lideranças
+- [x] `npm run testa:instagram` com 14 verificações contra o banco
+
+**Próximo:** Bloco 7 · Prestação de Contas (RF-39 a RF-41). Perfis de
+exportação, snapshot datado e link com token revogável.
+
+# Regras do módulo digital
+
+- **Presença é comentário, nunca curtida.** A lista nominal de quem curtiu não
+  é exposta por nenhuma via oficial — decisão da plataforma, não limitação
+  nossa. Por isso o comentário é a exigência da rede e a curtida é piso,
+  conferida pela contagem agregada digitada no cadastro do post.
+- **A temperatura digital nunca soma com a de cadastro.** São duas colunas
+  separadas e vão continuar assim. Quem cadastra 20 e não comenta é um problema
+  diferente de quem comenta em tudo e cadastra zero.
+- **Quem entrou depois do último post fica "sem janela", não "ausente".**
+- **O sistema nunca conversa com o Instagram.** Sem SDK, sem requisição, sem
+  integração. A entrada é sempre importação, para não expor a conta oficial a
+  restrição em plena campanha.
 
 # Regras de contagem territorial
 
