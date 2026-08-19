@@ -37,10 +37,21 @@ comment on column public.pessoas.local_votacao_id is
 comment on column public.pessoas.bairro_moradia_id is
   'Onde a pessoa MORA. Unidade de trabalho: é o bairro que ela cobre no dia a dia.';
 
+-- ── as views que mudam de forma ────────────────────────────────────────────
+-- `create or replace view` recusa renomear coluna, e v_penetracao_local troca
+-- `liderancas_ancora` por dois campos com nomes novos. Derrubar antes é o que
+-- permite a troca — e como o Supabase roda o script inteiro numa transação, um
+-- erro aqui desfaria até o `add column` lá em cima.
+--
+-- Nenhuma outra view lê destas, então a ordem não importa.
+drop view if exists public.v_penetracao_local;
+drop view if exists public.v_penetracao_bairro;
+drop view if exists public.v_demandas;
+
 -- ── penetração por bairro ──────────────────────────────────────────────────
 -- `cadastros` continua vindo de onde a pessoa VOTA: é estimativa de voto.
 -- `liderancas` passa a vir de onde a pessoa MORA: é cobertura de trabalho.
-create or replace view public.v_penetracao_bairro
+create view public.v_penetracao_bairro
 with (security_invoker = on)
 as
 select
@@ -82,7 +93,7 @@ comment on view public.v_penetracao_bairro is
 -- ── penetração por colégio ─────────────────────────────────────────────────
 -- O colégio é a unidade de VOTO. Duas contagens de liderança, com sentidos
 -- diferentes e nomes que dizem qual é qual.
-create or replace view public.v_penetracao_local
+create view public.v_penetracao_local
 with (security_invoker = on)
 as
 select
@@ -187,7 +198,7 @@ comment on view public.v_liderancas is
 
 -- ── fila de demandas ───────────────────────────────────────────────────────
 -- Mesmo raciocínio: o bairro de quem pede é onde ela mora.
-create or replace view public.v_demandas
+create view public.v_demandas
 with (security_invoker = on)
 as
 select
