@@ -133,6 +133,7 @@ npm run verifica -- painelsistema '<senha>'   # RLS e login contra o banco real
 npm run testa:captura  # a regra de captura pública contra o banco real
 npm run testa:temperatura   # os seis estados do termômetro contra o banco
 npm run testa:territorio    # penetração, buracos, cobertura e selos
+npm run testa:relacionamento # promoção, reatribuição, demandas e interações
 ```
 
 `npm run verifica` é o teste que o item 5 dos Critérios de Pronto (PRD 11.4)
@@ -311,9 +312,24 @@ concluído em 17/08/2026.**
       `CRON_SECRET` — recusa tudo em produção se o segredo não existir
 - [x] `npm run testa:territorio` com 15 verificações contra o banco
 
-**Próximo:** Bloco 5 · Relacionamento (RF-05 a RF-07, RF-24 a RF-27, RF-32).
-Prontuário, interações, demandas, promoção de apoiador a liderança e a tela de
-conflitos.
+**Bloco 5 · Relacionamento (RF-05 a RF-07, RF-24 a RF-27, RF-32) ✅ concluído
+em 18/08/2026.**
+
+- [x] Migration `0007_relacionamento.sql`: `interacoes`, `demandas`,
+      `reatribuicoes` (append-only) e a view `v_demandas`
+- [x] Trigger carimba a data de resolução e a apaga quando a demanda reabre
+- [x] `/pessoas` com busca e paginação; `/pessoas/[id]` com linha do tempo
+      unificada e bloco extra só para liderança
+- [x] "Registrar contato" sempre visível, inclusive no estado vazio
+- [x] Promoção de apoiador a liderança sem migrar registro (RF-06)
+- [x] Reatribuição individual e em lote com auditoria (RF-07)
+- [x] `/demandas` com filtro por status, categoria e responsável
+- [x] `/conflitos` para arbitragem privada
+- [x] Fila de envio em lote com avanço manual (RF-32)
+- [x] `npm run testa:relacionamento` com 17 verificações contra o banco
+
+**Próximo:** Bloco 6 · Digital (RF-16, RF-33 a RF-38). Depende do extrator de
+Instagram, que é sistema separado — o hub só recebe importação.
 
 # Regras de contagem territorial
 

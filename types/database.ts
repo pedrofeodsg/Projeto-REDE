@@ -19,6 +19,12 @@ export type PapelOperador = "coordenacao" | "operador";
 export type MacroRegiao = "R1" | "R2" | "R3";
 export type NivelPessoa = "coordenacao" | "lideranca" | "apoiador";
 export type OrigemPessoa = "link" | "admin";
+export type TipoInteracao = "ligacao" | "visita" | "conversa" | "mensagem";
+export type StatusDemanda =
+  | "aberta"
+  | "em_andamento"
+  | "resolvida"
+  | "sem_solucao";
 export type TemperaturaCadastro =
   | "aguardando"
   | "afastado"
@@ -196,6 +202,87 @@ export type Database = {
         Update: { confirmado?: boolean };
         Relationships: [];
       };
+      interacoes: {
+        Row: {
+          id: string;
+          pessoa_id: string;
+          tipo: TipoInteracao;
+          canal: string | null;
+          descricao: string;
+          autor: string | null;
+          criado_em: string;
+        };
+        Insert: {
+          id?: string;
+          pessoa_id: string;
+          tipo: TipoInteracao;
+          canal?: string | null;
+          descricao: string;
+          autor?: string | null;
+          criado_em?: string;
+        };
+        Update: {
+          tipo?: TipoInteracao;
+          canal?: string | null;
+          descricao?: string;
+        };
+        Relationships: [];
+      };
+      demandas: {
+        Row: {
+          id: string;
+          pessoa_id: string;
+          titulo: string;
+          descricao: string | null;
+          categoria: string | null;
+          status: StatusDemanda;
+          responsavel: string | null;
+          aberta_em: string;
+          resolvida_em: string | null;
+        };
+        Insert: {
+          id?: string;
+          pessoa_id: string;
+          titulo: string;
+          descricao?: string | null;
+          categoria?: string | null;
+          status?: StatusDemanda;
+          responsavel?: string | null;
+          aberta_em?: string;
+          resolvida_em?: string | null;
+        };
+        Update: {
+          titulo?: string;
+          descricao?: string | null;
+          categoria?: string | null;
+          status?: StatusDemanda;
+          responsavel?: string | null;
+          resolvida_em?: string | null;
+        };
+        Relationships: [];
+      };
+      reatribuicoes: {
+        Row: {
+          id: string;
+          pessoa_id: string;
+          de_pessoa_id: string | null;
+          para_pessoa_id: string | null;
+          operador: string | null;
+          motivo: string | null;
+          criado_em: string;
+        };
+        Insert: {
+          id?: string;
+          pessoa_id: string;
+          de_pessoa_id?: string | null;
+          para_pessoa_id?: string | null;
+          operador?: string | null;
+          motivo?: string | null;
+          criado_em?: string;
+        };
+        Update: { motivo?: string | null };
+        Relationships: [];
+      };
       temperatura_historico: {
         Row: {
           id: string;
@@ -314,6 +401,26 @@ export type Database = {
         };
         Relationships: [];
       };
+      v_demandas: {
+        Row: {
+          id: string;
+          titulo: string;
+          descricao: string | null;
+          categoria: string | null;
+          status: StatusDemanda;
+          responsavel: string | null;
+          aberta_em: string;
+          resolvida_em: string | null;
+          dias_aberta: number;
+          pessoa_id: string;
+          pessoa_nome: string;
+          pessoa_telefone: string;
+          pessoa_nivel: NivelPessoa;
+          bairro_nome: string | null;
+          responsavel_nome: string | null;
+        };
+        Relationships: [];
+      };
       v_ranking_semanal: {
         Row: {
           id: string;
@@ -354,6 +461,8 @@ export type Database = {
       nivel_pessoa: NivelPessoa;
       origem_pessoa: OrigemPessoa;
       temperatura_cadastro: TemperaturaCadastro;
+      tipo_interacao: TipoInteracao;
+      status_demanda: StatusDemanda;
     };
     CompositeTypes: { [_ in never]: never };
   };
@@ -374,6 +483,10 @@ export type PenetracaoLocal =
   Database["public"]["Views"]["v_penetracao_local"]["Row"];
 export type CoberturaRegiao =
   Database["public"]["Views"]["v_cobertura_regiao"]["Row"];
+export type Interacao = Database["public"]["Tables"]["interacoes"]["Row"];
+export type Demanda = Database["public"]["Tables"]["demandas"]["Row"];
+export type DemandaNaFila = Database["public"]["Views"]["v_demandas"]["Row"];
+export type Reatribuicao = Database["public"]["Tables"]["reatribuicoes"]["Row"];
 export type RankingSemanal =
   Database["public"]["Views"]["v_ranking_semanal"]["Row"];
 export type CheckSeed =

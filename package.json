@@ -15,7 +15,8 @@
     "test": "node --test \"lib/**/*.test.ts\"",
     "testa:captura": "node --conditions=react-server scripts/testa-captura.mjs",
     "testa:temperatura": "node scripts/testa-temperatura.mjs",
-    "testa:territorio": "node scripts/testa-territorio.mjs"
+    "testa:territorio": "node scripts/testa-territorio.mjs",
+    "testa:relacionamento": "node scripts/testa-relacionamento.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.4",

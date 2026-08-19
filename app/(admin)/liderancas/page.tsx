@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 import { BotaoEnvio } from "@/components/admin/botao-envio";
+import { FilaDeEnvio } from "@/components/admin/fila-de-envio";
 import {
   listarLiderancasComEstado,
   listarTemplates,
@@ -74,12 +75,20 @@ export default async function LiderancasPage(props: PageProps<"/liderancas">) {
           </h1>
         </div>
 
-        <Link
-          href="/liderancas/nova"
-          className="font-display tracking-card inline-flex h-11 items-center rounded-full bg-primary px-5 text-card text-primary-foreground transition-opacity duration-[var(--dur-micro)] hover:opacity-90"
-        >
-          Nova liderança
-        </Link>
+        <div className="flex flex-wrap items-center gap-2">
+          <FilaDeEnvio
+            liderancas={liderancas}
+            templates={templates}
+            urlBase={host}
+            templatePadrao={estadoParam === "afastado" ? "cutucada" : "boas_vindas"}
+          />
+          <Link
+            href="/liderancas/nova"
+            className="font-display tracking-card inline-flex h-11 items-center rounded-full bg-primary px-5 text-card text-primary-foreground transition-opacity duration-[var(--dur-micro)] hover:opacity-90"
+          >
+            Nova liderança
+          </Link>
+        </div>
       </header>
 
       <Filtros
