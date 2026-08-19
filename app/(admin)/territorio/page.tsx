@@ -40,7 +40,12 @@ export default async function TerritorioPage() {
   const falhas = checks.filter((c) => !c.ok).length;
 
   const buracos = locais.filter((l) => l.buraco);
-  const sobrepostos = locais.filter((l) => l.sobreposicao);
+  // Concentração é pergunta de bairro, não de colégio: o trabalho se faz
+  // morando no bairro, e dois colégios do mesmo bairro repetiriam a mesma
+  // informação três vezes.
+  const bairrosConcentrados = bairros
+    .filter((b) => b.liderancas >= 2)
+    .sort((a, b) => a.eleitores - b.eleitores);
 
   return (
     <div className="mx-auto max-w-[1500px]">
@@ -67,13 +72,13 @@ export default async function TerritorioPage() {
         <Indicador
           rotulo="Colégios descobertos"
           valor={num(buracos.length)}
-          apoio="acima de 2.000 eleitores e sem liderança âncora"
+          apoio="acima de 2.000 eleitores, em bairro onde ninguém da rede mora"
           alerta={buracos.length > 0}
         />
         <Indicador
-          rotulo="Colégios com sobreposição"
-          valor={num(sobrepostos.length)}
-          apoio="duas ou mais lideranças no mesmo colégio"
+          rotulo="Bairros com concentração"
+          valor={num(bairrosConcentrados.length)}
+          apoio="duas ou mais lideranças morando no mesmo bairro"
         />
         <Indicador
           rotulo="Integridade do seed"
@@ -93,7 +98,7 @@ export default async function TerritorioPage() {
 
       <div className="mt-4 grid gap-4 xl:grid-cols-2">
         <Cobertura cobertura={cobertura} />
-        <Anomalias buracos={buracos} sobrepostos={sobrepostos} />
+        <Anomalias buracos={buracos} concentrados={bairrosConcentrados} />
       </div>
 
       <div className="mt-4 grid gap-4 2xl:grid-cols-2">
@@ -211,10 +216,10 @@ function Cobertura({ cobertura }: { cobertura: CoberturaRegiao[] }) {
 
 function Anomalias({
   buracos,
-  sobrepostos,
+  concentrados,
 }: {
   buracos: PenetracaoLocal[];
-  sobrepostos: PenetracaoLocal[];
+  concentrados: PenetracaoBairro[];
 }) {
   return (
     <section
@@ -224,7 +229,7 @@ function Anomalias({
       <h2 className="font-display tracking-card text-card text-ink">
         Buracos e sobreposições
       </h2>
-      <p className="mt-2 text-tiny text-ink-3">
+      <p className="mt-2 text-tiny text-ink-2">
         Não são erros, são informação. Duas lideranças em São João é adequado;
         duas em Sapeatiba Mirim, com 55 eleitores, é desperdício.
       </p>
@@ -235,7 +240,8 @@ function Anomalias({
         </p>
         {buracos.length === 0 ? (
           <p className="mt-2 text-small text-ink-2">
-            Nenhum colégio acima de 2.000 eleitores está sem liderança âncora.
+            Todo colégio acima de 2.000 eleitores fica num bairro com alguém da
+            rede morando.
           </p>
         ) : (
           <ul className="mt-2 flex flex-col gap-1.5">
@@ -253,19 +259,19 @@ function Anomalias({
 
       <div className="mt-5 border-t border-line pt-4">
         <p className="font-display text-eyebrow tracking-eyebrow text-ink-3">
-          Com duas ou mais lideranças
+          Bairros com duas ou mais lideranças
         </p>
-        {sobrepostos.length === 0 ? (
+        {concentrados.length === 0 ? (
           <p className="mt-2 text-small text-ink-2">
-            Nenhum colégio com liderança repetida.
+            Nenhum bairro com liderança repetida.
           </p>
         ) : (
           <ul className="mt-2 flex flex-col gap-1.5">
-            {sobrepostos.map((l) => (
-              <li key={l.id} className="flex items-baseline justify-between gap-3">
-                <span className="text-small text-ink">{l.nome}</span>
-                <span className="font-data shrink-0 text-tiny text-ink-3">
-                  {l.liderancas_ancora} lideranças · {num(l.eleitores)} eleitores
+            {concentrados.map((b) => (
+              <li key={b.id} className="flex items-baseline justify-between gap-3">
+                <span className="text-small text-ink">{b.nome}</span>
+                <span className="font-data shrink-0 text-tiny text-ink-2">
+                  {b.liderancas} lideranças · {num(b.eleitores)} eleitores
                 </span>
               </li>
             ))}
@@ -306,7 +312,7 @@ function TabelaBairros({
               <th className="font-display tracking-eyebrow px-2 py-2 text-right text-eyebrow font-normal text-ink-3">Eleitores</th>
               <th className="font-display tracking-eyebrow px-2 py-2 text-right text-eyebrow font-normal text-ink-3">Cadastros</th>
               <th className="font-display tracking-eyebrow px-2 py-2 text-right text-eyebrow font-normal text-ink-3">Penetração</th>
-              <th className="font-display tracking-eyebrow px-5 py-2 text-right text-eyebrow font-normal text-ink-3">Lideranças</th>
+              <th className="font-display tracking-eyebrow px-5 py-2 text-right text-eyebrow font-normal text-ink-3">Moram aqui</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-[var(--line)]">
@@ -366,7 +372,7 @@ function TabelaLocais({ locais }: { locais: PenetracaoLocal[] }) {
               <th className="font-display tracking-eyebrow px-2 py-2 text-right text-eyebrow font-normal text-ink-3">Eleitores</th>
               <th className="font-display tracking-eyebrow px-2 py-2 text-right text-eyebrow font-normal text-ink-3">Cadastros</th>
               <th className="font-display tracking-eyebrow px-2 py-2 text-right text-eyebrow font-normal text-ink-3">Penetração</th>
-              <th className="font-display tracking-eyebrow px-5 py-2 text-right text-eyebrow font-normal text-ink-3">Âncoras</th>
+              <th className="font-display tracking-eyebrow px-5 py-2 text-right text-eyebrow font-normal text-ink-3">Votam aqui</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-[var(--line)]">
@@ -383,8 +389,7 @@ function TabelaLocais({ locais }: { locais: PenetracaoLocal[] }) {
                   </p>
                   <p className="text-tiny text-ink-3">
                     {l.bairro_nome} · {l.regiao}
-                    {l.buraco ? " · descoberto" : ""}
-                    {l.sobreposicao ? " · sobreposição" : ""}
+                    {l.buraco ? " · bairro sem liderança" : ""}
                   </p>
                 </td>
                 <td className="font-data px-2 py-2 text-right align-top text-ink-2">{num(l.eleitores)}</td>
@@ -393,7 +398,7 @@ function TabelaLocais({ locais }: { locais: PenetracaoLocal[] }) {
                 <td
                   className={`font-data px-5 py-2 text-right align-top ${l.buraco ? "text-t-afastado" : "text-ink-2"}`}
                 >
-                  {l.liderancas_ancora}
+                  {l.liderancas_votam}
                 </td>
               </tr>
             ))}

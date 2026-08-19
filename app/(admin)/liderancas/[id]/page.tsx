@@ -9,6 +9,7 @@ import {
   getLideranca,
   listarTags,
 } from "@/lib/pessoas/queries";
+import { nomeCompleto } from "@/lib/pessoas/nome";
 import { createAuthClient } from "@/lib/supabase/auth";
 import { getBairros, getLocais } from "@/lib/territorio";
 import { hostPublico } from "@/lib/url";
@@ -45,7 +46,7 @@ export default async function LiderancaPage(props: PageProps<"/liderancas/[id]">
       </Link>
 
       <h1 className="font-display tracking-display mt-3 text-section text-ink">
-        {lideranca.nome}
+        {nomeCompleto(lideranca.nome, lideranca.apelido)}
       </h1>
 
       {acabouDeCriar && (
@@ -66,6 +67,7 @@ export default async function LiderancaPage(props: PageProps<"/liderancas/[id]">
         urlBase={hostPublico()}
         iniciais={{
           nome: lideranca.nome,
+          apelido: lideranca.apelido ?? "",
           telefone: lideranca.telefone,
           bairroId: lideranca.bairro_moradia_id ?? "",
           localId: lideranca.local_votacao_id ?? "",

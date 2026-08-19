@@ -34,7 +34,7 @@ export function BuscaDePessoas({
       <input
         type="search"
         defaultValue={valores.busca}
-        placeholder="Nome ou WhatsApp"
+        placeholder="Nome, apelido ou WhatsApp"
         aria-label="Buscar pessoa"
         onChange={(e) => aplicar("busca", e.target.value)}
         className="h-9 min-w-56 flex-1 rounded-md border border-input bg-surface-3 px-3 text-small text-ink placeholder:text-ink-3"

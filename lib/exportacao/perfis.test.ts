@@ -40,7 +40,7 @@ const RELATORIO: RelatorioCandidato = {
       eleitores: 4047,
       cadastros: 61,
       penetracaoPct: 1.51,
-      temAncora: true,
+      temCobertura: true,
     },
   ],
   curva: [{ semana: "2026-08-10", novos: 210, acumulado: 812 }],

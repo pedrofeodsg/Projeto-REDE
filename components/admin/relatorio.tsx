@@ -77,7 +77,7 @@ export function Relatorio({ relatorio }: { relatorio: Relatorio }) {
           valor={`${relatorio.numeros.colegiosCobertos}/${relatorio.numeros.colegiosTotal}`}
           apoio={
             relatorio.numeros.colegiosTotal > 0
-              ? `${pct((100 * relatorio.numeros.colegiosCobertos) / relatorio.numeros.colegiosTotal, 0)} dos colégios com liderança âncora`
+              ? `${pct((100 * relatorio.numeros.colegiosCobertos) / relatorio.numeros.colegiosTotal, 0)} dos colégios em bairro com liderança`
               : "—"
           }
         />
@@ -188,7 +188,7 @@ export function Relatorio({ relatorio }: { relatorio: Relatorio }) {
                       <p className="text-ink">{c.nome}</p>
                       <p className="text-tiny text-ink-3">
                         {c.bairro} · {c.regiao}
-                        {c.temAncora ? "" : " · sem liderança âncora"}
+                        {c.temCobertura ? "" : " · sem liderança no bairro"}
                       </p>
                     </td>
                     <td className="font-data px-2 py-2 text-right align-top text-ink-2">

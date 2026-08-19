@@ -54,8 +54,8 @@ export async function listarLiderancasComEstado(
     const digitos = termo.replace(/\D/g, "");
     query =
       digitos.length >= 4
-        ? query.or(`nome.ilike.%${termo}%,telefone.ilike.%${digitos}%`)
-        : query.ilike("nome", `%${termo}%`);
+        ? query.or(`nome.ilike.%${termo}%,apelido.ilike.%${termo}%,telefone.ilike.%${digitos}%`)
+        : query.or(`nome.ilike.%${termo}%,apelido.ilike.%${termo}%`);
   }
 
   const { data, error } = await query;

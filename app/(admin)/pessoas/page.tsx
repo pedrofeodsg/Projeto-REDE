@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
+import { nomeCompleto } from "@/lib/pessoas/nome";
 import { formatarTelefone } from "@/lib/pessoas/telefone";
 import { createAuthClient } from "@/lib/supabase/auth";
 import { getBairros } from "@/lib/territorio";
@@ -19,6 +20,7 @@ function ehNivel(v: string): v is NivelPessoa {
 type LinhaPessoa = {
   id: string;
   nome: string;
+  apelido: string | null;
   telefone: string;
   nivel: string;
   origem: string;
@@ -42,7 +44,7 @@ export default async function PessoasPage(props: PageProps<"/pessoas">) {
   let query = supabase
     .from("pessoas")
     .select(
-      `id, nome, telefone, nivel, origem, criado_em, fora_do_municipio,
+      `id, nome, apelido, telefone, nivel, origem, criado_em, fora_do_municipio,
        local:locais_votacao ( nome ),
        quem_indicou:pessoas!indicado_por ( id, nome )`,
       { count: "exact" },
@@ -58,8 +60,8 @@ export default async function PessoasPage(props: PageProps<"/pessoas">) {
     const digitos = termo.replace(/\D/g, "");
     query =
       digitos.length >= 4
-        ? query.or(`nome.ilike.%${termo}%,telefone.ilike.%${digitos}%`)
-        : query.ilike("nome", `%${termo}%`);
+        ? query.or(`nome.ilike.%${termo}%,apelido.ilike.%${termo}%,telefone.ilike.%${digitos}%`)
+        : query.or(`nome.ilike.%${termo}%,apelido.ilike.%${termo}%`);
   }
 
   const [{ data, count, error }, bairros] = await Promise.all([
@@ -124,7 +126,7 @@ export default async function PessoasPage(props: PageProps<"/pessoas">) {
                         href={`/pessoas/${p.id}`}
                         className="text-ink hover:underline"
                       >
-                        {p.nome}
+                        {nomeCompleto(p.nome, p.apelido)}
                       </Link>
                       <p className="font-data text-tiny text-ink-3">
                         {formatarTelefone(p.telefone)}

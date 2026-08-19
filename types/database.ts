@@ -40,6 +40,7 @@ export type TemperaturaCadastro =
 type LinhaPessoa = {
   id: string;
   nome: string;
+  apelido: string | null;
   telefone: string;
   nivel: NivelPessoa;
   indicado_por: string | null;
@@ -444,6 +445,7 @@ export type Database = {
           regiao: MacroRegiao | null;
           bairro_id: string | null;
           bairro_nome: string | null;
+          apelido: string | null;
           cadastros: number;
           ultimo_cadastro: string | null;
           enviado_em: string | null;
@@ -479,7 +481,8 @@ export type Database = {
           bairro_nome: string;
           cadastros: number;
           penetracao_pct: number | null;
-          liderancas_ancora: number;
+          liderancas_votam: number;
+          liderancas_no_bairro: number;
           buraco: boolean;
           sobreposicao: boolean;
         };

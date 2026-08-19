@@ -18,6 +18,7 @@ export type EstadoFormulario = {
 
 type Campos = {
   nome: string;
+  apelido: string | null;
   telefone: string;
   bairroId: string | null;
   localId: string;
@@ -77,6 +78,7 @@ function lerCampos(formData: FormData): Campos | EstadoFormulario {
 
   return {
     nome,
+    apelido: texto(formData, "apelido") || null,
     telefone: telefone.telefone,
     bairroId: texto(formData, "bairro_moradia_id") || null,
     localId,
@@ -153,6 +155,7 @@ export async function criarLideranca(
     .from("pessoas")
     .insert({
       nome: campos.nome,
+      apelido: campos.apelido,
       telefone: campos.telefone,
       nivel: "lideranca",
       bairro_moradia_id: campos.bairroId,
@@ -202,6 +205,7 @@ export async function atualizarLideranca(
   const indicados = await contarIndicados(supabase, id);
   const alteracao: Database["public"]["Tables"]["pessoas"]["Update"] = {
     nome: campos.nome,
+    apelido: campos.apelido,
     telefone: campos.telefone,
     bairro_moradia_id: campos.bairroId,
     local_votacao_id: campos.localId,

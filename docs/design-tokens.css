@@ -67,6 +67,20 @@
   --campanha:     #1B4D3E;
   --campanha-ink: #FFFFFF;
 
+  /* ── MARCA DA CAMPANHA ──────────────────────────────────
+     Chegou em 19/08/2026, do arquivo do Figma. É a identidade
+     do Vereador Pedro Abreu e vive na superfície `.campanha`:
+     a página de cadastro de liderança e, quando o Pedro quiser,
+     também o convite público. Não entra no painel. */
+  --marca-azul:        #143A7E;
+  --marca-azul-fundo:  #0E2A5C;
+  --marca-azul-claro:  #EAF0FB;
+  --marca-verde:       #7CC243;
+  --marca-verde-fundo: #5FA32C;
+  --marca-amarelo:     #F5C518;
+  --marca-tinta:       #1B2A44;
+  --marca-nuvem:       #F4F7FC;
+
   /* ── TIPOGRAFIA ─────────────────────────────────────── */
   --font-display: 'Chakra Petch', system-ui, sans-serif;
   --font-body:    'IBM Plex Sans', system-ui, sans-serif;

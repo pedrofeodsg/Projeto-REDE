@@ -20,6 +20,7 @@ const ESTADO_INICIAL: EstadoFormulario = { erro: null };
 
 export type ValoresIniciais = {
   nome: string;
+  apelido: string;
   telefone: string;
   bairroId: string;
   localId: string;
@@ -33,6 +34,7 @@ export type ValoresIniciais = {
 
 const VAZIO: ValoresIniciais = {
   nome: "",
+  apelido: "",
   telefone: "",
   bairroId: "",
   localId: "",
@@ -109,6 +111,18 @@ export function LiderancaForm({
           </Campo>
 
           <Campo
+            rotulo="Apelido"
+            ajuda="Como a cidade chama. Aparece junto do nome, inclusive no convite."
+          >
+            <Input
+              name="apelido"
+              defaultValue={iniciais.apelido}
+              placeholder="opcional"
+              className="h-11 bg-surface-3"
+            />
+          </Campo>
+
+          <Campo
             rotulo="WhatsApp"
             erro={erroDoCampo("telefone")}
             ajuda="Pode digitar com DDD, parêntese e hífen — o sistema normaliza."
@@ -136,10 +150,10 @@ export function LiderancaForm({
           </Campo>
         </Bloco>
 
-        <Bloco titulo="Onde atua">
+        <Bloco titulo="Território">
           <Campo
-            rotulo="Bairro de atuação"
-            ajuda="Filtra os colégios abaixo. Não trava a escolha."
+            rotulo="Onde mora"
+            ajuda="É o bairro que ela cobre no dia a dia. Também filtra os colégios abaixo."
           >
             <select
               name="bairro_moradia_id"
@@ -157,9 +171,9 @@ export function LiderancaForm({
           </Campo>
 
           <Campo
-            rotulo="Local de votação âncora"
+            rotulo="Onde vota"
             erro={erroDoCampo("local_votacao_id")}
-            ajuda="Onde a liderança ATUA, que pode não ser onde ela mora."
+            ajuda="O colégio dela. É a base para estimar votos naquele local."
           >
             <select
               name="local_votacao_id"
@@ -178,7 +192,7 @@ export function LiderancaForm({
                   ))}
                 </optgroup>
               )}
-              <optgroup label={doBairro.length > 0 ? "Outros bairros" : "Todos os colégios"}>
+              <optgroup label={doBairro.length > 0 ? "Colégios de outros bairros" : "Todos os colégios"}>
                 {demais.map((l) => (
                   <option key={l.id} value={l.id}>
                     {l.nome} · {l.eleitores.toLocaleString("pt-BR")} eleitores
@@ -196,8 +210,8 @@ export function LiderancaForm({
               {localEscolhido ? (
                 REGIAO_NOME[localEscolhido.regiao]
               ) : (
-                <span className="text-ink-3">
-                  Derivada do colégio âncora, assim que você escolher.
+                <span className="text-ink-2">
+                  Aparece sozinha quando você escolher o colégio.
                 </span>
               )}
             </p>

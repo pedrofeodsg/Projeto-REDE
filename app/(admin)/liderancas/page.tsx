@@ -10,6 +10,7 @@ import {
   tagsPorPessoa,
 } from "@/lib/mensagens/queries";
 import { listarTags } from "@/lib/pessoas/queries";
+import { nomeCompleto } from "@/lib/pessoas/nome";
 import { formatarTelefone } from "@/lib/pessoas/telefone";
 import { createAuthClient } from "@/lib/supabase/auth";
 import { TEMPERATURA, ehTemperatura } from "@/lib/temperatura";
@@ -136,7 +137,7 @@ export default async function LiderancasPage(props: PageProps<"/liderancas">) {
               <thead>
                 <tr className="border-b border-line text-left">
                   <Th>Liderança</Th>
-                  <Th>Colégio âncora</Th>
+                  <Th>Vota em</Th>
                   <Th>Tags</Th>
                   <Th className="text-right">Cadastros</Th>
                   <Th>Estado</Th>
@@ -158,7 +159,7 @@ export default async function LiderancasPage(props: PageProps<"/liderancas">) {
                           href={`/liderancas/${l.id}`}
                           className="font-medium text-ink hover:underline"
                         >
-                          {l.nome}
+                          {nomeCompleto(l.nome, l.apelido)}
                         </Link>
                         <p className="font-data text-tiny text-ink-3">
                           {formatarTelefone(l.telefone)}
@@ -178,7 +179,7 @@ export default async function LiderancasPage(props: PageProps<"/liderancas">) {
 
                       <td className="px-2 py-3 text-ink-2">
                         {l.local_nome ?? (
-                          <span className="text-t-afastado">sem colégio âncora</span>
+                          <span className="text-t-afastado">sem colégio</span>
                         )}
                         <p className="font-data text-tiny text-ink-3">
                           {l.bairro_nome ?? "—"}

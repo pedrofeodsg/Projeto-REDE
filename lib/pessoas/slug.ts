@@ -21,6 +21,7 @@ const RESERVADOS = new Set([
   "sitemap.xml",
   "obrigado",
   "admin",
+  "sou-lideranca",
   "static",
   "public",
 ]);

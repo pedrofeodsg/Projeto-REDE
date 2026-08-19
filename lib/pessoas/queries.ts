@@ -9,6 +9,7 @@ type Cliente = SupabaseClient<Database>;
 export type LiderancaListada = {
   id: string;
   nome: string;
+  apelido: string | null;
   telefone: string;
   slug: string | null;
   meta: number;
@@ -24,7 +25,7 @@ export type LiderancaListada = {
 };
 
 const SELECT_LIDERANCA = `
-  id, nome, telefone, slug, meta, linha_pessoal, instagram_handle, ativo, criado_em,
+  id, nome, apelido, telefone, slug, meta, linha_pessoal, instagram_handle, ativo, criado_em,
   bairro_moradia_id, local_votacao_id,
   local:locais_votacao ( id, nome, regiao, bairro_id ),
   bairro:bairros ( id, nome, regiao ),
@@ -54,8 +55,8 @@ export async function listarLiderancas(
     // Busca por nome ou por telefone. O telefone é comparado em dígitos,
     // porque é assim que ele está gravado.
     query = digitos.length >= 4
-      ? query.or(`nome.ilike.%${termo}%,telefone.ilike.%${digitos}%`)
-      : query.ilike("nome", `%${termo}%`);
+      ? query.or(`nome.ilike.%${termo}%,apelido.ilike.%${termo}%,telefone.ilike.%${digitos}%`)
+      : query.or(`nome.ilike.%${termo}%,apelido.ilike.%${termo}%`);
   }
 
   const { data, error } = await query.returns<LiderancaListada[]>();

@@ -1,0 +1,91 @@
+/*
+ * Superfície da campanha.
+ *
+ * Importada só por este layout, então nada disto entra no bundle do painel.
+ * As cores vivem em docs/design-tokens.css como os demais tokens do projeto:
+ * trocar a marca continua sendo mexer num arquivo só.
+ */
+
+html,
+body {
+  background: #ffffff;
+  color: var(--marca-tinta);
+}
+
+.campanha {
+  font-family: var(--font-marca-body), ui-sans-serif, system-ui, sans-serif;
+  color: var(--marca-tinta);
+
+  /* A textura ecoa as linhas do material impresso da campanha. */
+  background-color: #ffffff;
+  background-image:
+    radial-gradient(120% 80% at 100% 0%, rgba(124, 194, 67, 0.1) 0%, transparent 45%),
+    radial-gradient(120% 90% at 0% 100%, rgba(20, 58, 126, 0.1) 0%, transparent 50%),
+    repeating-linear-gradient(
+      115deg,
+      rgba(20, 58, 126, 0.028) 0px,
+      rgba(20, 58, 126, 0.028) 1px,
+      transparent 1px,
+      transparent 26px
+    );
+}
+
+/*
+ * Campo do formulário.
+ *
+ * 52px de alvo de toque e 16px de fonte, como manda a regra da superfície
+ * pública: abaixo de 16px o iOS dá zoom automático no foco e a pessoa perde o
+ * lugar no meio do preenchimento.
+ */
+.campo-campanha {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: var(--touch-form);
+  padding: 0 14px;
+  background: var(--marca-nuvem);
+  border-radius: 16px;
+  box-shadow: inset 0 0 0 1px rgba(20, 58, 126, 0.08);
+  transition:
+    background 160ms var(--ease),
+    box-shadow 160ms var(--ease);
+}
+
+.campo-campanha:focus-within {
+  background: #ffffff;
+  box-shadow:
+    inset 0 0 0 2px rgba(124, 194, 67, 0.6),
+    0 6px 16px -8px rgba(20, 58, 126, 0.35);
+}
+
+.campo-campanha input,
+.campo-campanha select {
+  width: 100%;
+  min-width: 0;
+  height: 100%;
+  background: transparent;
+  border: 0;
+  outline: none;
+  appearance: none;
+  font-family: inherit;
+  font-size: var(--fs-input);
+  font-weight: 600;
+  color: var(--marca-tinta);
+}
+
+.campo-campanha input::placeholder {
+  color: rgba(27, 42, 68, 0.35);
+  font-weight: 500;
+}
+
+.campo-campanha select {
+  padding-right: 20px;
+  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='none' stroke='%23143A7E' stroke-opacity='.5' stroke-width='1.8' d='M1 1.5 6 6.5l5-5'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0 center;
+}
+
+.campo-campanha select:invalid {
+  color: rgba(27, 42, 68, 0.35);
+  font-weight: 500;
+}

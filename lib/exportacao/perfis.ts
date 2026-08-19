@@ -69,7 +69,7 @@ export type LinhaColegio = {
   eleitores: number;
   cadastros: number;
   penetracaoPct: number;
-  temAncora: boolean;
+  temCobertura: boolean;
 };
 
 export type PontoDaCurva = {

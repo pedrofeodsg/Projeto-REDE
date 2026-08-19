@@ -25,9 +25,9 @@ export const MUNICIPIO = "São Pedro da Aldeia · RJ";
 export const FONTE_TERRITORIAL = "TSE · Estatísticas do Eleitorado · 59ª ZE · extração de 03/08/2026";
 export const DIA_DA_ELEICAO = "2026-10-04";
 
-/** Colégio é considerado coberto quando tem ao menos uma liderança âncora. */
+/** Colégio coberto é aquele cujo bairro tem ao menos uma liderança morando. */
 function cobertos(colegios: LinhaColegio[]): number {
-  return colegios.filter((c) => c.temAncora).length;
+  return colegios.filter((c) => c.temCobertura).length;
 }
 
 /**
@@ -87,7 +87,7 @@ async function coletar(supabase: Cliente) {
     eleitores: c.eleitores,
     cadastros: c.cadastros,
     penetracaoPct: Number(c.penetracao_pct ?? 0),
-    temAncora: c.liderancas_ancora > 0,
+    temCobertura: c.liderancas_no_bairro > 0,
   }));
 
   const curva: PontoDaCurva[] = (curvaRaw.data ?? []).map((p) => ({

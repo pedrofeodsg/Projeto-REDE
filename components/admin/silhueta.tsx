@@ -5,8 +5,8 @@ import type { PenetracaoLocal } from "@/types/database";
  *
  * Uma coluna por local, altura pelo eleitorado, preenchimento pela penetração,
  * do maior para o menor. Colégio com flag `buraco` recebe borda superior
- * vermelha — é um colégio grande sem nenhuma liderança âncora, e vermelho no
- * painel significa sempre "abra e resolva".
+ * vermelha — é um colégio grande num bairro onde ninguém da rede mora, e
+ * vermelho no painel significa sempre "abra e resolva".
  *
  * A escala do preenchimento é relativa à maior penetração da cidade, não
  * absoluta: com 0,5% de penetração em todo lugar, uma barra proporcional ao
@@ -54,7 +54,7 @@ export function Silhueta({ locais }: { locais: PenetracaoLocal[] }) {
                 height: `${altura}%`,
                 borderTopColor: l.buraco ? "var(--t-afastado)" : "var(--line-2)",
               }}
-              title={`${l.nome} · ${l.bairro_nome} · ${l.eleitores.toLocaleString("pt-BR")} eleitores · ${l.cadastros} cadastros${l.buraco ? " · BURACO: sem liderança âncora" : ""}${l.sobreposicao ? ` · ${l.liderancas_ancora} lideranças âncora` : ""}`}
+              title={`${l.nome} · ${l.bairro_nome} · ${l.eleitores.toLocaleString("pt-BR")} eleitores · ${l.cadastros} cadastros${l.buraco ? " · DESCOBERTO: ninguém da rede mora neste bairro" : ""}${l.liderancas_votam > 0 ? ` · ${l.liderancas_votam} liderança(s) votam aqui` : ""}`}
             >
               <i
                 aria-hidden
@@ -72,12 +72,12 @@ export function Silhueta({ locais }: { locais: PenetracaoLocal[] }) {
         </p>
         {buracos > 0 ? (
           <p className="text-tiny text-t-afastado">
-            {buracos} {buracos === 1 ? "colégio grande sem" : "colégios grandes sem"}{" "}
-            liderança âncora
+            {buracos} {buracos === 1 ? "colégio grande em bairro" : "colégios grandes em bairros"}{" "}
+            sem liderança
           </p>
         ) : (
           <p className="text-tiny text-ink-3">
-            Nenhum colégio acima de 2.000 eleitores está descoberto
+            Todo colégio acima de 2.000 eleitores tem alguém no bairro
           </p>
         )}
         <p className="font-data text-tiny text-ink-3">

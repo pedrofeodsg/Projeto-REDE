@@ -63,6 +63,19 @@
     --color-d-irregular: var(--d-irregular);
     --color-d-ausente: var(--d-ausente);
 
+    /* marca da campanha */
+    --color-marca-azul: var(--marca-azul);
+    --color-marca-azul-fundo: var(--marca-azul-fundo);
+    --color-marca-azul-claro: var(--marca-azul-claro);
+    --color-marca-verde: var(--marca-verde);
+    --color-marca-verde-fundo: var(--marca-verde-fundo);
+    --color-marca-amarelo: var(--marca-amarelo);
+    --color-marca-tinta: var(--marca-tinta);
+    --color-marca-nuvem: var(--marca-nuvem);
+
+    --font-marca: var(--font-marca-display);
+    --font-marca-corpo: var(--font-marca-body);
+
     /* superfície pública */
     --color-paper: var(--paper);
     --color-paper-2: var(--paper-2);
