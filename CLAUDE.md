@@ -131,6 +131,7 @@ node scripts/extrai-tse.mjs <csv>   # refaz a fonte a partir do arquivo oficial
 npm test               # funções canônicas (telefone, handle, slug)
 npm run verifica -- painelsistema '<senha>'   # RLS e login contra o banco real
 npm run testa:captura  # a regra de captura pública contra o banco real
+npm run testa:temperatura   # os seis estados do termômetro contra o banco
 ```
 
 `npm run verifica` é o teste que o item 5 dos Critérios de Pronto (PRD 11.4)
@@ -266,9 +267,37 @@ verificação com o banco.**
 - [x] Zero chaves nos bundles do cliente e no HTML servido
 - [x] `npm run testa:captura` com 22 verificações contra o banco real
 
-**Próximo:** Bloco 3C · Mensagens e painel mínimo (RF-17 a RF-19, RF-28 a
-RF-31). Fecha o bloco urgente. Critério de saída: 70 lideranças com link
-enviado e envio registrado.
+**Bloco 3C · Mensagens e Painel (RF-13, RF-17 a RF-19, RF-28 a RF-31) ✅
+concluído em 17/08/2026.**
+
+- [x] Migration `0005_mensagens_e_temperatura.sql`: `templates_mensagem`,
+      `envios`, enum `temperatura_cadastro`, `calcular_temperatura()` e a view
+      `v_liderancas`
+- [x] Os 4 templates semeados com o texto aprovado no escopo
+- [x] `lib/whatsapp` sem `server-only` — o botão precisa abrir a janela no
+      mesmo gesto do clique. 11 testes
+- [x] `/mensagens` com CRUD e prévia ao vivo da mensagem montada
+- [x] Botão de envio no painel e na lista: abre o WhatsApp e grava em `envios`
+      no mesmo clique; "marcar como não enviado" desfaz
+- [x] Painel com indicadores, termômetro clicável e bloco de cobrança
+- [x] Filtro por temperatura na lista de lideranças
+- [x] `npm run testa:temperatura` com 16 verificações contra o banco
+
+**Próximo:** o bloco urgente está fechado do lado do código. O critério de
+saída é operacional: 70 lideranças cadastradas, com link enviado e envio
+registrado. Depois disso, Bloco 4 · Território.
+
+# O termômetro é fonte única
+
+Temperatura sai sempre da view `v_liderancas`, nunca recalculada em tela. Se
+dois lugares discordarem sobre quem está afastado, a coordenação perde a
+confiança no número na frente de uma liderança — e o painel morre.
+
+A ordem das checagens em `calcular_temperatura()` não é decorativa: **ativa vem
+antes de qualquer faixa de volume**. Sem isso, quem trouxe 12 há três semanas e
+sumiu aparece como "muito quente" estando morto.
+
+Os dias contam desde o **envio do link**, não desde o cadastro no admin.
 
 # Onde a regra mora
 
