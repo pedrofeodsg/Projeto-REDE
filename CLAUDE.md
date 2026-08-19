@@ -205,8 +205,8 @@ verificação com o banco.**
 - [x] Chave de acesso `painelsistema` criada e vinculada a `coordenacao`
 - [x] `npm run verifica` verde: login autentica, sessão vê só o próprio
       registro, leitura sem sessão devolve zero linhas
-- [ ] Repositório no GitHub
-- [ ] Deploy na Vercel
+- [x] Repositório no GitHub
+- [x] Deploy na Vercel
 
 **Bloco 2 · Base Territorial (RF-01) ✅ concluído em 17/08/2026.**
 
@@ -283,8 +283,20 @@ concluído em 17/08/2026.**
 - [x] Filtro por temperatura na lista de lideranças
 - [x] `npm run testa:temperatura` com 16 verificações contra o banco
 
-**Próximo:** o bloco urgente está fechado do lado do código. O critério de
-saída é operacional: 70 lideranças cadastradas, com link enviado e envio
+**Deploy ✅ em 18/08/2026.**
+
+- Produção: **https://projeto-rede.vercel.app**
+- Repositório: https://github.com/pedrofeodsg/Projeto-REDE — push em `main`
+  dispara deploy automático
+- Variáveis definidas nos três ambientes da Vercel. `NEXT_PUBLIC_SITE_URL`
+  aponta para o domínio de produção, que é o prefixo do link de cada liderança
+- Verificado em produção: `/login` 200, `/painel` sem sessão 307, slug
+  inexistente 404, página pública 200 sem nenhuma chave no HTML, e a imagem de
+  preview gerada com a cor da campanha — prova de que o
+  `outputFileTracingIncludes` levou `docs/design-tokens.css` junto no deploy
+
+**Próximo:** o bloco urgente está fechado do lado do código e no ar. O critério
+de saída é operacional: 70 lideranças cadastradas, com link enviado e envio
 registrado. Depois disso, Bloco 4 · Território.
 
 # O termômetro é fonte única

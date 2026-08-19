@@ -36,3 +36,11 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
+
+.vercel
+
+# A CLI da Vercel escreveu `.env*` aqui, o que engoliria o .env.example.
+# O template precisa continuar versionado: é ele que documenta quais chaves o
+# projeto exige.
+.env*
+!.env.example
