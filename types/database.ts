@@ -19,6 +19,7 @@ export type PapelOperador = "coordenacao" | "operador";
 export type MacroRegiao = "R1" | "R2" | "R3";
 export type NivelPessoa = "coordenacao" | "lideranca" | "apoiador";
 export type OrigemPessoa = "link" | "admin";
+export type PerfilExportacao = "interno" | "candidato" | "publico";
 export type TipoEngajamento = "comentario" | "curtida" | "story_mention";
 export type OrigemEngajamento = "api" | "importacao_manual";
 export type TemperaturaDigital = "ativo" | "irregular" | "ausente";
@@ -344,6 +345,33 @@ export type Database = {
         Update: { pessoa_id?: string | null; texto?: string | null };
         Relationships: [];
       };
+      exportacoes: {
+        Row: {
+          id: string;
+          perfil: PerfilExportacao;
+          operador: string | null;
+          token: string;
+          revogado: boolean;
+          rotulo: string | null;
+          gerado_em: string;
+          visto_em: string | null;
+          visitas: number;
+        };
+        Insert: {
+          id?: string;
+          perfil: PerfilExportacao;
+          operador?: string | null;
+          token: string;
+          rotulo?: string | null;
+        };
+        Update: {
+          revogado?: boolean;
+          visitas?: number;
+          visto_em?: string | null;
+          rotulo?: string | null;
+        };
+        Relationships: [];
+      };
       recrutamento: {
         Row: { handle: string; operador: string | null; criado_em: string };
         Insert: { handle: string; operador?: string | null };
@@ -502,6 +530,10 @@ export type Database = {
         };
         Relationships: [];
       };
+      v_curva_semanal: {
+        Row: { semana: string; novos: number; acumulado: number };
+        Relationships: [];
+      };
       v_handles_sem_vinculo: {
         Row: {
           handle_cru: string;
@@ -561,6 +593,7 @@ export type Database = {
       tipo_engajamento: TipoEngajamento;
       origem_engajamento: OrigemEngajamento;
       temperatura_digital: TemperaturaDigital;
+      perfil_exportacao: PerfilExportacao;
     };
     CompositeTypes: { [_ in never]: never };
   };

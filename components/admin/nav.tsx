@@ -11,6 +11,7 @@ const ITENS = [
   { href: "/instagram", rotulo: "Instagram" },
   { href: "/mensagens", rotulo: "Mensagens" },
   { href: "/territorio", rotulo: "Território" },
+  { href: "/exportar", rotulo: "Exportar" },
 ] as const;
 
 export function Nav() {
