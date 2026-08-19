@@ -132,6 +132,7 @@ npm test               # funções canônicas (telefone, handle, slug)
 npm run verifica -- painelsistema '<senha>'   # RLS e login contra o banco real
 npm run testa:captura  # a regra de captura pública contra o banco real
 npm run testa:temperatura   # os seis estados do termômetro contra o banco
+npm run testa:territorio    # penetração, buracos, cobertura e selos
 ```
 
 `npm run verifica` é o teste que o item 5 dos Critérios de Pronto (PRD 11.4)
@@ -295,9 +296,42 @@ concluído em 17/08/2026.**
   preview gerada com a cor da campanha — prova de que o
   `outputFileTracingIncludes` levou `docs/design-tokens.css` junto no deploy
 
-**Próximo:** o bloco urgente está fechado do lado do código e no ar. O critério
-de saída é operacional: 70 lideranças cadastradas, com link enviado e envio
-registrado. Depois disso, Bloco 4 · Território.
+**Bloco 4 · Território (RF-14, RF-15, RF-20 a RF-23) ✅ concluído em
+18/08/2026.**
+
+- [x] Migration `0006_territorio_agregacoes.sql`: `v_penetracao_bairro`,
+      `v_penetracao_local` com flags `buraco` e `sobreposicao`,
+      `v_cobertura_regiao`, `v_ranking_semanal`, `temperatura_historico` e
+      `gravar_snapshot_temperatura()`
+- [x] Selos de 10/50/100 na `v_liderancas`
+- [x] Silhueta dos 40 colégios em `/territorio`, seguindo a referência de
+      `/docs/design-system-projeto-rede.html`
+- [x] Painel ganhou ranking semanal, cobertura regional e "onde falta"
+- [x] Cron semanal (segunda, 9h) em `vercel.json`, rota protegida por
+      `CRON_SECRET` — recusa tudo em produção se o segredo não existir
+- [x] `npm run testa:territorio` com 15 verificações contra o banco
+
+**Próximo:** Bloco 5 · Relacionamento (RF-05 a RF-07, RF-24 a RF-27, RF-32).
+Prontuário, interações, demandas, promoção de apoiador a liderança e a tela de
+conflitos.
+
+# Regras de contagem territorial
+
+Duas decisões que mudam o que os números significam, e que nenhuma tela pode
+contradizer:
+
+1. **Penetração conta apoiadores, não a base inteira.** O `local_votacao_id` de
+   uma liderança é o colégio onde ela ATUA, que pode não ser onde vota. Contá-la
+   como cadastro dela mesma inflaria justamente os colégios pequenos, que são os
+   que mais enganam. Lideranças aparecem em coluna separada ("Âncoras").
+2. **Quem tem `fora_do_municipio` entra no total geral e no crédito de quem o
+   trouxe, e fica fora de toda conta territorial.** Contato em Cabo Frio vale o
+   mesmo voto para federal e estadual, mas não é penetração em São Pedro da
+   Aldeia.
+
+A tabela de bairros ordena por penetração **crescente**: a tela existe para
+mostrar onde falta. O ranking ordena por **novos na semana**, nunca por
+acumulado.
 
 # O termômetro é fonte única
 
