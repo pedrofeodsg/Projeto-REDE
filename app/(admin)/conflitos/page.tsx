@@ -20,21 +20,26 @@ export default async function ConflitosPage(props: PageProps<"/conflitos">) {
     <div className="mx-auto max-w-4xl">
       <header>
         <p className="font-display text-eyebrow tracking-eyebrow text-ink-3">
-          Arbitragem privada · {conflitos.length}{" "}
+          Para você decidir · {conflitos.length}{" "}
           {conflitos.length === 1 ? "caso" : "casos"}
           {verTodos ? "" : " em aberto"}
         </p>
         <h1 className="font-display tracking-display mt-2 text-section text-ink">
-          Conflitos de cadastro
+          Mesmo contato, duas lideranças
         </h1>
-        <p className="mt-3 max-w-prose text-small text-ink-2">
-          Quando alguém tenta cadastrar um telefone que já está na base, o
-          sistema não cria registro novo e não muda a atribuição existente: o
-          primeiro cadastro prevalece e a tentativa cai aqui. A pessoa que
-          preencheu viu apenas um agradecimento — ela não sabe que houve
-          conflito, e as duas lideranças nunca descobrem que disputaram o mesmo
-          contato.
-        </p>
+
+        <div className="mt-3 flex max-w-prose flex-col gap-2 text-small text-ink-2">
+          <p>Duas lideranças cadastraram a mesma pessoa.</p>
+          <p>
+            Quem cadastrou primeiro fica com ela. O segundo cadastro não entrou
+            na base.
+          </p>
+          <p>
+            Ninguém foi avisado. A pessoa viu só o agradecimento, e as duas
+            lideranças não sabem que pediram o mesmo contato. Você decide aqui,
+            sem que elas descubram.
+          </p>
+        </div>
       </header>
 
       <div className="mt-6 flex gap-2">
@@ -51,10 +56,9 @@ export default async function ConflitosPage(props: PageProps<"/conflitos">) {
           className="mt-4 rounded-lg border border-line px-6 py-12 text-center"
           style={{ background: "var(--card-bg)" }}
         >
-          <p className="text-body text-ink">Nada para arbitrar.</p>
+          <p className="text-body text-ink">Nenhum caso por aqui.</p>
           <p className="mx-auto mt-2 max-w-md text-small text-ink-2">
-            Nenhuma liderança tentou cadastrar um contato que já pertencia a
-            outra.
+            Ninguém cadastrou um contato que já era de outra liderança.
           </p>
         </div>
       ) : (
@@ -77,7 +81,7 @@ export default async function ConflitosPage(props: PageProps<"/conflitos">) {
               <div className="mt-4 grid gap-4 sm:grid-cols-2">
                 <div>
                   <p className="font-display text-eyebrow tracking-eyebrow text-ink-3">
-                    Já estava na base como
+                    Fica com
                   </p>
                   {c.existente ? (
                     <Link
@@ -93,7 +97,7 @@ export default async function ConflitosPage(props: PageProps<"/conflitos">) {
 
                 <div>
                   <p className="font-display text-eyebrow tracking-eyebrow text-ink-3">
-                    Tentou cadastrar como
+                    Tentou cadastrar depois
                   </p>
                   <p className="mt-1 text-small text-ink">{c.nome_tentado}</p>
                   {c.tentou && (
@@ -112,7 +116,7 @@ export default async function ConflitosPage(props: PageProps<"/conflitos">) {
 
               {c.resolvido ? (
                 <p className="mt-4 font-display text-eyebrow tracking-eyebrow text-ink-3">
-                  Arbitrado
+                  Já decidido
                 </p>
               ) : (
                 <Arbitragem
@@ -142,7 +146,7 @@ function Aba({
     <Link
       href={href}
       className={`font-display tracking-card rounded-full px-3 py-1.5 text-tiny transition-colors duration-[var(--dur-micro)] ${
-        ativa ? "bg-surface-3 text-ink" : "text-ink-3 hover:text-ink-2"
+        ativa ? "bg-surface-3 text-ink" : "text-ink-2 hover:text-ink"
       }`}
     >
       {children}

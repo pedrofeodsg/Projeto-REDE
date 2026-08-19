@@ -23,7 +23,7 @@ export function AbasInstagram() {
             href={aba.href}
             aria-current={ativa ? "page" : undefined}
             className={`font-display tracking-card rounded-full px-3 py-1.5 text-tiny transition-colors duration-[var(--dur-micro)] ${
-              ativa ? "bg-surface-3 text-ink" : "text-ink-3 hover:text-ink-2"
+              ativa ? "bg-surface-3 text-ink" : "text-ink-2 hover:text-ink"
             }`}
           >
             {aba.rotulo}

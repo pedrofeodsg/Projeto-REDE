@@ -5,12 +5,11 @@ import { useTransition } from "react";
 import { arbitrarConflito } from "@/lib/relacionamento/actions";
 
 /**
- * Arbitragem de conflito.
+ * As duas saídas do conflito, e nenhuma delas fala com as lideranças.
  *
- * Duas saídas, e nenhuma delas fala com as lideranças envolvidas. Manter é o
- * padrão do sistema — o primeiro cadastro prevalece. Transferir existe para o
- * caso em que a coordenação sabe, por fora, que o contato é mesmo de quem
- * tentou depois; e toda transferência vira linha no log de reatribuição.
+ * Manter é o padrão do sistema: o primeiro cadastro prevalece. Transferir
+ * existe para quando a coordenação sabe, por fora, que o contato é mesmo de
+ * quem tentou depois — e toda transferência vira linha no log de reatribuição.
  */
 export function Arbitragem({
   conflitoId,
@@ -46,7 +45,7 @@ export function Arbitragem({
       )}
 
       <p className="text-tiny text-ink-3">
-        A transferência fica registrada no log de reatribuição.
+        Se transferir, fica registrado quem mudou e quando.
       </p>
     </div>
   );
