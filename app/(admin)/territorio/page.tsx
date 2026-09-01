@@ -189,7 +189,7 @@ function Cobertura({ cobertura }: { cobertura: CoberturaRegiao[] }) {
               {/* Trilho = proporção do eleitorado. Preenchimento = realizado. */}
               <div className="relative mt-2 h-8 overflow-hidden rounded-sm border border-line bg-surface-3">
                 <div
-                  className="absolute inset-y-0 left-0 bg-ink opacity-90"
+                  className="absolute inset-y-0 left-0 bg-acento"
                   style={{ width: `${Number(r.cadastros_pct ?? 0)}%` }}
                 />
                 <div className="relative flex h-full items-center justify-between px-2.5">

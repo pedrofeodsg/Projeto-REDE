@@ -208,7 +208,7 @@ function RankingSemana({ ranking }: { ranking: RankingSemanal[] }) {
               </Link>
               <div className="h-1 w-24 shrink-0 overflow-hidden rounded-full bg-surface-3">
                 <div
-                  className="h-full bg-ink"
+                  className="h-full bg-acento"
                   style={{ width: `${(100 * r.novos_na_semana) / maior}%` }}
                 />
               </div>
@@ -266,7 +266,7 @@ function CoberturaRegional({ cobertura }: { cobertura: CoberturaRegiao[] }) {
               {/* Trilho = proporção do eleitorado. Preenchimento = realizado. */}
               <div className="relative mt-1.5 h-7 overflow-hidden rounded-sm border border-line bg-surface-3">
                 <div
-                  className="absolute inset-y-0 left-0 bg-ink opacity-90"
+                  className="absolute inset-y-0 left-0 bg-acento"
                   style={{ width: `${Number(r.cadastros_pct ?? 0)}%` }}
                 />
                 <div className="relative flex h-full items-center justify-between px-2.5">

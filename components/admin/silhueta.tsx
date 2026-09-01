@@ -39,7 +39,7 @@ export function Silhueta({ locais }: { locais: PenetracaoLocal[] }) {
 
       <div
         className="mt-4 flex h-52 items-end gap-[3px] overflow-hidden rounded-md border border-line px-5 pt-5"
-        style={{ background: "linear-gradient(180deg, var(--surface-2), var(--void))" }}
+        style={{ background: "linear-gradient(180deg, var(--surface), var(--surface-2))" }}
       >
         {locais.map((l) => {
           const altura = Math.max(6, (l.eleitores / maiorEleitorado) * 100);
@@ -49,7 +49,7 @@ export function Silhueta({ locais }: { locais: PenetracaoLocal[] }) {
           return (
             <div
               key={l.id}
-              className="relative min-w-0 flex-1 rounded-t-[2px] border-t bg-white/[0.055] transition-colors duration-[var(--dur-micro)] hover:bg-white/[0.12]"
+              className="relative min-w-0 flex-1 rounded-t-[2px] border-t bg-surface-3 transition-colors duration-[var(--dur-micro)] hover:bg-line"
               style={{
                 height: `${altura}%`,
                 borderTopColor: l.buraco ? "var(--t-afastado)" : "var(--line-2)",
@@ -58,7 +58,7 @@ export function Silhueta({ locais }: { locais: PenetracaoLocal[] }) {
             >
               <i
                 aria-hidden
-                className="absolute inset-x-0 bottom-0 rounded-t-[1px] bg-ink opacity-90"
+                className="absolute inset-x-0 bottom-0 rounded-t-[1px] bg-acento"
                 style={{ height: `${preenchimento}%` }}
               />
             </div>

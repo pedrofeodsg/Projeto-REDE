@@ -5,6 +5,11 @@ import { getTerritorioPublico } from "@/lib/pessoas/publico";
 
 import { FormularioLideranca } from "./formulario";
 
+// A lista de bairros e colégios vem do banco. Estática, a página assaria essa
+// lista no build — e o build passaria a depender do banco estar de pé. A rota
+// irmã /[slug] já é dinâmica pelo mesmo motivo.
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Cadastro de Lideranças",
   description: "Conta pra gente quem é você.",

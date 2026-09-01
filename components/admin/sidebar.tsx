@@ -93,7 +93,7 @@ export function Sidebar({
   return (
     <>
       {/* Barra de topo, só abaixo de 1024px */}
-      <div className="sticky top-0 z-30 flex items-center justify-between gap-3 border-b border-line bg-void px-4 py-3 lg:hidden">
+      <div className="sticky top-0 z-30 flex items-center justify-between gap-3 border-b border-line bg-surface px-4 py-3 lg:hidden">
         <button
           type="button"
           onClick={() => setAberta(true)}
@@ -124,12 +124,12 @@ export function Sidebar({
           type="button"
           aria-label="Fechar menu"
           onClick={() => setAberta(false)}
-          className="fixed inset-0 z-40 bg-black/70 lg:hidden"
+          className="fixed inset-0 z-40 bg-black/30 lg:hidden"
         />
       )}
 
       <aside
-        className={`fixed inset-y-0 left-0 z-50 flex w-[240px] flex-col border-r border-line bg-void transition-transform duration-200 ease-[var(--ease-rede)] lg:translate-x-0 ${
+        className={`fixed inset-y-0 left-0 z-50 flex w-[240px] flex-col border-r border-line bg-surface transition-transform duration-200 ease-[var(--ease-rede)] lg:translate-x-0 ${
           aberta ? "translate-x-0" : "-translate-x-full"
         }`}
       >
@@ -175,14 +175,14 @@ export function Sidebar({
                         aria-current={ativo ? "page" : undefined}
                         className={`group relative flex items-center gap-3 rounded-md px-3 py-2.5 transition-colors duration-[var(--dur-micro)] ${
                           ativo
-                            ? "bg-surface-3 text-ink"
+                            ? "bg-acento-suave text-acento"
                             : "text-ink-2 hover:bg-surface-2 hover:text-ink"
                         }`}
                       >
                         {/* Marca do item ativo: fio branco, que no painel é o acento. */}
                         <span
                           aria-hidden
-                          className={`absolute left-0 top-1/2 h-5 w-0.5 -translate-y-1/2 rounded-r-full bg-ink transition-opacity ${
+                          className={`absolute left-0 top-1/2 h-5 w-0.5 -translate-y-1/2 rounded-r-full bg-acento transition-opacity ${
                             ativo ? "opacity-100" : "opacity-0"
                           }`}
                         />

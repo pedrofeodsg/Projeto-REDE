@@ -109,7 +109,7 @@ export function Relatorio({ relatorio }: { relatorio: Relatorio }) {
                 </div>
                 <div className="relative mt-2 h-9 overflow-hidden rounded-sm border border-line bg-surface-3">
                   <div
-                    className="absolute inset-y-0 left-0 bg-ink opacity-90"
+                    className="absolute inset-y-0 left-0 bg-acento"
                     style={{ width: `${Math.min(100, r.cadastrosPct)}%` }}
                   />
                   <div className="relative flex h-full items-center justify-between px-3">
@@ -149,7 +149,7 @@ export function Relatorio({ relatorio }: { relatorio: Relatorio }) {
                       <div
                         key={p.semana}
                         title={`${new Date(p.semana).toLocaleDateString("pt-BR")} · ${p.novos} novos · ${p.acumulado} acumulado`}
-                        className="flex-1 rounded-t-[2px] bg-ink opacity-90"
+                        className="flex-1 rounded-t-[2px] bg-acento"
                         style={{ height: `${Math.max(4, (100 * p.novos) / maior)}%` }}
                       />
                     );

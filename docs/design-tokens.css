@@ -14,45 +14,64 @@
 :root {
 
   /* ── SUPERFÍCIE ADMIN ───────────────────────────────── */
-  --void:         #000000;   /* fundo da página */
-  --surface:      #0C0C0C;   /* card base */
-  --surface-2:    #151515;   /* card hover, topo do gradiente */
-  --surface-3:    #1D1D1D;   /* trilho de barra, input */
+  /*
+     Revisão de 19/08/2026: o painel era preto puro. Passou a claro, por
+     decisão do Pedro, a partir de uma referência de CRM.
 
-  --line:         rgba(255,255,255,.09);  /* fio padrão */
-  --line-2:       rgba(255,255,255,.18);  /* fio de ênfase, borda de botão */
-  --line-3:       rgba(255,255,255,.32);  /* fio de citação */
+     A troca é de VALOR, não de nome: os tokens continuam se chamando --void,
+     --surface, --ink, --line. Nenhum componente precisou ser reescrito — a
+     inversão inteira acontece neste bloco. É para isso que o sistema de
+     tokens existe.
 
-  --ink:          #F4F4F4;   /* texto primário, também o acento do painel */
-  --ink-2:        #A5A5A5;   /* texto de apoio · 8,5:1 sobre preto */
-  --ink-3:        #808080;   /* rótulo, eyebrow, metadado · 5,3:1 sobre preto */
+     A consequência que muda uma regra antiga: no fundo preto, branco era o
+     acento e não existia botão colorido. Em fundo claro isso deixa de
+     funcionar, então entra --acento, que é o azul da marca do Pedro Abreu
+     (o mesmo da página pública). O painel e a campanha passam a ser
+     visivelmente o mesmo produto.
+  */
+  --void:         #F6F7F9;   /* fundo da página */
+  --surface:      #FFFFFF;   /* card base */
+  --surface-2:    #F0F2F6;   /* hover de linha e de item de menu */
+  --surface-3:    #EDEFF3;   /* trilho de barra, fundo de input */
 
-  /* Revisão de 18/08/2026: os valores originais eram #8E8E8E e #565656. O
-     segundo tinha contraste de 2,86:1 sobre preto puro, o que falha o mínimo
-     AA até para texto grande — e a regra 16 abaixo já dizia que ele não
-     servia para texto que precisa ser lido. Na prática ele acabou usado em
-     apoio e metadado por toda parte, então o valor subiu em vez de a regra
-     virar letra morta. */
+  --line:         rgba(16,24,40,.09);  /* fio padrão */
+  --line-2:       rgba(16,24,40,.16);  /* fio de ênfase, borda de botão */
+  --line-3:       rgba(16,24,40,.28);  /* fio de citação */
 
-  /* Gradiente do card (assinatura da referência) */
-  --card-bg: linear-gradient(158deg, var(--surface-2) 0%, var(--surface) 62%);
+  --ink:          #14161C;   /* texto primário · 16,9:1 */
+  --ink-2:        #5B6472;   /* texto de apoio · 5,6:1 */
+  --ink-3:        #66707F;   /* rótulo, eyebrow, metadado · 4,7:1 */
+
+  /* Acento: o azul da marca. Botão primário, item ativo, foco. */
+  --acento:       #143A7E;
+  --acento-ink:   #FFFFFF;
+  --acento-suave: #EAF0FB;   /* fundo de item ativo e de selo */
+
+  /* O card era um gradiente escuro; em superfície clara ele é branco chapado
+     com o fio da borda fazendo o trabalho de separar. */
+  --card-bg:      #FFFFFF;
 
   /* ── TERMÔMETRO ─────────────────────────────────────────
      Única cor saturada do sistema. A cor comunica URGÊNCIA
      DE AÇÃO, não temperatura literal: afastado é vermelho
      por ser o estado que exige ação imediata, embora seja
-     o mais frio da escada. */
-  --t-aguardando: #6E6E6E;   /* link há menos de 5 dias */
-  --t-afastado:   #E04B4B;   /* zero cadastros, aja hoje */
-  --t-frio:       #4C7FB8;   /* 1 a 4, ou parado 10 dias */
-  --t-quente:     #D2892F;   /* 5 a 9, ativa */
-  --t-muito:      #EA6B26;   /* 10 ou mais, meta batida */
-  --t-engajado:   #42A868;   /* 20+ em 3 semanas distintas */
+     o mais frio da escada.
+
+     Escurecidas em 19/08/2026: os valores originais foram
+     escolhidos para fundo preto e cinco dos seis falhavam o
+     mínimo AA sobre branco — o pior deles, --t-quente, com
+     2,85:1. Agora todos passam de 4,8:1. */
+  --t-aguardando: #6B7280;   /* link há menos de 5 dias */
+  --t-afastado:   #D92D20;   /* zero cadastros, aja hoje */
+  --t-frio:       #2E6FBF;   /* 1 a 4, ou parado 10 dias */
+  --t-quente:     #B45309;   /* 5 a 9, ativa */
+  --t-muito:      #C2410C;   /* 10 ou mais, meta batida */
+  --t-engajado:   #15803D;   /* 20+ em 3 semanas distintas */
 
   /* Temperatura digital (Instagram) */
-  --d-ativo:      #42A868;
-  --d-irregular:  #D2892F;
-  --d-ausente:    #E04B4B;
+  --d-ativo:      #15803D;
+  --d-irregular:  #B45309;
+  --d-ausente:    #D92D20;
 
   /* ── SUPERFÍCIE PÚBLICA ─────────────────────────────── */
   --paper:        #F5F6F6;
@@ -138,8 +157,11 @@
    ═══════════════════════════════════════════════════════════
 
    COR
-   1. No painel, branco é o acento. Não existe botão colorido.
-      Cor saturada é reservada exclusivamente para estado.
+   1. No painel, o acento é --acento (o azul da marca), e ele
+      é o único colorido fora de estado: botão primário, item
+      de menu ativo e anel de foco. Cor saturada além dele é
+      reservada exclusivamente para estado.
+      (Até 19/08/2026 o painel era preto e branco era o acento.)
    2. As seis cores do termômetro nunca aparecem em outro
       contexto. Vermelho no painel significa sempre "aja".
    3. A cor da campanha existe só na superfície pública, e só
