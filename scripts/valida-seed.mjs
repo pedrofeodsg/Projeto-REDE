@@ -11,7 +11,7 @@
  */
 import { createClient } from "@supabase/supabase-js";
 
-import { comRetentativa, env } from "./env.mjs";
+import { comRetentativa, ehErroDeRede, env } from "./env.mjs";
 
 async function main() {
   const supabase = createClient(
