@@ -33,7 +33,7 @@ type Item = {
   href: string;
   rotulo: string;
   Icone: typeof LayoutDashboard;
-  chave?: "demandas" | "conflitos";
+  chave?: "liderancas" | "demandas" | "conflitos";
 };
 
 const GRUPOS: { titulo: string | null; itens: Item[] }[] = [
@@ -44,7 +44,7 @@ const GRUPOS: { titulo: string | null; itens: Item[] }[] = [
   {
     titulo: "Rede",
     itens: [
-      { href: "/liderancas", rotulo: "Lideranças", Icone: Users },
+      { href: "/liderancas", rotulo: "Lideranças", Icone: Users, chave: "liderancas" },
       { href: "/pessoas", rotulo: "Pessoas", Icone: UserRound },
       { href: "/demandas", rotulo: "Demandas", Icone: ClipboardList, chave: "demandas" },
       { href: "/conflitos", rotulo: "Conflitos", Icone: ShieldAlert, chave: "conflitos" },
@@ -71,7 +71,11 @@ const PAPEL_LABEL = {
   operador: "Operador",
 } as const;
 
-export type Contagens = { demandas: number; conflitos: number };
+export type Contagens = {
+  liderancas: number;
+  demandas: number;
+  conflitos: number;
+};
 
 export function Sidebar({
   nome,
@@ -194,7 +198,7 @@ export function Sidebar({
                         {contagem > 0 && (
                           <span
                             className={`font-data rounded-full px-1.5 py-0.5 text-[10px] leading-none ${
-                              item.chave === "conflitos"
+                              item.chave === "conflitos" || item.chave === "liderancas"
                                 ? "bg-t-afastado/15 text-t-afastado"
                                 : "bg-surface-3 text-ink-2 group-hover:text-ink"
                             }`}

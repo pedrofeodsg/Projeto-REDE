@@ -228,3 +228,35 @@ export async function atualizarLideranca(
   revalidatePath(`/liderancas/${id}`);
   return { erro: null };
 }
+
+/**
+ * Ativa uma liderança que se cadastrou sozinha.
+ *
+ * É o aval que a RF-03 exige: quem entra por /sou-lideranca nasce pendente, e
+ * a página exclusiva dela só abre depois disto. Enquanto estiver pendente, o
+ * link devolve 404 — o que, sem esta tela, parecia defeito.
+ */
+export async function ativarLideranca(id: string) {
+  await exigirOperador();
+
+  const supabase = await createAuthClient();
+  await supabase.from("pessoas").update({ ativo: true }).eq("id", id);
+
+  revalidatePath("/liderancas");
+  revalidatePath(`/pessoas/${id}`);
+  revalidatePath("/painel");
+}
+
+/** Recusa o cadastro: mantém o registro, mas ele não vira liderança da rede. */
+export async function recusarLideranca(id: string) {
+  await exigirOperador();
+
+  const supabase = await createAuthClient();
+  await supabase
+    .from("pessoas")
+    .update({ nivel: "apoiador", slug: null, ativo: true })
+    .eq("id", id);
+
+  revalidatePath("/liderancas");
+  revalidatePath("/pessoas");
+}

@@ -19,6 +19,7 @@ import { hostPublico } from "@/lib/url";
 import type { MacroRegiao } from "@/types/database";
 
 import { Filtros } from "./filtros";
+import { Pendentes } from "./pendentes";
 
 export const metadata: Metadata = { title: "Lideranças" };
 
@@ -97,6 +98,23 @@ export default async function LiderancasPage(props: PageProps<"/liderancas">) {
           </Link>
         </div>
       </header>
+
+      {/* Quem se cadastrou sozinho e ainda não foi avaliado. Enquanto está
+          aqui, o link exclusivo devolve 404. */}
+      <Pendentes
+        pendentes={listaBruta
+          .filter((l) => !l.ativo)
+          .map((l) => ({
+            id: l.id,
+            nome: l.nome,
+            apelido: l.apelido,
+            telefone: l.telefone,
+            slug: l.slug,
+            bairro_nome: l.bairro_nome,
+            local_nome: l.local_nome,
+          }))}
+        host={host}
+      />
 
       <Filtros
         bairros={bairros}

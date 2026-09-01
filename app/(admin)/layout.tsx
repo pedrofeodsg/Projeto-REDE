@@ -17,7 +17,12 @@ export const dynamic = "force-dynamic";
 async function contarPendencias(
   supabase: Awaited<ReturnType<typeof createAuthClient>>,
 ): Promise<Contagens> {
-  const [demandas, conflitos] = await Promise.all([
+  const [liderancas, demandas, conflitos] = await Promise.all([
+    supabase
+      .from("pessoas")
+      .select("id", { count: "exact", head: true })
+      .eq("nivel", "lideranca")
+      .eq("ativo", false),
     supabase
       .from("demandas")
       .select("id", { count: "exact", head: true })
@@ -29,6 +34,7 @@ async function contarPendencias(
   ]);
 
   return {
+    liderancas: liderancas.count ?? 0,
     demandas: demandas.count ?? 0,
     conflitos: conflitos.count ?? 0,
   };
@@ -45,7 +51,7 @@ export default async function AdminLayout({
   const supabase = await createAuthClient();
   const contagens = sessao.operador
     ? await contarPendencias(supabase)
-    : { demandas: 0, conflitos: 0 };
+    : { liderancas: 0, demandas: 0, conflitos: 0 };
 
   return (
     <div className="admin min-h-dvh bg-background">
