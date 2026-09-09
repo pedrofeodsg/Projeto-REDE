@@ -533,9 +533,18 @@ export function Estudio({ molduras, link }: { molduras: Moldura[]; link: string 
                       O xadrez atrás revela a janela vazada da moldura. */}
                   <span
                     aria-hidden
-                    className="xadrez relative size-12 shrink-0 overflow-hidden rounded-xl"
+                    className="xadrez size-12 shrink-0 overflow-hidden rounded-xl"
                   >
-                    <NextImage src={m.arquivo} alt="" fill sizes="48px" className="object-contain" />
+                    {/* Medida explícita em vez de fill: o srcset sai com dois
+                        tamanhos em vez de quinze, e a página é feita para abrir
+                        no celular de quem tem plano contado. */}
+                    <NextImage
+                      src={m.arquivo}
+                      alt=""
+                      width={96}
+                      height={96}
+                      className="h-full w-full object-contain"
+                    />
                   </span>
                   <span className="font-marca text-[15px] font-extrabold leading-tight">
                     {m.nome}
