@@ -94,6 +94,19 @@ const ZOOM_MAX = 4;
 const limitar = (v: number, min: number, max: number) => Math.min(max, Math.max(min, v));
 
 /*
+ * O deslocamento é guardado como fração da folga que o zoom criou, de -1 a 1,
+ * e não em pixels: assim ele não precisa ser recalculado quando o zoom muda, e
+ * o mesmo enquadramento vale para qualquer moldura.
+ *
+ * O padrão é 1 no eixo vertical, ou seja, topo da foto encostado no topo da
+ * janela. Centralizar parece a escolha neutra, mas não é: em foto de pessoa o
+ * rosto fica na parte de cima, e janela deitada — como a da arte redonda —
+ * corta justamente a cabeça. Encostar no topo acerta o rosto na maioria das
+ * fotos, e quem quiser outro corte arrasta.
+ */
+const ENQUADRE_PADRAO = { x: 0, y: 1 };
+
+/*
  * Compartilhar arquivo só existe em navegador, e quase só em celular. Ler isso
  * num efeito faria o botão piscar depois da hidratação; useSyncExternalStore
  * declara o que o servidor deve supor (false) e o cliente resolve na primeira
@@ -112,7 +125,7 @@ export function Estudio({ molduras, link }: { molduras: Moldura[]; link: string 
 
   const [foto, setFoto] = useState<Foto | null>(null);
   const [zoom, setZoom] = useState(1);
-  const [desloc, setDesloc] = useState({ x: 0, y: 0 });
+  const [desloc, setDesloc] = useState(ENQUADRE_PADRAO);
   // Uma entrada por moldura já lida. Trocar de moldura e voltar não relê nada.
   const [analises, setAnalises] = useState<Record<string, Analise | "faltando">>({});
   const [ocupado, setOcupado] = useState(false);
@@ -189,15 +202,12 @@ export function Estudio({ molduras, link }: { molduras: Moldura[]; link: string 
     };
   }, [foto, janela, zoom]);
 
-  // O deslocamento é limitado na leitura, e não corrigido num efeito depois do
-  // fato: assim a foto nunca chega a ser desenhada fora do lugar, e afastar o
-  // zoom recentraliza sozinho sem apagar onde a pessoa tinha posicionado.
+  // A fração vira pixel na hora de desenhar. Como ela já vive limitada entre
+  // -1 e 1, a foto nunca chega a ser desenhada fora do lugar — e afastar o
+  // zoom reenquadra sozinho, sem apagar onde a pessoa tinha posicionado.
   const deslocEfetivo = useMemo(() => {
-    if (!medidas) return desloc;
-    return {
-      x: limitar(desloc.x, -medidas.folgaX, medidas.folgaX),
-      y: limitar(desloc.y, -medidas.folgaY, medidas.folgaY),
-    };
+    if (!medidas) return { x: 0, y: 0 };
+    return { x: desloc.x * medidas.folgaX, y: desloc.y * medidas.folgaY };
   }, [desloc, medidas]);
 
   /* ── desenho ──────────────────────────────────────────── */
@@ -217,7 +227,14 @@ export function Estudio({ molduras, link }: { molduras: Moldura[]; link: string 
       if (!foto || !m) return;
       ctx.save();
       ctx.beginPath();
-      if (janela.forma === "circulo") {
+      if (analise?.vazada) {
+        // Numa moldura vazada quem define o feitio é o alfa do próprio PNG —
+        // e ele pode ser qualquer coisa, como o círculo com o texto e os
+        // candidatos recortados por cima. Recortar a foto em elipse aqui
+        // arriscaria cortá-la dentro de área que a arte deixa à mostra, então
+        // o recorte é a caixa e a máscara é a arte.
+        ctx.rect(janela.x, janela.y, janela.largura, janela.altura);
+      } else if (janela.forma === "circulo") {
         // Elipse inscrita no retângulo da janela: é o recorte que a arte
         // redonda pede.
         ctx.ellipse(
@@ -317,8 +334,8 @@ export function Estudio({ molduras, link }: { molduras: Moldura[]; link: string 
     const m = medidas;
     if (!m) return;
     setDesloc((d) => ({
-      x: limitar(d.x + (e.clientX - anterior.x) * k, -m.folgaX, m.folgaX),
-      y: limitar(d.y + (e.clientY - anterior.y) * k, -m.folgaY, m.folgaY),
+      x: m.folgaX > 0 ? limitar(d.x + ((e.clientX - anterior.x) * k) / m.folgaX, -1, 1) : d.x,
+      y: m.folgaY > 0 ? limitar(d.y + ((e.clientY - anterior.y) * k) / m.folgaY, -1, 1) : d.y,
     }));
   }
 
@@ -354,7 +371,7 @@ export function Estudio({ molduras, link }: { molduras: Moldura[]; link: string 
       descartar(fotoRef.current);
       setFoto(nova);
       setZoom(1);
-      setDesloc({ x: 0, y: 0 });
+      setDesloc(ENQUADRE_PADRAO);
     } catch {
       alert("Não consegui abrir essa imagem. Tenta outra foto.");
     } finally {
@@ -553,12 +570,12 @@ export function Estudio({ molduras, link }: { molduras: Moldura[]; link: string 
               className="botao-fio"
               onClick={() => {
                 setZoom(1);
-                setDesloc({ x: 0, y: 0 });
+                setDesloc(ENQUADRE_PADRAO);
               }}
               disabled={!foto}
             >
               <Crosshair className="size-4" aria-hidden />
-              Centralizar
+              Reenquadrar
             </button>
           </div>
 
