@@ -197,3 +197,40 @@ body {
   background-size: 22px 22px;
   background-position: 0 0, 0 11px, 11px -11px, -11px 0;
 }
+
+/*
+ * Barra fixa do celular.
+ *
+ * Substitui a seção de download onde a tela é estreita: a ação fica no alcance
+ * do polegar, e não no fim de uma página que já é longa. Nasce junto com a arte
+ * — antes de existir foto ela não tem o que oferecer.
+ */
+.barra-celular {
+  background: rgba(13, 42, 14, 0.93);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-top: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow: 0 -16px 38px -20px rgba(0, 0, 0, 0.95);
+}
+
+@keyframes entra-de-baixo {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.entra-de-baixo {
+  animation: entra-de-baixo 420ms var(--ease) both;
+}
+
+/* Quem pediu menos movimento no sistema recebe o resultado, não o caminho. */
+@media (prefers-reduced-motion: reduce) {
+  .entra-de-baixo {
+    animation-duration: 1ms;
+  }
+}

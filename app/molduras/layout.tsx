@@ -26,7 +26,7 @@ const corpo = Nunito({
 export default function MoldurasLayout({ children }: LayoutProps<"/molduras">) {
   return (
     <div
-      className={`molduras ${display.variable} ${corpo.variable} min-h-dvh w-full px-4 py-8 sm:px-6 sm:py-12`}
+      className={`molduras ${display.variable} ${corpo.variable} min-h-dvh w-full px-4 pb-36 pt-8 sm:px-6 sm:pb-12 sm:pt-12`}
     >
       <div className="relative mx-auto w-full max-w-[1120px]">{children}</div>
     </div>

@@ -10,6 +10,9 @@ import {
   Share2,
   TriangleAlert,
 } from "lucide-react";
+// Apelidado: este arquivo usa new Image() do navegador em dois lugares, e o
+// componente do Next sombrearia o construtor global.
+import NextImage from "next/image";
 import {
   useCallback,
   useEffect,
@@ -441,6 +444,7 @@ export function Estudio({ molduras, link }: { molduras: Moldura[]; link: string 
   /* ── tela ─────────────────────────────────────────────── */
 
   return (
+    <>
     <div className="grid gap-6 lg:grid-cols-[minmax(0,400px)_minmax(0,1fr)] lg:items-start lg:gap-8">
       {/* ---------- prévia ---------- */}
       <div className="vidro relative overflow-hidden rounded-[26px] p-3 lg:sticky lg:top-8">
@@ -506,7 +510,7 @@ export function Estudio({ molduras, link }: { molduras: Moldura[]; link: string 
         {/* escolha da moldura */}
         <section className="vidro rounded-[22px] p-5">
           <h2 className="font-marca text-[13px] font-extrabold uppercase tracking-[0.16em] text-marca-amarelo">
-            1 · Escolha a moldura
+            Escolha a moldura
           </h2>
           <div className="mt-3 flex flex-wrap gap-2.5">
             {molduras.map((m) => {
@@ -524,21 +528,17 @@ export function Estudio({ molduras, link }: { molduras: Moldura[]; link: string 
                       : "border-white/20 bg-white/5 hover:bg-white/12")
                   }
                 >
+                  {/* A própria arte em miniatura: quem escolhe vê o que vai
+                      postar, em vez de ler o nome de uma coisa que não conhece.
+                      O xadrez atrás revela a janela vazada da moldura. */}
                   <span
                     aria-hidden
-                    className="size-9 shrink-0 rounded-lg"
-                    style={{
-                      background:
-                        "linear-gradient(140deg, " + m.cores[0] + ", " + m.cores[1] + ")",
-                    }}
-                  />
-                  <span>
-                    <span className="font-marca block text-[15px] font-extrabold leading-tight">
-                      {m.nome}
-                    </span>
-                    <span className="block text-[12.5px] leading-tight text-white/65">
-                      {m.chamada}
-                    </span>
+                    className="xadrez relative size-12 shrink-0 overflow-hidden rounded-xl"
+                  >
+                    <NextImage src={m.arquivo} alt="" fill sizes="48px" className="object-contain" />
+                  </span>
+                  <span className="font-marca text-[15px] font-extrabold leading-tight">
+                    {m.nome}
                   </span>
                 </button>
               );
@@ -552,7 +552,7 @@ export function Estudio({ molduras, link }: { molduras: Moldura[]; link: string 
         {/* foto e ajuste */}
         <section className="vidro rounded-[22px] p-5">
           <h2 className="font-marca text-[13px] font-extrabold uppercase tracking-[0.16em] text-marca-amarelo">
-            2 · Coloque a sua foto
+            Coloque a sua foto
           </h2>
 
           <div className="mt-3 flex flex-wrap gap-2.5">
@@ -579,7 +579,9 @@ export function Estudio({ molduras, link }: { molduras: Moldura[]; link: string 
             </button>
           </div>
 
-          <div className="mt-4">
+          {/* No celular o zoom é o próprio gesto de pinçar na prévia, então a
+              barra só existe onde não há dedo: mouse e trackpad. */}
+          <div className="mt-4 hidden sm:block">
             <label
               htmlFor="zoom"
               className="flex items-center justify-between text-[13px] font-bold text-white/70"
@@ -601,10 +603,11 @@ export function Estudio({ molduras, link }: { molduras: Moldura[]; link: string 
           </div>
         </section>
 
-        {/* salvar */}
-        <section className="vidro rounded-[22px] p-5">
+        {/* Salvar. No celular isto não é seção: vira a barra fixa lá embaixo,
+            que aparece só depois que existe uma arte para salvar. */}
+        <section className="vidro hidden rounded-[22px] p-5 sm:block">
           <h2 className="font-marca text-[13px] font-extrabold uppercase tracking-[0.16em] text-marca-amarelo">
-            3 · Salve e poste
+            Salve e poste
           </h2>
           <div className="mt-3 flex flex-wrap gap-2.5">
             <button
@@ -642,7 +645,7 @@ export function Estudio({ molduras, link }: { molduras: Moldura[]; link: string 
         {/* legenda */}
         <section className="vidro rounded-[22px] p-5">
           <h2 className="font-marca text-[13px] font-extrabold uppercase tracking-[0.16em] text-marca-amarelo">
-            4 · Legenda pronta
+            Legenda pronta
           </h2>
           <div className="mt-3 flex flex-wrap gap-2">
             {moldura.legendas.map((l, i) => (
@@ -678,5 +681,47 @@ export function Estudio({ molduras, link }: { molduras: Moldura[]; link: string 
         </section>
       </div>
     </div>
+
+    {/*
+      A saída no celular.
+
+      Uma seção de download empurraria o botão para o fim de uma página que já
+      é longa, e quem acabou de enquadrar a foto está olhando para a prévia, não
+      para o rodapé. Então a ação sobe até o polegar: barra fixa, que nasce
+      junto com a arte e some se a foto sair.
+    */}
+    {foto && estado === "pronta" && (
+      <div className="entra-de-baixo fixed inset-x-0 bottom-0 z-40 sm:hidden">
+        <div className="barra-celular px-4 pb-[calc(env(safe-area-inset-bottom)+12px)] pt-2.5">
+          <p className="mb-2 text-center text-[12px] font-semibold text-white/55">
+            {moldura.largura}×{moldura.altura} · depois é só escolher na galeria do
+            Instagram
+          </p>
+          <div className="flex items-center gap-2.5">
+            <button
+              type="button"
+              className="botao-sol flex-1"
+              onClick={baixar}
+              disabled={ocupado}
+            >
+              <Download className="size-5" aria-hidden />
+              {ocupado ? "Gerando…" : "Baixar imagem"}
+            </button>
+            {podeCompartilhar && (
+              <button
+                type="button"
+                className="botao-fio aspect-square px-0"
+                onClick={compartilhar}
+                disabled={ocupado}
+                aria-label="Compartilhar"
+              >
+                <Share2 className="size-5" aria-hidden />
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
+    )}
+    </>
   );
 }

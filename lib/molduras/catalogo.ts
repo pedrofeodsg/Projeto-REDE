@@ -26,10 +26,19 @@ export type Janela = {
   raio: number;
 };
 
+/*
+ * Sobre o que as legendas podem dizer.
+ *
+ * Nenhum dos candidatos está em reeleição nesses cargos — é a primeira
+ * disputa deles em nível estadual e federal. Então nada de "tudo o que ele já
+ * fez pela cidade" nem de balanço de mandato: não há mandato, e a primeira
+ * pessoa a perceber isso é o adversário. O que sustenta o voto aqui é a
+ * escolha de quem indica, o compromisso assumido e o que muda quando a cidade
+ * passa a ter gente sentada nessas cadeiras.
+ */
 export type Moldura = {
   id: string;
   nome: string;
-  chamada: string;
   arquivo: string;
   largura: number;
   altura: number;
@@ -49,7 +58,6 @@ export const MOLDURAS: Moldura[] = [
   {
     id: "eu-voto-e-indico",
     nome: "Eu voto e indico",
-    chamada: "Marcio Rezende 5523 · João Pires 55021",
     arquivo: "/molduras/eu-voto-e-indico.png",
     largura: 1080,
     altura: 1920,
@@ -65,7 +73,7 @@ export const MOLDURAS: Moldura[] = [
           "Deputado Federal: MARCIO REZENDE 5523",
           "Deputado Estadual: JOÃO PIRES 55021",
           "",
-          "São Pedro da Aldeia precisa de gente que aparece, escuta e resolve. É por isso que eu tô nessa.",
+          "Escolhi quem se comprometeu com São Pedro da Aldeia olhando na minha cara. Agora depende da gente colocar eles lá.",
           "",
           "Faz a sua moldura também 👉 {LINK}",
           "",
@@ -77,7 +85,7 @@ export const MOLDURAS: Moldura[] = [
         texto: [
           "Tô com eles. 💚💛",
           "",
-          "Não é por cargo, não é por promessa. É porque eu conheço o trabalho e sei o que já foi feito aqui pela nossa cidade.",
+          "Não é por cargo e não é por promessa solta. É porque eu conheço as pessoas, sei de onde elas vêm e o que elas assumiram com a nossa cidade.",
           "",
           "MARCIO REZENDE 5523 · JOÃO PIRES 55021",
           "",
@@ -102,7 +110,6 @@ export const MOLDURAS: Moldura[] = [
   {
     id: "fechado-com-eles",
     nome: "Fechado com eles",
-    chamada: "Paes 55 · Pedro Paulo 555 · Marcio 5523 · João Pires 55021",
     arquivo: "/molduras/fechado-com-eles.png",
     largura: 1080,
     altura: 1080,
@@ -122,7 +129,7 @@ export const MOLDURAS: Moldura[] = [
           "Deputado Federal: MARCIO REZENDE 5523",
           "Deputado Estadual: JOÃO PIRES 55021",
           "",
-          "Time montado, do começo ao fim da cédula. É assim que São Pedro da Aldeia deixa de ser lembrada só em ano de eleição.",
+          "Voto casado, do começo ao fim da cédula. Cidade que chega junto no estado e em Brasília para de esperar na fila — e é essa a chance de São Pedro da Aldeia ter gente nossa nessas cadeiras.",
           "",
           "Faz a sua também 👉 {LINK}",
           "",
@@ -134,7 +141,7 @@ export const MOLDURAS: Moldura[] = [
         texto: [
           "Eu escolhi de quem eu tô perto. 💚💛",
           "",
-          "Do governo ao vereador, votando junto o peso é outro — e quem ganha com isso é a nossa cidade.",
+          "Do governo ao vereador, votando junto o peso é outro. Não é favor pra ninguém: é a nossa cidade parando de ser a última a ser lembrada.",
           "",
           "PAES 55 · PEDRO PAULO 555 · MARCIO REZENDE 5523 · JOÃO PIRES 55021",
           "",

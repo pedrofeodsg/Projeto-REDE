@@ -8,7 +8,7 @@ import { Estudio } from "./estudio";
 
 export const metadata: Metadata = {
   title: "Molduras",
-  description: "Coloque a sua foto na moldura da campanha e poste no story.",
+  description: "Coloque a sua foto na moldura da campanha e poste no Instagram.",
   // Esta é a única página do sistema que existe para ser espalhada, então é a
   // única que convida buscador. Nada aqui toca a base de pessoas.
   robots: { index: true, follow: true },
@@ -17,7 +17,7 @@ export const metadata: Metadata = {
     locale: "pt_BR",
     title: "Faça a sua moldura · Vereador Pedro Abreu",
     description:
-      "Escolha a moldura, coloque a sua foto e baixe pronta pro story. Leva 30 segundos.",
+      "Escolha a moldura, coloque a sua foto e baixe pronta pro Instagram. Leva 30 segundos.",
   },
 };
 
@@ -43,7 +43,7 @@ export default function MoldurasPage() {
           Bota a sua cara<span className="text-marca-amarelo">.</span>
         </h1>
         <p className="mx-auto mt-3 max-w-[46ch] text-[16px] leading-snug text-white/75 sm:text-[17px]">
-          Escolha a moldura, coloque a sua foto e baixe pronta pro story. Leva
+          Escolha a moldura, coloque a sua foto e baixe pronta pro Instagram. Leva
           menos de um minuto e não precisa de nenhum aplicativo.
         </p>
       </header>
