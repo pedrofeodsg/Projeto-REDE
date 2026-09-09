@@ -1,0 +1,199 @@
+/*
+ * Superfície das molduras.
+ *
+ * Quarta superfície do sistema. As outras três são ferramentas ou formulários
+ * — esta é convite. Por isso é a única que usa o verde e o amarelo da marca
+ * como fundo, e não como detalhe: quem chega aqui veio fazer uma arte para
+ * postar, não preencher um cadastro.
+ *
+ * Importada só por este layout: nada disto entra no bundle do painel.
+ */
+
+html,
+body {
+  background: #0f2d10;
+  color: #ffffff;
+}
+
+.molduras {
+  font-family: var(--font-marca-body), ui-sans-serif, system-ui, sans-serif;
+  color: #ffffff;
+
+  /* Verde profundo por baixo, luz verde e amarela por cima. */
+  background-color: #123a13;
+  background-image:
+    radial-gradient(85% 55% at 12% -5%, rgba(245, 197, 24, 0.5) 0%, transparent 58%),
+    radial-gradient(75% 50% at 100% 8%, rgba(124, 194, 67, 0.62) 0%, transparent 60%),
+    radial-gradient(95% 60% at 50% 108%, rgba(20, 58, 126, 0.55) 0%, transparent 62%),
+    linear-gradient(168deg, #1c5a1f 0%, #123a13 52%, #0d2a0e 100%);
+  background-attachment: fixed;
+}
+
+/* A trama diagonal do material impresso, em cima de tudo e sem pegar clique. */
+.molduras::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background-image: repeating-linear-gradient(
+    115deg,
+    rgba(255, 255, 255, 0.055) 0px,
+    rgba(255, 255, 255, 0.055) 1px,
+    transparent 1px,
+    transparent 26px
+  );
+}
+
+/* Cartão de vidro: o conteúdo respira sem apagar o fundo colorido. */
+.vidro {
+  background: rgba(255, 255, 255, 0.09);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  box-shadow:
+    0 24px 60px -28px rgba(0, 0, 0, 0.65),
+    inset 0 1px 0 rgba(255, 255, 255, 0.14);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+/*
+ * Botão principal. Amarelo sobre tinta escura: 11,4:1 de contraste, o par mais
+ * legível da marca — e o único elemento amarelo da tela, para não competir
+ * consigo mesmo.
+ */
+.botao-sol {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: var(--touch-cta);
+  padding: 0 22px;
+  border-radius: 999px;
+  border: 0;
+  font-family: var(--font-marca-display), ui-sans-serif, system-ui, sans-serif;
+  font-size: 17px;
+  font-weight: 800;
+  color: #1b2a44;
+  background: linear-gradient(180deg, #ffd83d 0%, #f5c518 100%);
+  box-shadow:
+    0 10px 24px -10px rgba(245, 197, 24, 0.85),
+    inset 0 -2px 0 rgba(0, 0, 0, 0.12);
+  cursor: pointer;
+  transition:
+    transform 140ms var(--ease),
+    box-shadow 140ms var(--ease),
+    filter 140ms var(--ease);
+}
+
+.botao-sol:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 14px 30px -10px rgba(245, 197, 24, 0.95);
+}
+
+.botao-sol:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.botao-sol:disabled {
+  filter: grayscale(0.55);
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+/* Botão secundário: fio branco, fundo translúcido. */
+.botao-fio {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: var(--touch-min);
+  padding: 0 16px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.32);
+  background: rgba(255, 255, 255, 0.08);
+  font-family: var(--font-marca-body), ui-sans-serif, system-ui, sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: #ffffff;
+  cursor: pointer;
+  transition:
+    background 140ms var(--ease),
+    border-color 140ms var(--ease);
+}
+
+.botao-fio:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.18);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+.botao-fio:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* Área de arrastar a foto: o cursor conta o que dá para fazer ali. */
+.palco {
+  touch-action: none;
+  cursor: grab;
+}
+
+.palco:active {
+  cursor: grabbing;
+}
+
+/*
+ * Trilho do zoom. O range nativo herda cor do sistema e some no fundo escuro,
+ * então é redesenhado aqui nos dois motores.
+ */
+.zoom {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 26px;
+  background: transparent;
+  cursor: pointer;
+}
+
+.zoom::-webkit-slider-runnable-track {
+  height: 6px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.24);
+}
+
+.zoom::-moz-range-track {
+  height: 6px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.24);
+}
+
+.zoom::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 24px;
+  height: 24px;
+  margin-top: -9px;
+  border-radius: 50%;
+  border: 3px solid #123a13;
+  background: #f5c518;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+.zoom::-moz-range-thumb {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 3px solid #123a13;
+  background: #f5c518;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+/* Xadrez de fundo do palco, para a pessoa ver o recorte antes de escolher. */
+.xadrez {
+  background-color: rgba(255, 255, 255, 0.06);
+  background-image:
+    linear-gradient(45deg, rgba(255, 255, 255, 0.05) 25%, transparent 25%),
+    linear-gradient(-45deg, rgba(255, 255, 255, 0.05) 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, rgba(255, 255, 255, 0.05) 75%),
+    linear-gradient(-45deg, transparent 75%, rgba(255, 255, 255, 0.05) 75%);
+  background-size: 22px 22px;
+  background-position: 0 0, 0 11px, 11px -11px, -11px 0;
+}
