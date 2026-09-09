@@ -4,6 +4,7 @@ import {
   AtSign,
   ClipboardList,
   FileText,
+  Globe,
   LayoutDashboard,
   Map,
   MessageSquare,
@@ -14,7 +15,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import { sair } from "@/app/login/actions";
 
@@ -61,6 +62,7 @@ const GRUPOS: { titulo: string | null; itens: Item[] }[] = [
     titulo: "Saída",
     itens: [
       { href: "/mensagens", rotulo: "Mensagens", Icone: MessageSquare },
+      { href: "/links", rotulo: "Links", Icone: Globe },
       { href: "/exportar", rotulo: "Exportar", Icone: FileText },
     ],
   },
@@ -88,11 +90,17 @@ export function Sidebar({
 }) {
   const pathname = usePathname();
   const [aberta, setAberta] = useState(false);
+  const [rotaDaGaveta, setRotaDaGaveta] = useState(pathname);
 
   // A gaveta fecha ao navegar: no celular, ela cobre a tela inteira.
-  useEffect(() => {
+  //
+  // Ajuste durante a renderização, e não num efeito. Fechando por efeito, o
+  // React chega a pintar a gaveta aberta sobre a página nova antes de fechá-la
+  // — e é isso que a regra react-hooks/set-state-in-effect estava apontando.
+  if (rotaDaGaveta !== pathname) {
+    setRotaDaGaveta(pathname);
     setAberta(false);
-  }, [pathname]);
+  }
 
   return (
     <>
