@@ -17,7 +17,14 @@ const W = 1080;
 const H = 1920;
 
 // A mesma reserva que está no catálogo.
-const RESERVA: Janela = { x: 75, y: 78, largura: 930, altura: 1107, raio: 48 };
+const RESERVA: Janela = {
+  x: 75,
+  y: 78,
+  largura: 930,
+  altura: 1107,
+  forma: "retangulo",
+  raio: 48,
+};
 
 const CARTAO = { x: 75, y: 78, x2: 1004, y2: 1844 };
 const FAIXA = { y: 1185, y2: 1250 };
@@ -118,6 +125,7 @@ describe("lerJanela · moldura chapada", () => {
       y: CARTAO.y,
       largura: CARTAO.x2 - CARTAO.x + 1,
       altura: FAIXA.y - CARTAO.y,
+      forma: "retangulo",
       raio: RESERVA.raio,
     });
   });

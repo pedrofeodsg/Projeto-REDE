@@ -34,13 +34,16 @@ export type Caixa = { minX: number; minY: number; maxX: number; maxY: number };
 /** Array RGBA do canvas. Uint8ClampedArray na web, Uint8Array nos testes. */
 type Pixels = Uint8ClampedArray | Uint8Array;
 
-export function paraJanela(c: Caixa, raio: number, folga: number): Janela {
+export function paraJanela(c: Caixa, molde: Janela, folga: number): Janela {
   return {
     x: c.minX,
     y: c.minY,
     largura: c.maxX - c.minX + folga,
     altura: c.maxY - c.minY + folga,
-    raio,
+    // O feitio e o raio descrevem a arte, não a medida: continuam vindo do
+    // catálogo mesmo quando as coordenadas saem do arquivo.
+    forma: molde.forma,
+    raio: molde.raio,
   };
 }
 
@@ -52,7 +55,9 @@ export function paraJanela(c: Caixa, raio: number, folga: number): Janela {
 export function plausivel(c: Caixa, largura: number, altura: number): boolean {
   const w = (c.maxX - c.minX) / largura;
   const h = (c.maxY - c.minY) / altura;
-  return w > 0.2 && w < 0.99 && h > 0.15 && h < 0.8;
+  // O teto de altura é 0,88 porque moldura quadrada com recorte redondo chega
+  // perto de ocupar a arte toda — e um preenchimento vazado passa disso.
+  return w > 0.2 && w < 0.99 && h > 0.15 && h < 0.88;
 }
 
 /** Caminho 1: a caixa que envolve tudo que é transparente. */
@@ -153,12 +158,12 @@ export function lerJanela(
 ): Analise {
   const vazada = janelaVazada(dados, w, h);
   if (vazada && plausivel(vazada, w, h)) {
-    return { janela: paraJanela(vazada, reserva.raio, 2), vazada: true };
+    return { janela: paraJanela(vazada, reserva, 2), vazada: true };
   }
 
   const clara = janelaBranca(dados, w, h, reserva);
   if (clara && plausivel(clara, w, h)) {
-    return { janela: paraJanela(clara, reserva.raio, 1), vazada: false };
+    return { janela: paraJanela(clara, reserva, 1), vazada: false };
   }
 
   return { janela: reserva, vazada: false };

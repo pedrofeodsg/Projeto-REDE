@@ -217,14 +217,28 @@ export function Estudio({ molduras, link }: { molduras: Moldura[]; link: string 
       if (!foto || !m) return;
       ctx.save();
       ctx.beginPath();
-      // Cantos de cima arredondados como o cartão; os de baixo encostam na
-      // faixa da arte e ficam retos.
-      ctx.roundRect(janela.x, janela.y, janela.largura, janela.altura, [
-        janela.raio,
-        janela.raio,
-        0,
-        0,
-      ]);
+      if (janela.forma === "circulo") {
+        // Elipse inscrita no retângulo da janela: é o recorte que a arte
+        // redonda pede.
+        ctx.ellipse(
+          janela.x + janela.largura / 2,
+          janela.y + janela.altura / 2,
+          janela.largura / 2,
+          janela.altura / 2,
+          0,
+          0,
+          Math.PI * 2,
+        );
+      } else {
+        // Cantos de cima arredondados como o cartão; os de baixo encostam na
+        // faixa da arte e ficam retos.
+        ctx.roundRect(janela.x, janela.y, janela.largura, janela.altura, [
+          janela.raio,
+          janela.raio,
+          0,
+          0,
+        ]);
+      }
       ctx.clip();
       ctx.drawImage(
         foto.fonte,
@@ -598,9 +612,13 @@ export function Estudio({ molduras, link }: { molduras: Moldura[]; link: string 
             )}
           </div>
           <p className="mt-3 text-[13.5px] leading-snug text-white/65">
-            A arte sai em 1080×1920, o tamanho exato do story. Depois de salvar, abra o
-            Instagram, toque em <b className="text-white/85">Story</b> e escolha a imagem
-            na galeria.
+            A arte sai em {moldura.largura}×{moldura.altura}, o tamanho exato{" "}
+            {moldura.destino === "story" ? "do story" : "da publicação"}. Depois de
+            salvar, abra o Instagram, toque em{" "}
+            <b className="text-white/85">
+              {moldura.destino === "story" ? "Story" : "Publicação"}
+            </b>{" "}
+            e escolha a imagem na galeria.
           </p>
         </section>
 

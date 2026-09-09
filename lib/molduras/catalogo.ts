@@ -16,7 +16,13 @@ export type Janela = {
   y: number;
   largura: number;
   altura: number;
-  /** Raio dos cantos de cima. Os de baixo encostam na faixa e ficam retos. */
+  /**
+   * Feitio do recorte da foto. "circulo" inscreve uma elipse no retângulo —
+   * é o que a arte redonda pede. Só importa em moldura chapada; na vazada,
+   * quem recorta é a própria transparência do PNG.
+   */
+  forma: "retangulo" | "circulo";
+  /** Retângulo: raio dos cantos de cima. Os de baixo ficam retos. */
   raio: number;
 };
 
@@ -27,6 +33,11 @@ export type Moldura = {
   arquivo: string;
   largura: number;
   altura: number;
+  /**
+   * Onde a arte vai parar. Muda a instrução de postagem na tela: story é a
+   * tela cheia vertical, publicação é o quadrado que fica no perfil.
+   */
+  destino: "story" | "publicacao";
   janela: Janela;
   /** Legendas prontas para colar no story. A primeira é a padrão. */
   legendas: { rotulo: string; texto: string }[];
@@ -42,8 +53,9 @@ export const MOLDURAS: Moldura[] = [
     arquivo: "/molduras/eu-voto-e-indico.png",
     largura: 1080,
     altura: 1920,
+    destino: "story",
     // Medida lendo o alfa do arquivo: a janela vazada do cartão.
-    janela: { x: 68, y: 68, largura: 946, altura: 1150, raio: 48 },
+    janela: { x: 68, y: 68, largura: 946, altura: 1150, forma: "retangulo", raio: 48 },
     legendas: [
       {
         rotulo: "Direta",
