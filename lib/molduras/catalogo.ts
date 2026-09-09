@@ -42,8 +42,8 @@ export const MOLDURAS: Moldura[] = [
     arquivo: "/molduras/eu-voto-e-indico.png",
     largura: 1080,
     altura: 1920,
-    // Medida no arquivo: a área branca do cartão, do topo até a faixa azul.
-    janela: { x: 75, y: 78, largura: 930, altura: 1107, raio: 48 },
+    // Medida lendo o alfa do arquivo: a janela vazada do cartão.
+    janela: { x: 68, y: 68, largura: 946, altura: 1150, raio: 48 },
     legendas: [
       {
         rotulo: "Direta",
